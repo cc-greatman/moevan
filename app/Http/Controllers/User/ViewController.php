@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Log;
 class ViewController extends Controller
 {
     public function home() {
-        $pageTitle = "Welcome to Moevan Enterprise";
+        $pageTitle = "Home - Moevan Enterprise";
 
         $etisalat = Settings::find(3);
         $airtel = Settings::find(4);
