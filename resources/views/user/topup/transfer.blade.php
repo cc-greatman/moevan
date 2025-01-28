@@ -44,8 +44,8 @@
                 <p><label for="">Select Bank to Pay to</label></p>
                 <select type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="bank" id="bank" onchange="updateAccountNumber()">
                   <option selected="" disabled>-------</option>
-                  <option value="GTB">GTB</option>
-                  <option value="OPAY">OPAY</option>
+                  <option value="GTB">GTB - Moevan Enterprise</option>
+                  <option value="OPAY">OPAY - Chukwuma Moses</option>
                 </select>
               </div>
 
