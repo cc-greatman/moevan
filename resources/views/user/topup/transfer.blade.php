@@ -69,7 +69,7 @@
             </div>
 
             <div class="">
-              <button class="bg-blue-990 text-white text-2xl font-bold rounded-lg md:px-20 md:py-6 px-8 py-3 cursor-pointer">Confirm Top-Up</button>
+              <button name="submit" type="submit" class="bg-blue-990 text-white text-2xl font-bold rounded-lg md:px-20 md:py-6 px-8 py-3 cursor-pointer">Confirm Top-Up</button>
             </div>
         </form>
       </div>
