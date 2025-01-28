@@ -30,7 +30,7 @@
                     </div>
     @endif
 
-      <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
+      <div class="bg-gray-300 text-blue-950 font-medium text-lg shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
         <p class="text-xl md:text-3xl font-medium">
             WANT FREE MONEY💰?<br><br>
             THEN REFER AND ALWAYS GET 1% OF YOUR REFERRALS FUNDING AFTER FUNDING<br><br>
