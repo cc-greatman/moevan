@@ -253,7 +253,7 @@ class WebhookController extends Controller
 
     public function handleIpay(Request $request) {
 
-       return response()->json(['message' => 'Notification already processed'], 200);
+       return response()->json(null, 200);
     }
 
     public function handleData(Request $request) {
