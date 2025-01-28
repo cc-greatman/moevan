@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +32,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::name('webhook.')->prefix('webhook')->group(function () {
             Route::post('transfer-status', 'WebhookController@handle');
-            Route::post('manual-status', 'WebhookController@handleIpay');
+            Route::post('manual-status', function (Request $request) {
+                // Log the payload for debugging (optional)
+                \Log::info('Webhook payload:', $request->all());
+
+                // Perform actions here if needed
+                return response()->json(['message' => 'Webhook received'], 200);
+            });
             Route::post('data-status', 'WebhookController@handleData');
         });
 
