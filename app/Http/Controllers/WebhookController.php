@@ -253,7 +253,305 @@ class WebhookController extends Controller
 
     public function handleIpay(Request $request) {
 
-       return response()->json(null, 200);
+        // Get raw JSON request string
+        $raw_request = $request->getContent();
+
+        // Your Secret Key found in your Monnify dashboard, developer menu
+        $SECRET_KEY = env('IPAYNG_API_KEY');
+
+        // Next, we need to compute and compare the hash sent via the header as "monnify-signature".
+        $signature = $request->header('signedData');
+        $computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
+        if ($computedHash !== $signature) {
+            return response()->json(['error' => 'Invalid Hash'], 403);
+        }
+
+        // Parse request to array
+        $request_array = json_decode($raw_request, true);
+
+        // Check for duplicate notifications
+        $processedNotification = DB::table('processed_notifications')
+            ->where('reference_number', $request_array['data']['reference'])
+            ->first();
+
+        if ($processedNotification) {
+            // Notification already processed, return success response
+            return response()->json(['message' => 'Notification already processed'], 200);
+        }
+
+         // Check response status and content
+         if (isset($request_array['code']) && $request_array['code'] == '200' || $request_array['code'] == '201') {
+
+             try {
+                 // Start a database transaction
+                 DB::beginTransaction();
+
+                 // Find the user by email
+                 $user_trx = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                 $user = User::where('id', $user_trx->user_id)->first();
+
+                 if (!$user) {
+                     // Handle user not found
+                     return response()->json(['error' => 'User not found'], 404);
+                 }
+
+                 $preBal = $user->balance;
+
+                 if($user->account_type === 1) {
+
+                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
+                 } else {
+
+                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
+                 }
+
+
+                 // Generate transaction
+                 $trx = getTrx();
+
+                 // Create WalletTransactions record
+                 $walletTransaction = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                 $walletTransaction->user_id = $user->id;
+                 $walletTransaction->pre_bal = $preBal;
+
+                 // Update user balance
+                 $user->balance += $depositAmount;
+                 $user->save();
+
+                 $walletTransaction->sender_name = $request_array['data']['response']['sessionIdOrReference'];
+                 $walletTransaction->amount = $depositAmount;
+                 $walletTransaction->post_bal = $user->balance;
+                 $walletTransaction->reference_number = $request_array['data']['customerReference'];
+                 $walletTransaction->mode = "Manual TopUp";
+                 $walletTransaction->details = '₦' . number_format($depositAmount, 2) . ' has been added to your balance';
+                 $walletTransaction->status = '1';
+                 $walletTransaction->type = "+";
+                 $walletTransaction->receipt_path = $request_array['data']['reference'];
+                 $walletTransaction->trx = $trx;
+                 $walletTransaction->save();
+
+                 // Create Transaction record
+                 $transaction = Transaction::where('trx', $user_trx->trx)->first();
+                 $transaction->user_id = $user->id;
+                 $transaction->amount = $depositAmount;
+                 $transaction->post_balance = $user->balance;
+                 $transaction->trx_type = '+';
+                 $transaction->details = '₦' . number_format($depositAmount, 2) . ' has been added to your balance';
+                 $transaction->status = '1';
+                 $transaction->trx = $trx;
+                 $transaction->save();
+
+                 $referral = Referral::where('user_id', $user->id)->first();
+
+                 if ($referral) {
+                     $referrer = User::find($referral->referrer_id);
+                     if ($referrer) {
+                         if($referrer->account_type == '1') {
+                             $commission = $depositAmount * 0.01;
+
+                             $preBal = $referrer->referral_balance;
+
+                             $update = new WalletTransactions;
+
+                             $update->user_id = $referrer->id;
+                             $update->pre_bal = $preBal;
+
+                             // Credit referral bonus to the referrer
+                             $referrer->referral_balance += number_format($commission,2);
+                             $referrer->save();
+
+                             $update->amount = number_format($commission,2);
+                             $update->post_bal = $referrer->referral_balance;
+                             $update->trx = getTrx();
+                             $update->reference_number = null;
+                             $update->mode = "Referral Bonus";
+                             $update->details = '₦'.number_format($commission,2). ' has been added to your balance';
+                             $update->status = '1';
+                             $update->type = "+";
+                             $update->save();
+
+                             // Create a transaction record for the referral bonus
+                             $credit = new Transaction;
+                             $credit->user_id = $referrer->id;
+                             $credit->amount = $commission; // Adjust the amount as needed
+                             $credit->post_balance = $referrer->balance;
+                             $credit->trx_type = '+';
+                             $credit->status = '1';
+                             $credit->details = 'Received referral bonus for Data Purchase';
+                             $credit->trx = getTrx();
+                             $credit->save();
+
+                         } elseif($referrer->account_type == '2') {
+                             $commission = $depositAmount * 0.005;
+
+                             $preBal = $referrer->referral_balance;
+
+                             $update = new WalletTransactions;
+
+                             $update->user_id = $referrer->id;
+                             $update->pre_bal = $preBal;
+
+                             // Credit referral bonus to the referrer
+                             $referrer->referral_balance += number_format($commission,2);
+                             $referrer->save();
+
+                             $update->amount = number_format($commission,2);
+                             $update->post_bal = $referrer->referral_balance;
+                             $update->trx = getTrx();
+                             $update->reference_number = null;
+                             $update->mode = "Referral Bonus";
+                             $update->details = '₦'.number_format($commission,2). ' has been added to your balance';
+                             $update->status = '1';
+                             $update->type = "+";
+                             $update->save();
+
+                             // Create a transaction record for the referral bonus
+                             $credit = new Transaction;
+                             $credit->user_id = $referrer->id;
+                             $credit->amount = $commission; // Adjust the amount as needed
+                             $credit->post_balance = $referrer->balance;
+                             $credit->trx_type = '+';
+                             $credit->status = '1';
+                             $credit->details = 'Received referral bonus for Data Purchase';
+                             $credit->trx = getTrx();
+                             $credit->save();
+                         } elseif($referrer->account_type == '3') {
+                             $commission = $depositAmount * 0.0025;
+
+                             $preBal = $referrer->referral_balance;
+
+                             $update = new WalletTransactions;
+
+                             $update->user_id = $referrer->id;
+                             $update->pre_bal = $preBal;
+
+                             // Credit referral bonus to the referrer
+                             $referrer->referral_balance += number_format($commission,2);
+                             $referrer->save();
+
+                             $update->amount = number_format($commission,2);
+                             $update->post_bal = $referrer->referral_balance;
+                             $update->trx = getTrx();
+                             $update->reference_number = null;
+                             $update->mode = "Referral Bonus";
+                             $update->details = '₦'.number_format($commission,2). ' has been added to your balance';
+                             $update->status = '1';
+                             $update->type = "+";
+                             $update->save();
+
+                             // Create a transaction record for the referral bonus
+                             $credit = new Transaction;
+                             $credit->user_id = $referrer->id;
+                             $credit->amount = $commission; // Adjust the amount as needed
+                             $credit->post_balance = $referrer->balance;
+                             $credit->trx_type = '+';
+                             $credit->status = '1';
+                             $credit->details = 'Received referral bonus for Data Purchase';
+                             $credit->trx = getTrx();
+                             $credit->save();
+                         }
+                     }
+                 }
+
+                 // Commit the transaction
+                 DB::commit();
+
+                 // Save processed notification to the database
+                 DB::table('processed_notifications')->insert([
+                     'reference_number' => $request_array['data']['reference'],
+                     'created_at' => now(),
+                     'updated_at' => now(),
+                 ]);
+
+                 // Return success response
+                 return response()->json(['message' => 'User balance has been updated successfully'], 200);
+             } catch (\Exception $e) {
+                 // Rollback the transaction on error
+                 DB::rollBack();
+
+                 // Log the error for further investigation
+                 \Illuminate\Support\Facades\Log::error('Transaction failed: ' . $e->getMessage());
+
+                 // Return error response
+                 return response()->json(['error' => 'Transaction failed'], 500);
+             }
+         } elseif (isset($request_array['code']) && $request_array['code'] == '500' || $request_array['code'] == '424') {
+
+             try {
+                 // Start a database transaction
+                 DB::beginTransaction();
+
+                 // Find the user by email
+                 $user_trx = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                 $user = User::where('id', $user_trx->user_id)->first();
+
+                 if (!$user) {
+                     // Handle user not found
+                     return response()->json(['error' => 'User not found'], 404);
+                 }
+
+                 $preBal = $user->balance;
+
+                 if($user->account_type === 1) {
+
+                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
+                 } else {
+
+                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
+                 }
+
+
+                 // Generate transaction
+                 $trx = getTrx();
+
+                 // Create WalletTransactions record
+                 $walletTransaction = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                 $walletTransaction->user_id = $user->id;
+                 $walletTransaction->pre_bal = $preBal;
+
+                 $walletTransaction->sender_name = $request_array['data']['response']['sessionIdOrReference'];
+                 $walletTransaction->amount = $depositAmount;
+                 $walletTransaction->post_bal = $user->balance;
+                 $walletTransaction->reference_number = $request_array['data']['customerReference'];
+                 $walletTransaction->mode = "Manual TopUp";
+                 $walletTransaction->details = $request_array['data']['message'];
+                 $walletTransaction->status = '2';
+                 $walletTransaction->type = "+";
+                 $walletTransaction->receipt_path = $request_array['data']['reference'];
+                 $walletTransaction->trx = $user_trx->trx;
+                 $walletTransaction->save();
+
+                 // Create Transaction record
+                 $transaction = Transaction::where('trx', $user_trx->trx)->first();
+                 $transaction->user_id = $user->id;
+                 $transaction->amount = $depositAmount;
+                 $transaction->post_balance = $user->balance;
+                 $transaction->trx_type = '+';
+                 $transaction->details = $request_array['data']['message'];
+                 $transaction->status = '1';
+                 $transaction->trx = $user_trx->trx;
+                 $transaction->save();
+
+                 // Commit the transaction
+                 DB::commit();
+
+                 // Return success response
+                 return response()->json(['message' => 'User balance has been updated successfully'], 200);
+             } catch (\Exception $e) {
+                 // Rollback the transaction on error
+                 DB::rollBack();
+
+                 // Log the error for further investigation
+                 \Illuminate\Support\Facades\Log::error('Transaction failed: ' . $e->getMessage());
+
+                 // Return error response
+                 return response()->json(['error' => 'Transaction failed'], 500);
+             }
+         }
     }
 
     public function handleData(Request $request) {
