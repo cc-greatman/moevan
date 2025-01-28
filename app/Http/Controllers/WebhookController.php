@@ -253,6 +253,8 @@ class WebhookController extends Controller
 
     public function handleIpay(Request $request) {
 
+        return response()->json(['message' => 'Notification already processed'], 200);
+
         // Get raw JSON request string
        $raw_request = $request->getContent();
 
@@ -312,7 +314,7 @@ class WebhookController extends Controller
 
                 // Create WalletTransactions record
                 $walletTransaction = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
-                
+
                 $walletTransaction->user_id = $user->id;
                 $walletTransaction->pre_bal = $preBal;
 
