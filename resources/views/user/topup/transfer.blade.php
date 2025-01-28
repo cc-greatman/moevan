@@ -41,7 +41,7 @@
             <div>
 
               <div class="space-y-4 mb-5">
-                <p><label for="">Select Bank Paid to</label></p>
+                <p><label for="">Select Bank to Pay to</label></p>
                 <select type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="bank" id="bank" onchange="updateAccountNumber()">
                   <option selected="" disabled>-------</option>
                   <option value="GTB">GTB</option>
