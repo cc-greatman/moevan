@@ -45,6 +45,7 @@
                 <select type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="bank" id="bank" onchange="updateAccountNumber()">
                   <option selected="" disabled>-------</option>
                   <option value="GTB">GTB</option>
+                  <option value="OPAY">OPAY</option>
                 </select>
               </div>
 
@@ -78,6 +79,7 @@
         // Map of bank names to account numbers
         const bankAccountNumbers = {
           GTB: "0818170354",
+          OPAY: "8064324511",
         };
 
         // Update the account number when a bank is selected

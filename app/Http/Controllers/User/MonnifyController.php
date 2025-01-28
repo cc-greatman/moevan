@@ -56,7 +56,7 @@ class MonnifyController extends Controller
         $validated = $request->validate([
                                     'bank' => 'required|string',
                                     'amount' => 'required|numeric',
-                                    'accountNo' => 'required|numeric|max:25',
+                                    'accountNo' => 'required|numeric',
                                     'reference' => 'required|string|max:255',
                                 ]);
 
