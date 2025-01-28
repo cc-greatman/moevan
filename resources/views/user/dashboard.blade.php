@@ -1,7 +1,7 @@
 @include('user.partials.head')
 
 @include('user.partials.navbar')
-    
+
     @if($popup->active === 1)
                 <!-- HTML Markup for Modal -->
                 <div class="container" id="cookiesPopup" style="display: none;"> <!-- Modal hidden by default -->
@@ -93,9 +93,9 @@
         <ul
           class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10"
         >
-            
-        
-        
+
+
+
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
             style="
@@ -138,12 +138,10 @@
                 background-color: #fff000;
               }
             "
-            onclick="openCity(event, 'moebank')"
-          >
-            Manual Funding
+          ><a href="{{ route('user.top-up.fund.manual.show') }}">Automated Manual Funding</a>
           </li>
         </ul>
-        
+
         <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="accessbank">
           <div class="flex flex-wrap sm:pl-10 py-9">
 
@@ -215,7 +213,7 @@
             </p>
           </div>
         </div>
-        
+
         <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="diamondbank">
           <div class="flex flex-wrap sm:pl-10 py-9">
 
@@ -252,38 +250,6 @@
           </div>
         </div>
 
-        <div class="text-white mb-16 tabcontent" id="moebank" style="background-color: #fff000;">
-          <div class="flex flex-wrap sm:pl-10 py-9">
-
-            <div class="font-medium sm:text-3xl text-xl pl-6 space-y-2" style="color: #000;">
-              <div style="display:flex;gap:0.6em;">
-                <p>Account Number: 8143341690</p><span id="manualAccount" style="text-decoration: underline; display: none;">8143341690</span><a href="javascript:void(0);" class="copy-btn" style="display:inline-block;padding:0.05em 0.35em;border:0.1em solid #F0F0F0;background-color:#FFFFFF;margin:0 0.3em 0.3em 0;border-radius:0.12em;box-sizing:border-box;text-decoration:none;font-family:'Roboto',sans-serif;font-size:20px;font-weight:300;color:#000000;text-align:center;transition:all 0.2s;" data-copy-target="manualAccount">Copy</a>
-              </div>
-              <p>Account Name: - Moevan Enterprise</p>
-              <p>Bank Name: Moniepoint Microfinance Bank</p>
-              <p>No Charge</p>
-              <div>
-                <a href="{{ route('user.top-up.fund.manual.show') }}" class="button-22">Confirm Funding</a>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap justify-between bg-white text-red-990 px-10"
-          >
-            <p class="sm:text-6xl text-4xl font-extrabold pr-3">₦{{ number_format(Auth::user()->balance, 2) }}</p>
-            <p class="text-xl font-medium pt-4">Wallet Balance</p>
-          </div>
-
-          <div class="pl-10 py-5" style="color: #000;">
-            <p class="font-medium">MANUAL BANK TRANSFER</p>
-            <p class="font-medium">
-              Make transfer to this account to fund your wallet Instantly! <br>
-              You can save this account as beneficiary to topup anytime!
-            </p>
-          </div>
-        </div>
-        
         <div class="flex flex-wrap items-center justify-center gap-4" style="margin-top: 25px;">
           <div
             class="flex bg-white pr-20"
@@ -400,7 +366,7 @@
             </form>
         @endif
         </div>
-        
+
       </div>
     </div>
 
@@ -605,7 +571,7 @@
         </div>
       </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -624,29 +590,29 @@
             });
         });
     </script>
-    
+
     <script>
         document.querySelectorAll('.copy-btn').forEach(function(button) {
             button.addEventListener('click', function() {
                 var targetId = button.getAttribute('data-copy-target');
                 var content = document.getElementById(targetId);
-    
+
                 var isHidden = content.style.display === 'none';
                 if (isHidden) {
                     content.style.display = 'inline'; // Temporarily show hidden content
                 }
-    
+
                 var range = document.createRange();
                 range.selectNode(content);
                 window.getSelection().removeAllRanges();
                 window.getSelection().addRange(range);
                 document.execCommand('copy');
                 window.getSelection().removeAllRanges();
-    
+
                 if (isHidden) {
                     content.style.display = 'none'; // Hide the content again
                 }
-    
+
                 alert('Copied to clipboard!');
             });
         });
@@ -655,19 +621,19 @@
     <script>
         function openCity(evt, cityName) {
           var i, tabcontent, tablinks;
-        
+
           // Get all tabcontent and hide them
           tabcontent = document.getElementsByClassName("tabcontent");
           for (i = 0; i < tabcontent.length; i++) {
             tabcontent[i].style.display = "none";
           }
-        
+
           // Remove "active" class from all tabs
           tablinks = document.getElementsByClassName("tablinks");
           for (i = 0; i < tablinks.length; i++) {
             tablinks[i].className = tablinks[i].className.replace(" active", "");
           }
-        
+
           // Show the current tabcontent and add "active" class to the clicked tab
           document.getElementById(cityName).style.display = "block";
           evt.currentTarget.className += " active";

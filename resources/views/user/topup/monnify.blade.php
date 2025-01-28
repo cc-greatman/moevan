@@ -3,14 +3,14 @@
 @include('user.partials.navbar')
 
 <div class="bg-white board pb-5 pt-14 mx-1 lg:ml-32 lg:mr-24 md:ml-12 md:mr-6 mb-8" style="margin-top: 70px;">
-    
+
     <div class="md:text-4xl text-2xl sm:text-center mb-7 px-3">
         <span class="text-blue-900 font-bold">Package</span> :
         <span class="text-blue-900 font-medium">@if (Auth::user()->account_type == "1") Customer @elseif (Auth::user()->account_type == "2") Reseller @else Agent @endif</span>&nbsp; &nbsp;
         <span class="text-blue-900 font-bold">KYC</span> :
         <span class="text-blue-900 font-medium">@if (Auth::user()->is_kyc_verified === 1) Verified @else Not Verified @endif</span>
       </div>
-      
+
       <div class="mb-12 cursor-pointer">
         <ul class="flex flex-wrap justify-center md:gap-5 gap-1">
           @if (Auth::user()->is_kyc_verified !== 1)
@@ -23,7 +23,7 @@
           @endif
         </ul>
       </div>
-    
+
     <div>
         <ul
           class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10"
@@ -61,21 +61,8 @@
           >
             Sterling Bank
           </li>
-          <li
-            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
-            style="
-              background-color: #fff000;
-              color: #000;
-              .tab li:hover {
-                background-color: #fff000;
-              }
-            "
-            onclick="openCity(event, 'moebank')"
-          >
-            Manual Funding
-          </li>
         </ul>
-        
+
         <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="accessbank">
           <div class="flex flex-wrap sm:pl-10 py-9">
 
@@ -143,7 +130,7 @@
             </p>
           </div>
         </div>
-        
+
         <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="diamondbank">
           <div class="flex flex-wrap sm:pl-10 py-9">
 
@@ -178,41 +165,10 @@
           </div>
         </div>
 
-        <div class="text-white mb-16 tabcontent" id="moebank" style="background-color: #fff000;">
-          <div class="flex flex-wrap sm:pl-10 py-9">
-
-            <div class="font-medium sm:text-3xl text-xl pl-6 space-y-2" style="color: #000;">
-              <p>Account Number: 8143341690</p>
-              <p>Account Name: - Moevan Enterprise</p>
-              <p>Bank Name: Moniepoint Microfinance Bank</p>
-              <p>No Charge</p>
-              <div>
-                <a href="{{ route('user.top-up.fund.manual.show') }}" class="button-22">Confirm Funding</a>
-              </div>
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap justify-between bg-white text-red-990 px-10"
-          >
-            <p class="sm:text-6xl text-4xl font-extrabold pr-3">₦{{ number_format(Auth::user()->balance, 2) }}</p>
-            <p class="text-xl font-medium pt-4">Wallet Balance</p>
-          </div>
-
-          <div class="pl-10 py-5" style="color: #000;">
-            <p class="font-medium">MANUAL BANK TRANSFER</p>
-            <p class="font-medium">
-              Make transfer to this account to fund your wallet Instantly! <br>
-              You can save this account as beneficiary to topup anytime!
-            </p>
-          </div>
-        </div>
-
-        
       </div>
-    
+
 </div>
-    
+
     <script>
         function openCity(evt, cityName) {
           var i, tabcontent, tablinks;
