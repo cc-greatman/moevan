@@ -52,7 +52,7 @@
                 <!-- Container for displaying the account number -->
                 <div id="accountNumberContainer" class="hidden space-y-2 mb-5">
                     <input type="text" id="accountNumber" class="place-style rounded-sm h-14 w-full lg:w-3/4" readonly/>
-                    <button onclick="copyAccountNumber()" class="bg-blue-990 text-white px-4 py-2 rounded-md hover:bg-blue-600"> Copy </button>
+                    <button onclick="copyAccountNumber()" class="bg-blue-990 rounded-lg text-white px-4 py-2 rounded-md hover:bg-blue-600"> Copy </button>
                 </div>
 
               <div class="space-y-4 mb-5">
