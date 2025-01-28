@@ -73,8 +73,8 @@
     <script>
         // Map of bank names to account numbers
         const bankAccountNumbers = {
-          GTB: "1234567890",
-          OPAY: "9876543210",
+          GTB: "0818170354",
+          OPAY: "8143341690",
         };
 
         // Update the account number when a bank is selected
