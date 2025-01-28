@@ -60,6 +60,11 @@
                     <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
               </div>
 
+              <div class="space-y-4 mb-5">
+                    <p><label for="amount">Session ID or Reference Number</label></p>
+                    <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
+              </div>
+
             </div>
 
             <div class="">
