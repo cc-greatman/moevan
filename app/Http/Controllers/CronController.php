@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class CronController extends Controller
 {
     public function syncGotv() {
-        
+
         // Make the API request
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -23,7 +23,7 @@ class CronController extends Controller
 
         // Get the response data as an array
         $responseData = $response->json();
-    
+
         // Check if the request was successful
         if (isset($responseData['code']) && ($responseData['code'] == '200')) {
             // Loop through the 'product' array in the response
@@ -38,15 +38,15 @@ class CronController extends Controller
                     ]
                 );
             }
-    
+
             Log::info('Cable packages populated successfully.');
         } else {
             Log::error('Failed to retrieve cable packages. Response code: ' . $responseData['code']);
         }
     }
-    
+
     public function syncDstv() {
-        
+
         // Make the API request
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -55,10 +55,10 @@ class CronController extends Controller
         ])->post('https://autopilotng.com/api/live/v1/load/cable-packages', [
             'cableType' => 'DSTV'
         ]);
-    
+
         // Get the response data as an array
         $responseData = $response->json();
-    
+
         // Check if the request was successful
         if (isset($responseData['code']) && ($responseData['code'] == '200')) {
             // Loop through the 'product' array in the response
@@ -73,16 +73,16 @@ class CronController extends Controller
                     ]
                 );
             }
-    
+
             Log::info('Cable packages populated successfully.');
         } else {
             Log::error('Failed to retrieve cable packages. Response code: ' . $responseData['code']);
         }
     }
 
-    
+
     public function syncStar() {
-        
+
         // Make the API request
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -94,7 +94,7 @@ class CronController extends Controller
 
         // Get the response data as an array
         $responseData = $response->json();
-    
+
         // Check if the request was successful
         if (isset($responseData['code']) && ($responseData['code'] == '200')) {
             // Loop through the 'product' array in the response
@@ -109,15 +109,15 @@ class CronController extends Controller
                     ]
                 );
             }
-    
+
             Log::info('Cable packages populated successfully.');
         } else {
             Log::error('Failed to retrieve cable packages. Response code: ' . $responseData['code']);
         }
     }
-    
+
     public function syncShow() {
-        
+
         // Make the API request
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -129,7 +129,7 @@ class CronController extends Controller
 
        // Get the response data as an array
         $responseData = $response->json();
-    
+
         // Check if the request was successful
         if (isset($responseData['code']) && ($responseData['code'] == '200')) {
             // Loop through the 'product' array in the response
@@ -144,7 +144,7 @@ class CronController extends Controller
                     ]
                 );
             }
-    
+
             Log::info('Cable packages populated successfully.');
         } else {
             Log::error('Failed to retrieve cable packages. Response code: ' . $responseData['code']);

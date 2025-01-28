@@ -31,6 +31,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::name('webhook.')->prefix('webhook')->group(function () {
             Route::post('transfer-status', 'WebhookController@handle');
+            Route::post('manual-status', 'WebhookController@handleIpay');
             Route::post('data-status', 'WebhookController@handleData');
         });
 
