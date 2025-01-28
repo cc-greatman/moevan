@@ -896,6 +896,12 @@ class ViewController extends Controller
         return view('user.topup.monnify', compact('pageTitle', 'moniepoint', 'wema', 'sterling'));
     }
 
+    public function autoManual() {
+        $pageTitle = 'Automated Manual - Moevan';
+
+        return view('user.topup.transfer', compact('pageTitle'));
+    }
+
     public function profile() {
         $pageTitle = "Manage Profile - Moevan";
 

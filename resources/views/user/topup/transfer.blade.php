@@ -28,10 +28,9 @@
                             </div>
                         </div>
                     </div>
-              @endif
-              
-      <div
-        class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
+    @endif
+
+      <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
         <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
             @csrf
             <div>
@@ -47,7 +46,7 @@
                     <p><label for="amount">Amount</label></p>
                     <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
               </div>
-              
+
               <div class="space-y-4 mb-5">
                   <p><label for="receipt">Transaction Receipt</label></p> <!-- Updated the for attribute -->
                   <input type="file" name="receipt" id="receipt" accept="image/*" class="place-style rounded-sm h-14 w-full lg:w-3/4" />

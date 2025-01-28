@@ -33,7 +33,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::post('transfer-status', 'WebhookController@handle');
             Route::post('data-status', 'WebhookController@handleData');
         });
-        
+
         Route::name('cron.')->prefix('cron')->group(function () {
             Route::get('sync-dstv', 'CronController@syncDstv');
             Route::get('sync-gotv', 'CronController@syncGotv');
@@ -150,6 +150,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
                         Route::name('fund.')->prefix('fund')->group(function() {
                             Route::get('monnify', 'User\ViewController@viewMonnify')->name('show');
                             Route::get('manual', 'User\MonnifyController@viewManual')->name('manual.show');
+                            Route::get('automated-manual', 'User\ViewController@autoManual')->name('auto.manual');
                             Route::post('manual/perform', 'User\MonnifyController@processManual')->name('manual.perform');
                         });
                         Route::get('/search/transactions', 'User\TransactionsController@searchWallet')->name('search.transactions');
@@ -178,7 +179,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
                         Route::get('electric', 'User\TransactionsController@electric')->name('electric.show');
                         Route::get('cable', 'User\TransactionsController@cable')->name('cable.show');
                     });
-                    
+
                     //Transaction History Routes
                     Route::name('receipt.')->prefix('view/receipt')->group(function() {
                         Route::get('data/{id}', 'User\TransactionsController@viewReceipt')->name('data.show');

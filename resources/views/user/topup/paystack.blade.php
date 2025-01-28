@@ -2,41 +2,63 @@
 
 @include('user.partials.navbar')
 
-@include('user.partials.sidebar')
-
-<!--APP-CONTENT START-->
-            <div class="main-content app-content">
-                <div class="container-fluid">
-
-                    <!-- PAGE-HEADER -->
-                    <div class="page-header">
-                      <h1 class="page-title my-auto">Wallet Top-Up</h1>
-                    </div>
-                    <!-- PAGE-HEADER END -->
-
-
-                    <!-- Start:: row-1 -->
-                    <div class="row">
-                        <div class="col-xl-8">
-                            <div class="card custom-card">
-                                <div class="card-header justify-content-between">
-                                    <div class="card-title">
-                                        Fund with Paystack
+    @if(isset ($errors) && count($errors) > 0)
+                    <div class="fixed inset-x-0 top-10 pb-2 sm:pb-5 z-50">
+                        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                            <div class="rounded-lg bg-red-600 p-2 shadow-lg sm:p-3">
+                                <div class="flex flex-wrap relative items-center justify-between">
+                                    <div class="flex p-2 flex-1 items-center font-medium text-white">
+                                        <ul>
+                                        @foreach($errors->all() as $error)
+                                          <li class="text-sm font-semibold">{{ $error }}</li>
+                                        @endforeach
+                                        </ul>
                                     </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label for="form-password" class="form-label fs-14 text-dark">Amount</label>
-                                        <input type="text" class="form-control" id="form-password" placeholder="">
-                                    </div>
-                                    <button class="btn btn-primary" type="submit">Top Up</button>
+                                    <button class="absolute -top-2 -right-2 hover:text-gray-100" onclick="return this.parentNode.parentNode.parentNode.parentNode.remove();">
+                                        <span class="sr-only">Dismiss</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                                            class="h-6 w-6 text-white">
+                                            <path fill-rule="evenodd"
+                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                clip-rule="evenodd">
+                                            </path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- End:: row-1 -->
-                </div>
+    @endif
+
+      <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
+        <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
+            @csrf
+            <div>
+
+              <div class="space-y-4 mb-5">
+                <p><label for="">Sender Name</label></p>
+                <input
+                  type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="name"  placeholder="Moevan Enterprises"
+                />
+              </div>
+
+              <div class="space-y-4 mb-5">
+                    <p><label for="amount">Amount</label></p>
+                    <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
+              </div>
+
+              <div class="space-y-4 mb-5">
+                  <p><label for="receipt">Transaction Receipt</label></p> <!-- Updated the for attribute -->
+                  <input type="file" name="receipt" id="receipt" accept="image/*" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
+              </div>
             </div>
-            <!--APP-CONTENT CLOSE-->
+
+            <div class="">
+              <button class="bg-blue-990 text-white text-2xl font-bold rounded-lg md:px-20 md:py-6 px-8 py-3 cursor-pointer">Confirm Top-Up</button>
+            </div>
+            <button id="submitButton" type="submit" name="submit" style="display: none;"></button>
+        </form>
+      </div>
+    </div>
 
 @include('user.partials.footer')
