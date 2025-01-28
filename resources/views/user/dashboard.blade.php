@@ -91,7 +91,7 @@
 
       <div>
         <ul
-          class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10" style="margin:-left:auto !important; margin-right:auto !important;"
+          class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10" 
         >
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
