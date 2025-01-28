@@ -93,41 +93,11 @@
         <ul
           class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10"
         >
-
-
-
-          <li
-            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
-            style="
-              background: #0357EE;
-              color: #000000;
-              .tab li:hover {
-                background-color: #C0D1EE;
-              }
-            "
-            onclick="openCity(event, 'diamondbank')"
-          >
-            Moniepoint
-          </li>
-          <li
-            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center active"
-            style="
-              background: #0357EE;
-              color: #000000;
-              .tab li:hover {
-                background-color: #C0D1EE;
-              }
-            "
-            onclick="openCity(event, 'accessbank')"
-          >
-            Wema
-          </li>
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
             style="background: #AE328E; color: #000000"
-            onclick="openCity(event, 'gtbank')"
           >
-            Sterling Bank
+          <a href="{{ route('user.top-up.fund.show') }}">Automated Funding</a>
           </li>
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
@@ -141,114 +111,6 @@
           ><a href="{{ route('user.top-up.fund.manual.show') }}">Automated Manual Funding</a>
           </li>
         </ul>
-
-        <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="accessbank">
-          <div class="flex flex-wrap sm:pl-10 py-9">
-
-            <div class="font-medium sm:text-3xl text-xl pl-6 space-y-2">
-              <div style="display:flex;gap:0.6em;">
-                <p>Account Number: {{ optional($wema)->account_number }}</p><span id="wemaAccount" style="text-decoration: underline; display: none;">{{ optional($wema)->account_number }}</span><a href="javascript:void(0);" class="copy-btn" style="display:inline-block;padding:0.05em 0.35em;border:0.1em solid #F0F0F0;background-color:#FFFFFF;margin:0 0.3em 0.3em 0;border-radius:0.12em;box-sizing:border-box;text-decoration:none;font-family:'Roboto',sans-serif;font-size:20px;font-weight:300;color:#000000;text-align:center;transition:all 0.2s;" data-copy-target="wemaAccount">Copy</a>
-              </div>
-              <p>Account Name: - {{ optional($wema)->account_name }}</p>
-              <p>Bank Name: Wema Bank</p>
-              @if(auth()->guard('web')->user()->account_type === 1)
-              <p>No Charge</p>
-              @else
-              <p>- 1% Charge</p>
-              @endif
-              @if(auth()->guard('web')->user()->is_kyc_verified !== 1)
-              <a href="{{ route('user.profile.kyc.show') }}" rel="_nofollow" class="button-54" role="button">Generate Account</a>
-              @endif
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap justify-between bg-white text-red-990 px-10"
-          >
-            <p class="sm:text-6xl text-4xl font-extrabold pr-3">₦{{ number_format(Auth::user()->balance, 2) }}</p>
-            <p class="text-xl font-medium pt-4">Wallet Balance</p>
-          </div>
-
-          <div class="pl-10 py-5">
-            <p class="font-medium">AUTOMATED BANK TRANSFER</p>
-            <p class="font-medium">
-              Make transfer to this account to fund your wallet Instantly! <br>
-              You can save this account as beneficiary to topup anytime!
-            </p>
-          </div>
-        </div>
-
-        <div class="text-white mb-16 tabcontent" id="gtbank" style="background-color: #AE328E;">
-          <div class="flex flex-wrap sm:pl-10 py-9">
-
-            <div class="font-medium sm:text-3xl text-xl pl-6 space-y-2">
-              <div style="display:flex;gap:0.6em;">
-                <p>Account Number: {{ optional($sterling)->account_number }}</p><span id="sterlingAccount" style="text-decoration: underline; display: none;">{{ optional($sterling)->account_number }}</span><a href="javascript:void(0);" class="copy-btn" style="display:inline-block;padding:0.05em 0.35em;border:0.1em solid #F0F0F0;background-color:#FFFFFF;margin:0 0.3em 0.3em 0;border-radius:0.12em;box-sizing:border-box;text-decoration:none;font-family:'Roboto',sans-serif;font-size:20px;font-weight:300;color:#000000;text-align:center;transition:all 0.2s;" data-copy-target="sterlingAccount">Copy</a>
-              </div>
-              <p>Account Name: - {{ optional($sterling)->account_name }}</p>
-              <p>Bank Name: Sterling Bank</p>
-              @if(auth()->guard('web')->user()->account_type === 1)
-              <p>No Charge</p>
-              @else
-              <p>- 1% Charge</p>
-              @endif
-              @if(auth()->guard('web')->user()->is_kyc_verified !== 1)
-              <a href="{{ route('user.profile.kyc.show') }}" rel="_nofollow" class="button-54" role="button">Generate Account</a>
-              @endif
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap justify-between bg-white text-red-990 px-10"
-          >
-            <p class="sm:text-6xl text-4xl font-extrabold pr-3">₦{{ number_format(Auth::user()->balance, 2) }}</p>
-            <p class="text-xl font-medium pt-4">Wallet Balance</p>
-          </div>
-
-          <div class="pl-10 py-5">
-            <p class="font-medium">AUTOMATED BANK TRANSFER</p>
-            <p class="font-medium">
-              Make transfer to this account to fund your wallet Instantly! <br>
-              You can save this account as beneficiary to topup anytime!
-            </p>
-          </div>
-        </div>
-
-        <div class=" text-white mb-16 tabcontent" style=" background-color: #0357EE;" id="diamondbank">
-          <div class="flex flex-wrap sm:pl-10 py-9">
-
-            <div class="font-medium sm:text-3xl text-xl pl-6 space-y-2">
-              <div style="display:flex;gap:0.6em;">
-                <p>Account Number: {{ optional($moniepoint)->account_number }}</p><span id="moniAccount" style="text-decoration: underline; display: none;">{{ optional($moniepoint)->account_number }}</span><a href="javascript:void(0);" class="copy-btn" style="display:inline-block;padding:0.05em 0.35em;border:0.1em solid #F0F0F0;background-color:#FFFFFF;margin:0 0.3em 0.3em 0;border-radius:0.12em;box-sizing:border-box;text-decoration:none;font-family:'Roboto',sans-serif;font-size:20px;font-weight:300;color:#000000;text-align:center;transition:all 0.2s;" data-copy-target="moniAccount">Copy</a>
-              </div>
-              <p>Account Name: - {{ optional($moniepoint)->account_name }}</p>
-              <p>Bank Name: Moniepoint Microfinance Bank</p>
-              @if(auth()->guard('web')->user()->account_type === 1)
-              <p>No Charge</p>
-              @else
-              <p>- 1% Charge</p>
-              @endif
-              @if(auth()->guard('web')->user()->is_kyc_verified !== 1)
-              <a href="{{ route('user.profile.kyc.show') }}" rel="_nofollow" class="button-54" role="button">Generate Account</a>
-              @endif
-            </div>
-          </div>
-
-          <div
-            class="flex flex-wrap justify-between bg-white text-red-990 px-10"
-          >
-            <p class="sm:text-6xl text-4xl font-extrabold pr-3">₦{{ number_format(Auth::user()->balance, 2) }}</p>
-            <p class="text-xl font-medium pt-4">Wallet Balance</p>
-          </div>
-
-          <div class="pl-10 py-5">
-            <p class="font-medium">AUTOMATED BANK TRANSFER</p>
-            <p class="font-medium">
-              Make transfer to this account to fund your wallet Instantly! <br>
-              You can save this account as beneficiary to topup anytime!
-            </p>
-          </div>
-        </div>
 
         <div class="flex flex-wrap items-center justify-center gap-4" style="margin-top: 25px;">
           <div
@@ -616,28 +478,6 @@
                 alert('Copied to clipboard!');
             });
         });
-    </script>
-
-    <script>
-        function openCity(evt, cityName) {
-          var i, tabcontent, tablinks;
-
-          // Get all tabcontent and hide them
-          tabcontent = document.getElementsByClassName("tabcontent");
-          for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-          }
-
-          // Remove "active" class from all tabs
-          tablinks = document.getElementsByClassName("tablinks");
-          for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-          }
-
-          // Show the current tabcontent and add "active" class to the clicked tab
-          document.getElementById(cityName).style.display = "block";
-          evt.currentTarget.className += " active";
-        }
     </script>
 
 @include('user.partials.footer')
