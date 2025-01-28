@@ -32,12 +32,9 @@
 
       <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
         <p class="text-xl md:text-xl font-medium">
-            WANT FREE MONEY💰?<br><br>
-            THEN REFER AND ALWAYS GET 1% OF YOUR REFERRALS FUNDING AFTER FUNDING<br><br>
-            YOU ALSO GET 25% WHEN EVER YOUR REFERRAL UPGRADES AFTER UPGRADES
+           1. You can transfer to GTB using any bank <br> 2. Just make sure your bank generates sectional ID or Reference number BEFORE TRANSFER OF FUNDS. <br> 3. OPAY to OPAY only please 🙏
         </p>
-
-        <br><br>
+        <br>
         <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
             @csrf
             <div>
