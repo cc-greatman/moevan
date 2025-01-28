@@ -8,6 +8,8 @@ use App\Models\MonnifyAccounts;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\WalletTransactions;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -58,18 +60,20 @@ class MonnifyController extends Controller
                                     'reference' => 'required|string|max:255',
                                 ]);
 
+        $ref = $this->generateRequestId();
+
         try {
             // Your Autopilot API key
             $ipayngApiKey = env('IPAYNG_API_KEY');
 
             // Base URL of the API
-            $baseUrl = 'https://ipayng.com/api/live/v1/automanual';
+            $baseUrl = 'https://ipayng.com/api/live/v1';
 
             $body = [
                 'accountNo' => $validated['accountNo'],
                 'sessionIdOrReference' => $validated['reference'],
                 'amount' => $validated['amount'],
-                'reference' => $validated['reference'],
+                'reference' => $ref
             ];
 
             $head = [
@@ -79,22 +83,54 @@ class MonnifyController extends Controller
             ];
 
             // Make the HTTP request
-            $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
+            $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/automanual', $body);
 
             $responseData = $responses->json();
 
             // Check response status and content
             if (isset($responseData['code']) && $responseData['code'] == '200' || $responseData['code'] == '201') {
+
                 $apiResponse = $responseData['data']['message'];
 
+                $user = auth()->guard('web')->user();
 
+                // Generate transaction reference
+                $trx = getTrx(); // Assuming getTrx() generates a transaction reference
 
-                return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                // Pre-balance before transaction
+                $preBal = $user->balance;
+
+                // Create WalletTransactions record with status '2' (pending)
+                $walletTransaction = new WalletTransactions();
+                $walletTransaction->user_id = $user->id;
+                $walletTransaction->sender_name = $validated['reference'];
+                $walletTransaction->pre_bal = $preBal;
+                $walletTransaction->amount = $request->amount;
+                $walletTransaction->post_bal = $user->balance;
+                $walletTransaction->reference_number = $ref;
+                $walletTransaction->mode = "Manual Funding";
+                $walletTransaction->details = $responseData['data']['message'];
+                $walletTransaction->status = '2'; // Pending status
+                $walletTransaction->type = "+";
+                $walletTransaction->receipt_path = $responseData['data']['reference'];
+                $walletTransaction->trx = $trx;
+                $walletTransaction->save();
+
+                // Create Transaction record with status '2' (pending)
+                $transaction = new Transaction();
+                $transaction->user_id = $user->id;
+                $transaction->amount = $request->amount;
+                $transaction->post_balance = $user->balance;
+                $transaction->trx_type = '+';
+                $transaction->details = 'Pending approval';
+                $transaction->status = '2'; // Pending status
+                $transaction->trx = $trx;
+                $transaction->save();
+
+                return redirect()->route('user.trx.warning')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Confirmation Pending!']);
             } else {
 
                 $message = $responseData['data']['message'];
-
-
 
                 return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
             }
@@ -103,54 +139,9 @@ class MonnifyController extends Controller
 
             $message = $responseData['data']['message'];
 
-
-
             Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
             return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
         }
-
-        $user = auth()->guard('web')->user();
-
-        // Store uploaded image
-        if ($request->hasFile('receipt')) {
-            $receiptPath = $request->file('receipt')->store('receipts', 'public');
-        }
-
-        // Generate transaction reference
-        $trx = getTrx(); // Assuming getTrx() generates a transaction reference
-
-        // Pre-balance before transaction
-        $preBal = $user->balance;
-
-        // Create WalletTransactions record with status '2' (pending)
-        $walletTransaction = new WalletTransactions();
-        $walletTransaction->user_id = $user->id;
-        $walletTransaction->sender_name = $request->name;
-        $walletTransaction->pre_bal = $preBal;
-        $walletTransaction->amount = $request->amount;
-        $walletTransaction->post_bal = $user->balance;
-        $walletTransaction->reference_number = $trx;
-        $walletTransaction->mode = "Manual Funding";
-        $walletTransaction->details = 'Pending approval';
-        $walletTransaction->status = '2'; // Pending status
-        $walletTransaction->type = "+";
-        $walletTransaction->receipt_path = $receiptPath;
-        $walletTransaction->trx = $trx;
-        $walletTransaction->save();
-
-        // Create Transaction record with status '2' (pending)
-        $transaction = new Transaction();
-        $transaction->user_id = $user->id;
-        $transaction->amount = $request->amount;
-        $transaction->post_balance = $user->balance;
-        $transaction->trx_type = '+';
-        $transaction->details = 'Pending approval';
-        $transaction->status = '2'; // Pending status
-        $transaction->trx = $trx;
-        $transaction->save();
-
-        // Redirect with success message or other response
-        return redirect()->route('user.trx.success')->with('success', 'Funding request is pending approval.');
     }
 
     public function reserveAccount() {
