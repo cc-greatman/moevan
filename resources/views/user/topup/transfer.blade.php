@@ -63,7 +63,7 @@
 
               <div class="space-y-4 mb-5">
                     <p><label for="amount">Session ID or Reference Number</label></p>
-                    <input type="text" placeholder="Session ID" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
+                    <input type="text" placeholder="Session ID" name="reference" id="reference" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
               </div>
 
             </div>
