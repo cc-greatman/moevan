@@ -32,7 +32,8 @@
 
       <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
         <p class="text-xl md:text-xl font-medium">
-           1. You can transfer to GTB using any bank <br> 2. Just make sure your bank generates sectional ID or Reference number BEFORE TRANSFER OF FUNDS. <br> 3. OPAY to OPAY only please 🙏
+           1. MINIMUM DEPOSIT AMOUNT FOR THIS SERVICE IS NGN 100. <br>
+           2. You can transfer to GTB using any bank <br> 3. Just make sure your bank generates sectional ID or Reference number BEFORE TRANSFER OF FUNDS. <br> 4. OPAY to OPAY only please 🙏
         </p>
         <br>
         <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
@@ -40,20 +41,25 @@
             <div>
 
               <div class="space-y-4 mb-5">
-                <p><label for="">Sender Name</label></p>
-                <input type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="name"  placeholder="Moevan Enterprises"
-                />
+                <p><label for="">Select Bank Paid to</label></p>
+                <select type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="bank" id="bank" onchange="updateAccountNumber()">
+                  <option selected="" disabled>-------</option>
+                  <option value="GTB">GTB</option>
+                  <option value="OPAY">OPAY</option>
+                </select>
               </div>
+
+                <!-- Container for displaying the account number -->
+                <div id="accountNumberContainer" class="hidden space-y-2 mb-5">
+                    <input type="text" id="accountNumber" class="place-style rounded-sm h-14 w-full lg:w-3/4" readonly/>
+                    <button onclick="copyAccountNumber()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"> Copy </button>
+                </div>
 
               <div class="space-y-4 mb-5">
                     <p><label for="amount">Amount</label></p>
                     <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
               </div>
 
-              <div class="space-y-4 mb-5">
-                  <p><label for="receipt">Transaction Receipt</label></p> <!-- Updated the for attribute -->
-                  <input type="file" name="receipt" id="receipt" accept="image/*" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
-              </div>
             </div>
 
             <div class="">
@@ -63,5 +69,48 @@
         </form>
       </div>
     </div>
+
+    <script>
+        // Map of bank names to account numbers
+        const bankAccountNumbers = {
+          GTB: "1234567890",
+          OPAY: "9876543210",
+        };
+
+        // Update the account number when a bank is selected
+        function updateAccountNumber() {
+          const bankSelect = document.getElementById("bank");
+          const accountNumberContainer = document.getElementById(
+            "accountNumberContainer"
+          );
+          const accountNumberInput = document.getElementById("accountNumber");
+
+          const selectedBank = bankSelect.value;
+
+          // If a valid bank is selected, update the account number
+          if (bankAccountNumbers[selectedBank]) {
+            accountNumberInput.value = bankAccountNumbers[selectedBank];
+            accountNumberContainer.classList.remove("hidden");
+          } else {
+            accountNumberContainer.classList.add("hidden");
+          }
+        }
+
+        // Copy the account number to clipboard
+        function copyAccountNumber() {
+          const accountNumberInput = document.getElementById("accountNumber");
+          accountNumberInput.select();
+          document.execCommand("copy");
+
+          // Show a temporary alert
+          alert("Account number copied to clipboard!");
+        }
+      </script>
+
+      <style>
+        .hidden {
+            display: none;
+        }
+      </style>
 
 @include('user.partials.footer')
