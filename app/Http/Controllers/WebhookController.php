@@ -325,7 +325,7 @@ class WebhookController extends Controller
                  $walletTransaction->post_bal = $user->balance;
                  $walletTransaction->reference_number = $request_array['data']['customerReference'];
                  $walletTransaction->mode = "Manual TopUp";
-                 $walletTransaction->details = '₦' . number_format($depositAmount, 2) . ' has been added to your balance';
+                 $walletTransaction->details = $request_array['data']['message'];
                  $walletTransaction->status = '1';
                  $walletTransaction->type = "+";
                  $walletTransaction->receipt_path = $request_array['data']['reference'];
@@ -338,7 +338,7 @@ class WebhookController extends Controller
                  $transaction->amount = $depositAmount;
                  $transaction->post_balance = $user->balance;
                  $transaction->trx_type = '+';
-                 $transaction->details = '₦' . number_format($depositAmount, 2) . ' has been added to your balance';
+                 $transaction->details =  $request_array['data']['message'];
                  $transaction->status = '1';
                  $transaction->trx = $trx;
                  $transaction->save();
