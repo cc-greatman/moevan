@@ -35,9 +35,9 @@
            1. MINIMUM DEPOSIT AMOUNT FOR THIS SERVICE IS NGN 100. <br>
            2. You can transfer to GTB using any bank <br> 3. Just make sure your bank generates sectional ID or Reference number BEFORE TRANSFER OF FUNDS. <br> 4. OPAY to OPAY only please 🙏
         </p>
-        <p class="text-xl md:text-xl font-medium">Fund your wallet through the following methods <br>
+        <p class="text-xl md:text-xl font-medium" style="color: rgb(76, 28, 28) !important;">Fund your wallet through the following methods <br>
            ✅ 0818170354 - (Moevan Enterprise - GTBANK) <br>
-           ✅ 8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)
+           ✅ 8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY) <br>
         </p>
         <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
             @csrf
