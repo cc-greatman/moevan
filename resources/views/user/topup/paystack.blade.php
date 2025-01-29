@@ -2,63 +2,68 @@
 
 @include('user.partials.navbar')
 
-    @if(isset ($errors) && count($errors) > 0)
-                    <div class="fixed inset-x-0 top-10 pb-2 sm:pb-5 z-50">
-                        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-                            <div class="rounded-lg bg-red-600 p-2 shadow-lg sm:p-3">
-                                <div class="flex flex-wrap relative items-center justify-between">
-                                    <div class="flex p-2 flex-1 items-center font-medium text-white">
-                                        <ul>
-                                        @foreach($errors->all() as $error)
-                                          <li class="text-sm font-semibold">{{ $error }}</li>
-                                        @endforeach
-                                        </ul>
-                                    </div>
-                                    <button class="absolute -top-2 -right-2 hover:text-gray-100" onclick="return this.parentNode.parentNode.parentNode.parentNode.remove();">
-                                        <span class="sr-only">Dismiss</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
-                                            class="h-6 w-6 text-white">
-                                            <path fill-rule="evenodd"
-                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                clip-rule="evenodd">
-                                            </path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-    @endif
+<div class="bg-white board pb-5 pt-14 mx-1 lg:ml-32 lg:mr-24 md:ml-12 md:mr-6 mb-8" style="margin-top: 70px;">
 
-      <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
-        <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
-            @csrf
-            <div>
-
-              <div class="space-y-4 mb-5">
-                <p><label for="">Sender Name</label></p>
-                <input
-                  type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="name"  placeholder="Moevan Enterprises"
-                />
-              </div>
-
-              <div class="space-y-4 mb-5">
-                    <p><label for="amount">Amount</label></p>
-                    <input type="text" placeholder="Amount" name="amount" id="amount" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
-              </div>
-
-              <div class="space-y-4 mb-5">
-                  <p><label for="receipt">Transaction Receipt</label></p> <!-- Updated the for attribute -->
-                  <input type="file" name="receipt" id="receipt" accept="image/*" class="place-style rounded-sm h-14 w-full lg:w-3/4" />
-              </div>
-            </div>
-
-            <div class="">
-              <button class="bg-blue-990 text-white text-2xl font-bold rounded-lg md:px-20 md:py-6 px-8 py-3 cursor-pointer">Confirm Top-Up</button>
-            </div>
-            <button id="submitButton" type="submit" name="submit" style="display: none;"></button>
-        </form>
-      </div>
+    <div class="md:text-4xl text-2xl sm:text-center mb-7 px-3">
+        <span class="text-blue-900 font-bold">Package</span> :
+        <span class="text-blue-900 font-medium">@if (Auth::user()->account_type == "1") Customer @elseif (Auth::user()->account_type == "2") Reseller @else Agent @endif</span>&nbsp; &nbsp;
+        <span class="text-blue-900 font-bold">KYC</span> :
+        <span class="text-blue-900 font-medium">@if (Auth::user()->is_kyc_verified === 1) Verified @else Not Verified @endif</span>
     </div>
+
+      <div class="mb-12 cursor-pointer">
+        <ul class="flex flex-wrap justify-center md:gap-5 gap-1">
+          @if (Auth::user()->is_kyc_verified !== 1)
+          <li
+            class="bg-blue-990 text-white sm:text-27 text-base sm:font-bold sm:py-6 sm:px-8 py-4 px-4"
+            style="border-radius: 11.996px"
+          >
+            <a href="{{ route('user.profile.kyc.show') }}">Verify KYC</a>
+          </li>
+          @endif
+        </ul>
+      </div>
+
+    <div>
+        <ul
+          class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10"
+        >
+          <li
+            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
+            style="background: #AE328E; color: #000000"
+          >
+          <a href="{{ route('user.top-up.fund.show') }}">Automated Funding</a>
+          </li>
+          <li
+            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
+            style="
+              background-color: #fff000;
+              color: #000;
+              .tab li:hover {
+                background-color: #fff000;
+              }
+            "
+          ><a href="{{ route('user.top-up.fund.manual.show') }}">Automated Manual Funding</a>
+          </li>
+        </ul>
+    </div>
+
+</div>
+
+    <script>
+        function openCity(evt, cityName) {
+          var i, tabcontent, tablinks;
+          tabcontent = document.getElementsByClassName("tabcontent");
+          for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablinks");
+          for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+          }
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " active";
+        }
+    </script>
 
 @include('user.partials.footer')

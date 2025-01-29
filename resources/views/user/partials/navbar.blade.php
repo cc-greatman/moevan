@@ -48,8 +48,8 @@
                               <rect width="24" height="24" fill="white"/>
                             </clipPath>
                           </defs>
-                        </svg>               
-                        <a href="{{ route('user.top-up.fund.show') }}" class="block font-semibold text-[#14171F] hover:text-blue-700">Fund Wallet</a>
+                        </svg>
+                        <a href="{{ route('user.top-up.fund.methods.show') }}" class="block font-semibold text-[#14171F] hover:text-blue-700">Fund Wallet</a>
                       </div>
                       <div class="flex flex-row gap-2 items-center justify-start mb-4 mt-5 sm:mt-2">
                         <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -71,7 +71,7 @@
                               <rect width="24" height="24" fill="white"/>
                             </clipPath>
                           </defs>
-                        </svg>                      
+                        </svg>
                         <a href="{{ route("user.transactions.general.show") }}" class="block font-semibold text-[#14171F] hover:text-blue-700">My Transactions</a>
                       </div>
                       <div class="flex flex-row gap-2 items-center justify-start mb-4 mt-5 sm:mt-2">
@@ -84,13 +84,13 @@
                               <rect width="24" height="24" fill="white"/>
                             </clipPath>
                           </defs>
-                        </svg>               
+                        </svg>
                         <a href="{{ route('user.business.view') }}" class="block font-semibold text-[#14171F] hover:text-blue-700">Business Registration <span class="bg-red-600 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded">NEW</span></a>
                       </div>
                       <div class="flex flex-row gap-2 items-center justify-start mb-4 mt-5 sm:mt-2">
                         <svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M21.6484 18.875C20.2206 16.4066 18.0203 14.6366 15.4525 13.7975C16.7226 13.0414 17.7094 11.8892 18.2614 10.518C18.8134 9.14668 18.8999 7.63214 18.5078 6.20691C18.1157 4.78169 17.2666 3.52457 16.0909 2.62863C14.9151 1.73269 13.4778 1.24747 11.9996 1.24747C10.5215 1.24747 9.08414 1.73269 7.90842 2.62863C6.73269 3.52457 5.88358 4.78169 5.49146 6.20691C5.09935 7.63214 5.18592 9.14668 5.73788 10.518C6.28984 11.8892 7.27668 13.0414 8.54683 13.7975C5.97902 14.6356 3.77871 16.4056 2.35089 18.875C2.29853 18.9604 2.2638 19.0554 2.24875 19.1544C2.2337 19.2534 2.23863 19.3545 2.26326 19.4515C2.28789 19.5486 2.33171 19.6398 2.39214 19.7196C2.45257 19.7995 2.52838 19.8665 2.6151 19.9166C2.70183 19.9667 2.79771 19.9989 2.89709 20.0113C2.99647 20.0238 3.09733 20.0162 3.19373 19.989C3.29012 19.9618 3.3801 19.9156 3.45835 19.8531C3.5366 19.7906 3.60154 19.713 3.64933 19.625C5.41558 16.5725 8.53746 14.75 11.9996 14.75C15.4618 14.75 18.5837 16.5725 20.35 19.625C20.3977 19.713 20.4627 19.7906 20.5409 19.8531C20.6192 19.9156 20.7092 19.9618 20.8056 19.989C20.902 20.0162 21.0028 20.0238 21.1022 20.0113C21.2016 19.9989 21.2975 19.9667 21.3842 19.9166C21.4709 19.8665 21.5467 19.7995 21.6072 19.7196C21.6676 19.6398 21.7114 19.5486 21.736 19.4515C21.7607 19.3545 21.7656 19.2534 21.7505 19.1544C21.7355 19.0554 21.7008 18.9604 21.6484 18.875ZM6.74964 8.00002C6.74964 6.96167 7.05755 5.94663 7.63443 5.08327C8.21131 4.21992 9.03124 3.54701 9.99056 3.14965C10.9499 2.75229 12.0055 2.64832 13.0239 2.85089C14.0423 3.05347 14.9777 3.55348 15.712 4.28771C16.4462 5.02193 16.9462 5.95739 17.1488 6.97579C17.3513 7.99419 17.2474 9.04979 16.85 10.0091C16.4527 10.9684 15.7797 11.7884 14.9164 12.3652C14.053 12.9421 13.038 13.25 11.9996 13.25C10.6077 13.2485 9.27322 12.6949 8.28898 11.7107C7.30473 10.7264 6.75113 9.39195 6.74964 8.00002Z" fill="#001560"/>
-                        </svg>                          
+                        </svg>
                         <a href="{{ route("user.profile.show") }}" class="block font-semibold text-[#14171F] hover:text-blue-700">Account</a>
                       </div>
                   </ul>
@@ -98,18 +98,18 @@
                     <div class="flex flex-row gap-2 items-center justify-start mb-4 mt-4 sm:mt-2">
                       <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M13 15V12H6V8H13V5L18 10L13 15ZM11 0C11.5304 0 12.0391 0.210714 12.4142 0.585786C12.7893 0.960859 13 1.46957 13 2V4H11V2H2V18H11V16H13V18C13 18.5304 12.7893 19.0391 12.4142 19.4142C12.0391 19.7893 11.5304 20 11 20H2C1.46957 20 0.960859 19.7893 0.585786 19.4142C0.210714 19.0391 0 18.5304 0 18V2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0H11Z" fill="#EF4444" fill-opacity="0.45"/>
-                      </svg>                       
+                      </svg>
                       <a href="{{ route('user.logout') }}" class="block font-semibold text-[#EF4444] hover:text-red-600">Log Out</a>
                     </div>
                   </ul>
               </div>
           </div>
       </div>
-  
+
     </div>
-    
+
     <div class="flex bg-[#001D82] justify-between md:px-8 px-4 py-9">
-      <div>        
+      <div>
         <div class="bars" id="open-sidebar"><i class="fa fa-bars"></i></div>
       </div>
       <div class="w-36 md:w-44">
@@ -118,12 +118,12 @@
       <script>
             const sidebar = document.getElementById('sidebar');
             const openSidebarButton = document.getElementById('open-sidebar');
-            
+
             openSidebarButton.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebar.classList.toggle('-translate-x-full');
             });
-        
+
             // Close the sidebar when clicking outside of it
             document.addEventListener('click', (e) => {
                 if (!sidebar.contains(e.target) && !openSidebarButton.contains(e.target)) {

@@ -476,6 +476,13 @@ class ViewController extends Controller
         return view('user.dashboard', compact('pageTitle', 'userReferralCount', 'moniepoint', 'wema', 'sterling', 'notifications', 'referral_code', 'settings', 'message', 'popup'));
     }
 
+    public function viewMethods() {
+
+        $pageTitle = "Payment Methods - Moevan";
+
+        return view('user.topup.paystack', compact('pageTitle'));
+    }
+
     public function viewMonnify () {
 
         $pageTitle = "Fund Wallet - Moevan";

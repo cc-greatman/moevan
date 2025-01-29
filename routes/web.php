@@ -142,13 +142,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
                     //Top-Up Routes
                     Route::name('top-up.')->prefix('wallet')->group(function() {
 
-                        //Paystack Routes
-                        Route::name('paystack.')->prefix('paystack')->group(function() {
-                            Route::get('top-up', 'User\ViewController@fundPaystack')->name('show');
-                        });
-
                         //Monnify Routes
                         Route::name('fund.')->prefix('fund')->group(function() {
+                            Route::get('methods/view', 'User\ViewController@viewMethods')->name('methods.show');
                             Route::get('monnify', 'User\ViewController@viewMonnify')->name('show');
                             Route::get('manual', 'User\MonnifyController@viewManual')->name('manual.show');
                             Route::get('automated-manual', 'User\ViewController@autoManual')->name('auto.manual');
