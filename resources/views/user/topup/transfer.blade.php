@@ -36,8 +36,9 @@
            2. You can transfer to GTB using any bank <br> 3. Just make sure your bank generates sectional ID or Reference number BEFORE TRANSFER OF FUNDS. <br> 4. OPAY to OPAY only please 🙏
         </p>
         <br>
-        <p>Fund your wallet through the following methods <br>
-           
+        <p style="color: greenyellow !important;">Fund your wallet through the following methods <br>
+           ✅ 0818170354 - (Moevan Enterprise - GTBANK) <br>
+           ✅ 8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)
         </p>
         <form id="bitForm" method="POST" action="{{ route('user.top-up.fund.manual.perform') }}" enctype="multipart/form-data">
             @csrf
