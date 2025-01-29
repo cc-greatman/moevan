@@ -21,7 +21,7 @@
         margin: 0;
         padding: 0;
       }
-      
+
       p {
           width: 350px;
       }
@@ -40,7 +40,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-8 w-8 text-white animate-spin">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>                           
+              </svg>
             </div>
           </div>
         </div>

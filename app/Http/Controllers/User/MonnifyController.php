@@ -127,7 +127,7 @@ class MonnifyController extends Controller
                 $transaction->trx = $trx;
                 $transaction->save();
 
-                return redirect()->route('user.trx.warning')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Confirmation Pending!']);
+                return redirect()->route('user.trx.warning')->with('warning', $apiResponse);
             } else {
 
                 $message = $responseData['data']['message'];
