@@ -42,7 +42,7 @@ class RegisterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function register(RegisterRequest $request) {
-        
+
         $user = User::create($request->validated());
 
         if ($request->input('referral_code')) {
@@ -88,7 +88,7 @@ class RegisterController extends Controller
 
         session()->forget('referrer');
 
-        return redirect()->route('user.login.show')->with('success', 'Your Moevan account has been created successfully! <br> Please login to start enjoying our services.');
+        return redirect('login')->with('success', 'Your Moevan account has been created successfully! <br> Please login to start enjoying our services.');
     }
 
     function userBonus($user) {
