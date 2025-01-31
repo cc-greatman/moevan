@@ -88,7 +88,7 @@ class RegisterController extends Controller
 
         session()->forget('referrer');
 
-        return redirect('login')->with('success', 'Your Moevan account has been created successfully! <br> Please login to start enjoying our services.');
+        return redirect()->route('user.login.show')->with('success', 'Your Moevan account has been created successfully! <br> Please login to start enjoying our services.');
     }
 
     function userBonus($user) {

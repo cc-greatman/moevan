@@ -381,14 +381,14 @@ class InternetController extends Controller
 
                                                 $responseDatas = $response->json();
 
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED' || is_empty($responseDatas)) {
+                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED') {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
                                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
 
                                                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error']) || is_empty($responseDatas)) {
+                                                } elseif (isset($responseDatas['error'])) {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
@@ -583,14 +583,14 @@ class InternetController extends Controller
 
                                                 $responseDatas = $response->json();
 
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED' || is_empty($responseDatas)) {
+                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED') {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
                                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
 
                                                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error']) || is_empty($responseDatas)) {
+                                                } elseif (isset($responseDatas['error']) ) {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
@@ -692,14 +692,14 @@ class InternetController extends Controller
 
                                                 $responseDatas = $response->json();
 
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED' || is_empty($responseDatas)) {
+                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED' ) {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
                                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
 
                                                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error']) || is_empty($responseDatas)) {
+                                                } elseif (isset($responseDatas['error'])) {
 
                                                     $msg = $responseDatas['api_response']??'Unhonored Transaction';
 
