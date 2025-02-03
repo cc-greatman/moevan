@@ -31,7 +31,14 @@
     @endif
 
       <div class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 mx-6 sm:mx-0 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16" style="margin-top: 50px;">
-        <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">Fund your wallet through the following methods <br>
+        Fund your wallet through the following methods <br>
+        <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">
+            <div class="flex items-center space-x-2">
+                <button onclick="copyToClipboard('0818170354')" class="bg-gray-200 p-1 rounded hover:bg-gray-300">
+                    ✅
+                </button>
+                <span>0818170354 - (Moevan Enterprise - GTBANK)</span>
+            </div>
            ✅ 0818170354 - (Moevan Enterprise - GTBANK) <br>
            ✅ 8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)
         </p>
@@ -114,6 +121,16 @@
           alert("Account number copied to clipboard!");
         }
       </script>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copied: " + text);
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+        }
+    </script>
 
       <style>
         .hidden {
