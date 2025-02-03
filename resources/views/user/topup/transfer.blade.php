@@ -52,7 +52,7 @@
                 <span>8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)</span>
             </div>
         </p>
-        <p class="text-xl md:text-xl font-medium">
+        <p class="text-xl md:text-xl font-bold" style="font-weight: 700;">
             Things to take note of
         </p>
         <p class="text-xl md:text-xl font-medium">
