@@ -138,7 +138,7 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert("Copied: " + text);
+                alert("Account number copied to clipboard!");
             }).catch(err => {
                 console.error("Failed to copy: ", err);
             });
