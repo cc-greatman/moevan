@@ -37,19 +37,19 @@
                 <button onclick="copyToClipboard('6483803832')" class="bg-gray-200 p-1 rounded hover:bg-gray-300">
                     ✅
                 </button>
-                <span>6483803832 - (Monnify Moevan Enterprise - MONIEPOINTE)</span>
+                <span style="color: rgb(255, 0, 0) !important;">6483803832 - (Monnify Moevan Enterprise - MONIEPOINTE)</span>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('0818170354')" class="bg-gray-200 p-1 rounded hover:bg-gray-300">
                     ✅
                 </button>
-                <span>0818170354 - (Moevan Enterprise - GTBANK)</span>
+                <span style="color: rgb(255, 0, 0) !important;">0818170354 - (Moevan Enterprise - GTBANK)</span>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('8064324511')" class="bg-gray-200 p-1 rounded hover:bg-gray-300">
                     ✅
                 </button>
-                <span>8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)</span>
+                <span style="color: rgb(255, 0, 0) !important;">8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)</span>
             </div>
         </p>
         <p class="text-xl md:text-xl font-bold" style="font-weight: 700;">
