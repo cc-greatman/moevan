@@ -35,11 +35,11 @@
         <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('6483803832')"
-                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#d1d5db'"
-                    onmouseout="this.style.backgroundColor='#e5e7eb'">
+                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; color: #000;"
+                    onmouseover="this.style.backgroundColor='#000'; this.style.color='#FFF'; this.querySelector('span').style.color='#FFF';"
+                    onmouseout="this.style.backgroundColor='#e5e7eb'; this.style.color='#000'; this.querySelector('span').style.color='#000';">
 
-                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center;">
+                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center; color: #000;">
                         content_copy
                     </span>
                     Copy
@@ -48,11 +48,11 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('0818170354')"
-                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#d1d5db'"
-                    onmouseout="this.style.backgroundColor='#e5e7eb'">
+                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; color: #000;"
+                    onmouseover="this.style.backgroundColor='#000'; this.style.color='#FFF'; this.querySelector('span').style.color='#FFF';"
+                    onmouseout="this.style.backgroundColor='#e5e7eb'; this.style.color='#000'; this.querySelector('span').style.color='#000';">
 
-                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center;">
+                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center; color: #000;">
                         content_copy
                     </span>
                     Copy
@@ -61,11 +61,11 @@
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('8064324511')"
-                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#FFFFFFFF'"
-                    onmouseout="this.style.backgroundColor='#000000FF'">
+                    style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; color: #000;"
+                    onmouseover="this.style.backgroundColor='#000'; this.style.color='#FFF'; this.querySelector('span').style.color='#FFF';"
+                    onmouseout="this.style.backgroundColor='#e5e7eb'; this.style.color='#000'; this.querySelector('span').style.color='#000';">
 
-                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center;">
+                    <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center; color: #000;">
                         content_copy
                     </span>
                     Copy
