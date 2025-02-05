@@ -62,8 +62,8 @@
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('8064324511')"
                     style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer;"
-                    onmouseover="this.style.backgroundColor='#d1d5db'"
-                    onmouseout="this.style.backgroundColor='#e5e7eb'">
+                    onmouseover="this.style.backgroundColor='#FFFFFFFF'"
+                    onmouseout="this.style.backgroundColor='#000000FF'">
 
                     <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center;">
                         content_copy
