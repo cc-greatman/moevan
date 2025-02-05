@@ -34,11 +34,16 @@
         Fund your wallet through the following methods <br>
         <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">
             <div class="flex items-center space-x-2">
-                <button onclick="copyToClipboard('6483803832')" class="bg-gray-200 p-1 rounded hover:bg-gray-300" style="padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 16px;">
-                    <span class="material-symbols-outlined" style="font-size: 18px;">
-                        content_copy
-                    </span> Copy
-                </button>
+              <button onclick="copyToClipboard('6483803832')"
+                  style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer;"
+                  onmouseover="this.style.backgroundColor='#d1d5db'"
+                  onmouseout="this.style.backgroundColor='#e5e7eb'">
+
+                  <span class="material-symbols-outlined" style="font-size: 18px; display: flex; align-items: center;">
+                      content_copy
+                  </span>
+                  Copy
+              </button>
                 <span style="color: rgb(255, 0, 0) !important;">6483803832 - (Monnify Moevan Enterprise - MONIEPOINTE)</span>
             </div>
             <div class="flex items-center space-x-2">
