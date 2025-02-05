@@ -9,7 +9,7 @@
     @if(!Route::is('user.transactions.data.show'))
         <link href="{{ asset('../backend/css3/output.css') }}?v={{ time() }}" rel="stylesheet" />
     @endif
-    
+
     @if(Route::is('user.transactions.data.show') || Route::is('user.receipt.data.show') || Route::is('user.data.search.transactions'))
         <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     @endif
@@ -21,7 +21,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset("../frontend/fav/favicon-16x16.png") }}">
     <link rel="manifest" href="{{ asset("../frontend/fav/site.webmanifest") }}">
 
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=content_copy" />
+    
     <title>{{ $pageTitle }}</title>
     <!-- CSS Styling for Modal -->
     <style>
@@ -49,15 +50,15 @@
       -webkit-user-select: none;
       touch-action: manipulation;
     }
-    
+
     .button-22:active {
       background-color: #006AE8;
     }
-    
+
     .button-22:hover {
       background-color: #1C84FF;
     }
-    
+
     .button-54 {
       font-family: "Open Sans", sans-serif;
       font-size: 16px;
@@ -75,13 +76,13 @@
       -webkit-user-select: none;
       touch-action: manipulation;
     }
-    
+
     .button-54:active {
       box-shadow: 0px 0px 0px 0px;
       top: 5px;
       left: 5px;
     }
-    
+
     @media (min-width: 768px) {
       .button-54 {
         padding: 0.25em 0.75em;
@@ -119,7 +120,7 @@
           border-radius: 20px;
           padding: 30px 30px 50px;
         }
-        
+
         @media screen and (max-width: 767px) {
             .cookiesContent {
                 width: 370px;
@@ -180,7 +181,7 @@
           font-size: 16px;
           color: white;
         }
-        
+
         .cookiesContent button.decline {
             background-color: red;
         }
@@ -205,32 +206,32 @@
           font-family: sans-serif;
           font-weight: 400;
         }
-        
+
         .alertCheckbox {
           display: none;
         }
-        
+
         :checked + .alert {
           display: none;
         }
-        
+
         .alertText {
           display: table;
           margin: 0 auto;
           text-align: center;
           font-size: 16px;
         }
-        
+
         .alertClose {
           float: right;
           padding-top: 5px;
           font-size: 10px;
         }
-        
+
         .clear {
           clear: both;
         }
-        
+
         .error {
           background-color: #FEE;
           border: 1px solid #EDD;
@@ -339,28 +340,28 @@
         .tabcontent {
             display: none; /* Hide all tab contents by default */
         }
-        
+
         /* Active tab content display */
         .tabcontent.active {
             display: block; /* Show active tab content */
         }
-        
+
         /* Mobile View */
         @media (max-width: 640px) {
             .tab {
                 flex-direction: column; /* Stack tabs vertically */
             }
-        
+
             .tabcontent {
                 display: none; /* Hide all tab contents by default */
                 margin-top: 0; /* Remove margin */
             }
-        
+
             .tablinks.active + .tabcontent {
                 display: block; /* Show the content of the active tab */
                 margin-top: 0; /* Ensure content is directly under the tab */
             }
-        
+
             /* Adjust tab links if needed */
             .tablinks {
                 width: 100%; /* Make tabs full width */
