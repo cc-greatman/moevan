@@ -34,7 +34,7 @@
         Fund your wallet through the following methods <br>
         <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">
             <div class="flex items-center space-x-2">
-                <button onclick="copyToClipboard('6483803832')" class="bg-gray-200 p-1 rounded hover:bg-gray-300 pt-7 pl-3 pr-3">
+                <button onclick="copyToClipboard('6483803832')" class="bg-gray-200 p-1 rounded hover:bg-gray-300" style="padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; font-size: 12px;">
                     <span class="material-symbols-outlined">
                         content_copy
                     </span> Copy
