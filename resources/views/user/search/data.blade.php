@@ -28,7 +28,7 @@
         <p class="text-blue-990 md:text-5xl text-3xl font-medium py-9 pl-5">
           Search Results for {{ $query }}
         </p>
-        
+
         <form action="{{ route('user.data.search.transactions') }}" method="GET" class="flex flex-col md:flex-row gap-3 my-6">
             @csrf
           <div class="flex">
@@ -70,6 +70,12 @@
                             Balance After
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Action
                         </th>
                     </tr>
@@ -98,6 +104,22 @@
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                           ₦{{ number_format($dataTrx->post_bal, 2) }}
                         </td>
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                            {{ \Carbon\Carbon::parse($dataTrx->created_at)->format('M. j, Y, g:i a') }}
+                          </td>
+                          @if ($dataTrx->status == '1')
+                          <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                            <span class="bg-green-100 text-green-600 text-lg font-medium me-2 px-2.5 py-0.5 rounded border border-green-400">Successful</span>
+                          </td>
+                          @elseif ($dataTrx->status == '2')
+                              <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                                <span class="bg-orange-100 text-orange-600 text-lg font-medium me-2 px-2.5 py-0.5 rounded border border-orange-400">Processing</span>
+                              </td>
+                          @else
+                              <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                                <span class="bg-red-100 text-red-600 text-lg font-medium me-2 px-2.5 py-0.5 rounded border border-red-400">Failed</span>
+                              </td>
+                          @endif
                         <td>
                             <div class="text-center">
                               <a href="{{ route('user.receipt.data.show', $dataTrx->id) }}" target="_blank" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
