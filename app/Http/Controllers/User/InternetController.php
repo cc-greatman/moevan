@@ -768,8 +768,8 @@ class InternetController extends Controller
 
         // Define the rearranged order for network_id == '3'
         $rearrangedOrder = [
-            'CORPORATE GIFTING' => 1,  // First in new order
-            'AWOOF DATA' => 2,
+            'AWOOF DATA' => 1,
+            'CORPORATE GIFTING' => 2,
             'GIFTING' => 3,
             'SME' => 4,
             'SME2' => 5,  // Last in new order
