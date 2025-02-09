@@ -750,7 +750,7 @@ class InternetController extends Controller
 
         // Define the custom order for data types
         $customOrder = [
-            'AWOOF DATA' => 1,
+            'SPECIAL DATA' => 1,
             'SME' => 2,
             'SME2' => 3,
             'CORPORATE GIFTING' => 4,
@@ -760,7 +760,7 @@ class InternetController extends Controller
 
         $mtnOrder = [
             'SME' => 1,
-            'AWOOF DATA' => 2,
+            'SPECIAL DATA' => 2,
             'CORPORATE GIFTING' => 3,
             'SME2' => 4,
             'GIFTING' => 5,
@@ -768,7 +768,7 @@ class InternetController extends Controller
 
         // Define the rearranged order for network_id == '3'
         $rearrangedOrder = [
-            'AWOOF DATA' => 1,
+            'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
             'GIFTING' => 3,
             'SME' => 4,
@@ -954,7 +954,7 @@ class InternetController extends Controller
 
         // Define the custom order for data types
         $customOrder = [
-            'AWOOF DATA' => 1,
+            'SPECIAL DATA' => 1,
             'SPECIAL OFFER' => 2,
             'SME' => 3,
             'SME2' => 4,
@@ -1003,7 +1003,7 @@ class InternetController extends Controller
 
         // Define the custom order for data types
         $customOrder = [
-            'AWOOF DATA' => 1,
+            'SPECIAL DATA' => 1,
             'SPECIAL OFFER' => 2,
             'SME' => 3,
             'SME2' => 4,
@@ -1052,7 +1052,7 @@ class InternetController extends Controller
 
         // Define the custom order for data types
         $customOrder = [
-            'AWOOF DATA' => 1,
+            'SPECIAL DATA' => 1,
             'SPECIAL OFFER' => 2,
             'SME' => 3,
             'SME2' => 4,
