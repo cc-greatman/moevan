@@ -168,23 +168,27 @@ class InternetController extends Controller
         }
 
 
-        if ($planDetails->dataType->id == '4' || $planDetails->dataType->id == '8' || $planDetails->dataType->id == '9') {
-
+        if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9'])) {
             try {
-                // Your Autopilot API key
+                // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
-
-                // Base URL of the API
                 $baseUrl = 'https://autopilotng.com/api/live';
 
+                // Determine dataType
+                $dataType = in_array(optional($planDetails->dataType)->id, ['8', '9'])
+                    ? 'DIRECT GIFTING'
+                    : 'BROADBAND GIFTING';
+
+                // Prepare request body
                 $body = [
                     'networkId' => $networkId,
-                    'dataType' => 'DIRECT GIFTING',
+                    'dataType' => $dataType,
                     'planId' => $planDetails->plan_id,
                     'phone' => $phone,
                     'reference' => $reference
                 ];
 
+                // Headers
                 $head = [
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
@@ -192,33 +196,33 @@ class InternetController extends Controller
                 ];
 
                 // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
-
+                $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
                 $responseData = $responses->json();
 
                 // Check response status and content
-                if (isset($responseData['code']) && $responseData['code'] == '200' || $responseData['code'] == '201') {
-                    $apiResponse = $responseData['data']['message'];
+                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201'])) {
+                    $apiResponse = $responseData['data']['message'] ?? 'Transaction Successful';
 
                     $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
 
-                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                    return redirect()->route('user.trx.success')->with([
+                        'response' => $apiResponse,
+                        'success' => 'Transaction Successful! Data Subscription Successful!'
+                    ]);
                 } else {
-
-                    $message = $responseData['data']['message'];
+                    $message = $responseData['data']['message'] ?? 'Unknown error occurred.';
 
                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
 
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             } catch (\Exception $e) {
+                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
 
-                $message = $responseData['data']['message'];
-
+                $message = 'Network is currently unavailable.';
                 $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
 
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
-                return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
+                return redirect()->route('user.trx.error')->with('error', $message);
             }
         }
 
