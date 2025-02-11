@@ -235,11 +235,18 @@ class InternetController extends Controller
                         'bundle_id' => $planDetails->are_id,
                     ];
 
-                    $response = Http::withHeaders($header)
-                                    ->timeout(38001)
-                                    ->post('https://arewabundleapi.com/api/v2/buyservice', $payload);
+                    if($planDetails->dataType->id == '5' && $network_id == '4') {
+                        $responseDa = [
+                            'status' => 'failed',
+                        ];
+                    } else {
 
-                    $responseDa = $response->json();
+                        $response = Http::withHeaders($header)
+                                        ->timeout(38001)
+                                        ->post('https://arewabundleapi.com/api/v2/buyservice', $payload);
+
+                        $responseDa = $response->json();
+                    }
 
                     if(isset($responseDa['status']) && $responseDa['status'] === 'success') {
 
