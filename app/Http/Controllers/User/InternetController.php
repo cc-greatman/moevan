@@ -372,56 +372,12 @@ class InternetController extends Controller
                                         return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                                         } else {
 
-                                            try {
-                                                // Make API request
-                                                $header = [
-                                                    'Authorization' => 'Token 417332bdf773dad9c858a6342a1d27636fcb0e4c',
-                                                    'Content-Type' => 'application/json',
-                                                ];
+                        		                $msg = $responseData['api_response'];
 
-                                                $data = [
-                                                    'network' => $network_id,
-                                                    'mobile_number' => $phone,
-                                                    'plan' => $plan_id,
-                                                    'Ported_number' => true,
-                                                ];
-
-                                                $response = Http::withHeaders($header)
-                                                        ->timeout(38001)
-                                                        ->post('https://jcsubs.com.ng/api/data/', $data);
-
-                                                $responseDatas = $response->json();
-
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED') {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error'])) {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } else {
-                                                    $apiResponse = $responseDatas['api_response'];
-                                                    // Handle other cases
-                                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                                }
-                        		            } catch (\Exception $e) {
-
-                        		                $msg = $responseDatas['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
+                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
                                                 Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
                                                 return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                            }
                                         }
                         	    } catch (\Exception $e) {
 
