@@ -9,7 +9,7 @@
                         <button class="close" id="confirmNo" type="button">✖</button>
                         <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
                         <p style="text-align: left;">{!! $message->rolling_message !!}</p>
-                        <a class="accept" href="{{ route('user.profile.kyc.show') }}">Yes, Proceed!</a>
+                        <a class="accept" href="{{ route('user.dashboard') }}">Yes, Proceed!</a>
                         <br><br>
                         <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
                     </div>
@@ -91,7 +91,7 @@
 
       <div>
         <ul
-          class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10" 
+          class="grid sm:grid-cols-4 grid-cols-1 justify-center gap-6 cursor-pointer tab mx-10"
         >
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
