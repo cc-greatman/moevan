@@ -9,7 +9,7 @@
                         <button class="close" id="confirmNo" type="button">✖</button>
                         <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
                         <p style="text-align: left;">{!! $message->rolling_message !!}</p>
-                        <a class="accept" href="{{ route('user.dashboard') }}">Yes, Proceed!</a>
+                        <button id="confirmClose" type="submit" class="accept">Yes, Proceed!</button>
                         <br><br>
                         <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
                     </div>
@@ -447,6 +447,12 @@
 
             // Handle "No" button click
             document.getElementById("confirmNo").addEventListener("click", function() {
+                console.log("No button clicked"); // Debugging
+                document.getElementById('cookiesPopup').style.display = 'none'; // Hide modal
+            });
+
+            // Handle "No" button click
+            document.getElementById("confirmClose").addEventListener("click", function() {
                 console.log("No button clicked"); // Debugging
                 document.getElementById('cookiesPopup').style.display = 'none'; // Hide modal
             });
