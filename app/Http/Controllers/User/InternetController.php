@@ -746,9 +746,9 @@ class InternetController extends Controller
         if (Auth::user()->account_type == '1' && $networkId == '1') {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2, 4, 8, 9]);
-        } else if ($networkId == '1' && Auth::user()->account_type == '2' || Auth::user()->account_type == '3') {
+        } else if (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
             // Modify the query to include data types 2, 3, 4, 5, and 6
-            $query->whereIn('id', [2, 4, 8, 9]);
+            $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
         }
 
         // If the selected network is not 1, modify the query to include data types 4, 5, and 6
