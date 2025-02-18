@@ -746,7 +746,7 @@ class InternetController extends Controller
         if (Auth::user()->account_type == '1' && $networkId == '1') {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2, 4, 8, 9]);
-        } else if (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
+        } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
         }
@@ -754,6 +754,9 @@ class InternetController extends Controller
         // If the selected network is not 1, modify the query to include data types 4, 5, and 6
         if ($networkId != 1) {
             $query->whereIn('id', [4, 5, 7, 8, 9]);
+        } else {
+            // If networkId is 1, remove 5 and 7
+            $query->whereNotIn('id', [5, 7]);
         }
 
         // Use the rearranged order if network_id == '3', otherwise use the default custom order
