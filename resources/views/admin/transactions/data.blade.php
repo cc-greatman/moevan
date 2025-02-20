@@ -86,7 +86,7 @@
 
                                                     <td>{{ optional($dataTrx->user)->username }}</td>
                                                     <td>{{ $dataTrx->provider }}</td>
-                                                    <td>{{ optional($dataTrx->dataPlan->network)->name }}</td>
+                                                    <td>{{ optional($dataTrx->dataPlan)->network->name }}</td>
                                                     <td>{{ optional($dataTrx->dataPlan->dataType)->name }}</td>
                                                     <td>{{ $plan }}</td>
                                                     <td>₦{{ number_format($dataTrx->pre_bal, 2) }}</td>
