@@ -39,10 +39,10 @@ class SocialiteController extends Controller
         try {
 
             $user = Socialite::driver('google')->user();
-            
+
             $firstName = $user->user['given_name']; // Google provides 'given_name' for first name
             $lastName = $user->user['family_name'];// Google provides 'family_name' for last name
-            
+
             $googleId = $user->id;
 
             $finduser = User::where('google_id', $user->id)->first();
@@ -52,22 +52,24 @@ class SocialiteController extends Controller
 
                 // Determine the user to log in: either by Google ID or email
                 $userToLogin = $finduser ?: $existuser;
-            
+
                 // Log in the user
                 Auth::guard('web')->login($userToLogin);
-            
+
                 // Regenerate session after login
                 $request->session()->regenerate();
-            
+
                 // Get the authenticated user's ID
                 $id = Auth::guard('web')->id();
                 $user = User::findOrFail($id);
-            
+
                 // Save the session ID
                 $user->google_id = $googleId;
                 $user->session_id = session()->getId();
                 $user->save();
-            
+
+                session()->put('fresh_login', true);
+
                 // Redirect to the user dashboard
                 return redirect()->route('user.dashboard');
 
@@ -86,27 +88,27 @@ class SocialiteController extends Controller
                     'password' => Hash::make($password),
                     'is_email_verified' => 1,
                 ]);
-                
+
                 $referral_code = $name;
                 $newUser->first_name = $firstName;
                 $newUser->last_name = $lastName;
                 $newUser->referral_code = $referral_code;
                 $newUser->is_email_verified = 1;
                 $newUser->save();
-        
+
                 /*$token = Str::random(64);
-        
+
                 Mail::send('user.auth.mails.verify', ['token' => $token,
                                                       'email' => $email], function($message) use($request){
                     $message->to($request->email);
                     $message->subject('Email Verification');
                     });
-        
+
                 UserVerify::create([
                     'user_id' => $user->id,
                     'token' => $token
                 ]); */
-        
+
                 if (session()->has('referrer')) {
                     $referrerCode = session('referrer');
                     $referrer = User::where('referral_code', $referrerCode)->first();
@@ -130,10 +132,12 @@ class SocialiteController extends Controller
 
                 $id = Auth::guard('web')->id();
                 $user = User::findOrFail($id);
-        
+
                 $user->session_id = session()->getId();
                 $user->save();
-        
+
+                session()->put('fresh_login', true);
+
                 return redirect()->route('user.dashboard');
             }
 
