@@ -89,7 +89,7 @@
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $dataTrx->trx }}
                         </th>
-                        <td>{{ optional(optional($dataTrx->dataPlan)->network)->name ?? 'Unknown Network' }} @ {{ optional($dataTrx->dataPlan)->size ?? 'N/A' }} @ {{ optional($dataTrx->dataPlan)->validity ?? 'N/A' }} Days</td>
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">{{ optional(optional($dataTrx->dataPlan)->network)->name ?? 'Unknown Network' }} {{ optional($dataTrx->dataPlan)->size ?? 'N/A' }} @ {{ optional($dataTrx->dataPlan)->validity ?? 'N/A' }} Days</td>
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                           {{ $dataTrx->phone }}
                         </td>
