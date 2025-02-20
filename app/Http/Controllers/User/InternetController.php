@@ -640,7 +640,7 @@ class InternetController extends Controller
 
         $mtnOrder = [
             'SME' => 1,
-            'SPECIAL DATA' => 2,
+            'SPECIAL OFFER' => 2,
             'CORPORATE GIFTING' => 3,
             'SME2' => 4,
             'GIFTING' => 5,
@@ -658,10 +658,10 @@ class InternetController extends Controller
         // Check if the user's account_type is 1
         if (Auth::user()->account_type == '1' && $networkId == '1') {
             // Modify the query to include data types 2, 3, 4, 5, and 6
-            $query->whereIn('id', [2, 3, 4, 8, 9]);
+            $query->whereIn('id', [2, 3, 4, 6, 8, 9]);
         } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
             // Modify the query to include data types 2, 3, 4, 5, and 6
-            $query->whereIn('id', [2, 3, 4, 5, 7, 8, 9]);
+            $query->whereIn('id', [2, 3, 4, 5, 6, 7, 8, 9]);
         } elseif (Auth::user()->account_type == '1' && $networkId == '4') {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2,4, 7, 8, 9]);
