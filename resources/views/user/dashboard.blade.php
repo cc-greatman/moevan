@@ -15,6 +15,9 @@
                     <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
                 </div>
             </div>
+
+            {{-- Forget the session key after displaying the modal --}}
+            {{ session()->forget('fresh_login') }}
         @endif
     @endif
 
