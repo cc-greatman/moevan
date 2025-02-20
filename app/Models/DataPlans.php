@@ -12,7 +12,7 @@ class DataPlans extends Model
     use HasFactory;
 
     protected $primaryKey = 'data_id'; //Set primary Key
-    public $incrementing = false; // Disable auto-incrementing
+    public $incrementing = false; // Enable auto-incrementing
 
     protected $fillable = [
         'data_id', 'name', 'network_id', 'type', 'price', 'size', 'validity',

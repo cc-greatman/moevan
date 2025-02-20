@@ -59,6 +59,7 @@ class InternetController extends Controller
 
         $planDetails = DataPlans::where('data_id', $plan_id)->with('dataType')->first();
         $sub_id      = $planDetails->sub_id;
+        $bello_id    = $planDetails->bello_id;
         $networkName = Networks::findOrFail($planDetails->network_id);
         $networkId   = $networkName->networkId;
         $network = $networkName->network;
@@ -273,7 +274,7 @@ class InternetController extends Controller
                             $data = [
                                 'network' => $network,
                                 'mobile_number' => $phone,
-                                'plan' => $plan_id,
+                                'plan' => $bello_id,
                                 'Ported_number' => true,
                             ];
 
@@ -424,20 +425,20 @@ class InternetController extends Controller
                     try {
                             // Make API request
                             $header = [
-                                'Authorization' => 'Token '.env('SUBARENA_API_KEY'),
+                                'Authorization' => 'Token '.env('BELLO_API_KEY'),
                                 'Content-Type' => 'application/json',
                             ];
 
                             $data = [
                                 'network' => $network,
                                 'mobile_number' => $phone,
-                                'plan' => $sub_id,
+                                'plan' => $bello_id,
                                 'Ported_number' => true,
                             ];
 
                             $response = Http::withHeaders($header)
                                     ->timeout(38001)
-                                    ->post('https://subarena.com/api/data/', $data);
+                                    ->post('https://bello-ventures.com/api/data/', $data);
 
                             $responseDat = $response->json();
 
@@ -530,56 +531,12 @@ class InternetController extends Controller
                                         return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                                         } else {
 
-                                            try {
-                                                // Make API request
-                                                $header = [
-                                                    'Authorization' => 'Token 417332bdf773dad9c858a6342a1d27636fcb0e4c',
-                                                    'Content-Type' => 'application/json',
-                                                ];
+                        		                $msg = $responseData['api_response'];
 
-                                                $data = [
-                                                    'network' => $network_id,
-                                                    'mobile_number' => $phone,
-                                                    'plan' => $plan_id,
-                                                    'Ported_number' => true,
-                                                ];
+                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
-                                                $response = Http::withHeaders($header)
-                                                        ->timeout(38001)
-                                                        ->post('https://jcsubs.com.ng/api/data/', $data);
-
-                                                $responseDatas = $response->json();
-
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED') {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error']) ) {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } else {
-                                                    $apiResponse = $responseDatas['api_response'];
-                                                    // Handle other cases
-                                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                                }
-                        		            } catch (\Exception $e) {
-
-                        		                $msg = $responseDatas['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                                Log::error('An error occurred while processing the successful response: ');
                                                 return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                            }
                                         }
                         	    } catch (\Exception $e) {
 
@@ -594,7 +551,7 @@ class InternetController extends Controller
                             } else {
                                 $apiResponse = $responseDat['api_response'];
                                 // Handle other cases
-                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'SUBARENA');
+                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
 
                                 return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                             }
@@ -639,56 +596,12 @@ class InternetController extends Controller
                                         return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                                         } else {
 
-                                            try {
-                                                // Make API request
-                                                $header = [
-                                                    'Authorization' => 'Token 417332bdf773dad9c858a6342a1d27636fcb0e4c',
-                                                    'Content-Type' => 'application/json',
-                                                ];
+                        		                $msg = $responseData['api_response'];
 
-                                                $data = [
-                                                    'network' => $network_id,
-                                                    'mobile_number' => $phone,
-                                                    'plan' => $plan_id,
-                                                    'Ported_number' => true,
-                                                ];
+                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
-                                                $response = Http::withHeaders($header)
-                                                        ->timeout(38001)
-                                                        ->post('https://jcsubs.com.ng/api/data/', $data);
-
-                                                $responseDatas = $response->json();
-
-                                                if (isset($responseDatas['Status']) && strtoupper($responseDatas['Status']) === 'FAILED' ) {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } elseif (isset($responseDatas['error'])) {
-
-                                                    $msg = $responseDatas['api_response']??'Unhonored Transaction';
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! '. $msg);
-                                                } else {
-                                                    $apiResponse = $responseDatas['api_response'];
-                                                    // Handle other cases
-                                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JCSUBS');
-
-                                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                                }
-                        		            } catch (\Exception $e) {
-
-                        		                $msg = $responseDatas['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JCSUBS');
-
-                                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                                Log::error('An error occurred while processing the successful response: ');
                                                 return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                            }
                                         }
                         	    } catch (\Exception $e) {
 
