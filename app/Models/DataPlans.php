@@ -35,9 +35,8 @@ class DataPlans extends Model
         return $this->hasMany(DataTransactions::class, 'plan_id', 'data_id');
     }
 
-    public function agentPrices()
-{
-    return $this->hasMany(AgentDataPlanPrice::class);
-}
+    public function agentPrices() {
+        return $this->hasMany(AgentDataPlanPrice::class);
+    }
 }
 
