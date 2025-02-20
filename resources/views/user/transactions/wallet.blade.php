@@ -53,6 +53,9 @@
                 <thead class="text-lg text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Transaction ID
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -71,9 +74,6 @@
                             Mode
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Status
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -84,6 +84,9 @@
                 <tbody>
                     @foreach($wallet as $trx)
                     <tr class="text-lg border-b-4 border-white">
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                          {{ \Carbon\Carbon::parse($trx->created_at)->format('M. j, Y, g:i a') }}
+                        </td>
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $trx->trx }}
                         </th>
@@ -107,9 +110,6 @@
                         @endif
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                             {{ $trx->mode }}
-                        </td>
-                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
-                          {{ \Carbon\Carbon::parse($trx->created_at)->format('M. j, Y, g:i a') }}
                         </td>
                         @if ($trx->status == '1')
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">

@@ -3,7 +3,7 @@
 @include('user.partials.navbar')
 
     <div class="text-center text-3xl text-blue-990 font-bold mt-12 px-20 mb-10">
-        
+
     </div>
 
     <div
@@ -28,7 +28,7 @@
         <p class="text-blue-990 md:text-5xl text-3xl font-medium py-9 pl-5">
           Results for {{ $query }}
         </p>
-        
+
         <form action="{{ route('user.airtime.search.transactions') }}" method="GET" class="flex flex-col md:flex-row gap-3 my-6">
             @csrf
           <div class="flex">
@@ -50,6 +50,9 @@
             <table class="w-full text-sm text-nowrap text-xl text-left rtl:text-right text-gray-500 ">
                 <thead class="text-lg text-gray-700 uppercase bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Transaction ID
                         </th>
@@ -79,6 +82,9 @@
                 <tbody>
                     @forelse($transactions as $voiceTrx)
                     <tr class="text-lg border-b-4 border-white">
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                            {{ \Carbon\Carbon::parse($voiceTrx->created_at)->format('M. j, Y, g:i a') }}
+                        </td>
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $voiceTrx->trx }}
                         </th>

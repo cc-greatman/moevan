@@ -1,7 +1,7 @@
 @include('user.partials.head')
 
 @include('user.partials.navbar')
-    
+
     <div class="text-center text-3xl text-blue-990 font-bold mt-12 px-20 mb-10">
       Your Account History And Activities.
     </div>
@@ -26,7 +26,7 @@
       </ul>
 
 
-      
+
       <div class="bg-white px-5 pb-7">
         <p class="text-blue-990 md:text-5xl text-3xl font-medium py-9 pl-5">
           Wallet Transactions History
@@ -36,6 +36,9 @@
             <table class="w-full text-sm text-nowrap text-xl text-left rtl:text-right text-gray-500 ">
                 <thead class="text-lg text-gray-700 uppercase bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Transaction ID
                         </th>
@@ -55,9 +58,6 @@
                             Mode
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Status
                         </th>
                     </tr>
@@ -65,6 +65,9 @@
                 <tbody>
                     @foreach($wallet as $trx)
                     <tr class="text-lg border-b-4 border-white">
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                          {{ \Carbon\Carbon::parse($trx->created_at)->format('M. j, Y, g:i a') }}
+                        </td>
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $trx->trx }}
                         </th>
@@ -88,9 +91,6 @@
                         @endif
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                             {{ $trx->mode }}
-                        </td>
-                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
-                          {{ \Carbon\Carbon::parse($trx->created_at)->format('M. j, Y, g:i a') }}
                         </td>
                         @if ($trx->status == '1')
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
@@ -193,7 +193,7 @@
         {{ $data->links() }}
       </div>
     @endif
-        
+
     @if($voice)
       <div class="bg-white px-5 pb-7">
         <p class="text-blue-990 md:text-5xl text-3xl font-medium py-9 pl-5">

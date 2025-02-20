@@ -28,7 +28,7 @@
         <p class="text-blue-990 md:text-5xl text-3xl font-medium py-9 pl-5">
           TV Subscription Payment History
         </p>
-        
+
         <form action="{{ route('user.utility.cable.search.transactions') }}" method="GET" class="flex flex-col md:flex-row gap-3 my-6">
             @csrf
           <div class="flex">
@@ -48,6 +48,9 @@
             <table class="w-full text-sm text-nowrap text-xl text-left rtl:text-right text-gray-500 ">
                 <thead class="text-lg text-gray-700 uppercase bg-gray-50">
                     <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
                         <th scope="col" class="px-6 py-3">
                             Transaction ID
                         </th>
@@ -76,9 +79,6 @@
                             Customer Phone
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Status
                         </th>
                     </tr>
@@ -86,6 +86,9 @@
                 <tbody>
                     @foreach($cable as $cableTrx)
                     <tr class="text-lg odd:bg-white even:bg-gray-50 border-b-4 border-white">
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                          {{ \Carbon\Carbon::parse($cableTrx->created_at)->format('M. j, Y, g:i a') }}
+                        </td>
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $cableTrx->trx }}
                         </th>
@@ -112,9 +115,6 @@
                         </td>
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                             {{ $cableTrx->phone }}
-                        </td>
-                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
-                          {{ \Carbon\Carbon::parse($cableTrx->created_at)->format('M. j, Y, g:i a') }}
                         </td>
                         @if ($cableTrx->status == '1')
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
