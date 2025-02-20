@@ -809,7 +809,7 @@ class InternetController extends Controller
             });
         } elseif (Auth::user()->account_type == '1' && $networkId == '4') {
             $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'CORPORATE GIFTING') {
+                if ($dataType->name == 'SPECIAL DATA') {
                     $dataType->name = 'SMALL BUNDLES';
                 } elseif ($dataType->name == 'GIFTING') {
                     $dataType->name = 'BIG BUNDLES';

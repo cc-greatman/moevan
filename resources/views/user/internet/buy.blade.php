@@ -9,6 +9,7 @@
         <img src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png" alt="cookies-img" />
         <p>Are you sure you want to continue to buy <strong><span id="networkName"></span> <span id="planDetails"></span> for <span id="phoneNumber"></span></strong>?</p>
         <!-- Additional message element -->
+        <p id="additionalMessage" style="display: none; color: red;">MAKE SURE YOU ARE NOT OWING AIRTEL AIRTIME/DATA</p>
         <button class="accept" id="confirmYes" type="submit">Yes, Proceed!</button>
       </div>
     </div>
@@ -272,11 +273,11 @@
 
                 // Show additional message only for specific network_id and dataType values
                 /*if (selectedNetworkId === "4" && (selectedDataType === "7" || selectedDataType === "4")) {
-                    additionalMessage.style.display = 'block';
-                    console.log("Additional message displayed"); // Debugging
-                } else {
-                    additionalMessage.style.display = 'none';
-                }*/
+                        additionalMessage.style.display = 'block';
+                        console.log("Additional message displayed"); // Debugging
+                    } else {
+                        additionalMessage.style.display = 'none';
+                    }*/
 
                 document.getElementById('cookiesPopup').style.display = 'block'; // Show modal
                 console.log("Popup displayed"); // Debugging
