@@ -81,8 +81,9 @@
                                                 <tr>
                                                     <td>{{ $dataTrx->trx }}</td>
                                                     @php
-                                                        $plan = sprintf('%s @ %s Days', $dataTrx->dataPlan->size, $dataTrx->dataPlan->validity);
+                                                        $plan = sprintf('%s @ %s Days', optional($dataTrx->dataPlan)->size, optional($dataTrx->dataPlan)->validity);
                                                     @endphp
+
                                                     <td>{{ optional($dataTrx->user)->username }}</td>
                                                     <td>{{ $dataTrx->provider }}</td>
                                                     <td>{{ $dataTrx->dataPlan->network->name }}</td>
