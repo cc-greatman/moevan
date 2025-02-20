@@ -266,20 +266,20 @@ class InternetController extends Controller
                         try {
                             // Make API request
                             $header = [
-                                'Authorization' => 'Token '.env('SUBARENA_API_KEY'),
+                                'Authorization' => 'Token '.env('BELLO_API_KEY'),
                                 'Content-Type' => 'application/json',
                             ];
 
                             $data = [
                                 'network' => $network,
                                 'mobile_number' => $phone,
-                                'plan' => $sub_id,
+                                'plan' => $plan_id,
                                 'Ported_number' => true,
                             ];
 
                             $response = Http::withHeaders($header)
                                     ->timeout(38001)
-                                    ->post('https://subarena.com/api/data/', $data);
+                                    ->post('https://bello-ventures.com/api/data/', $data);
 
                             $responseDat = $response->json();
 
@@ -392,7 +392,7 @@ class InternetController extends Controller
                             } else {
                                 $apiResponse = $responseDat['api_response'];
                                 // Handle other cases
-                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'SUBARENA');
+                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
 
                                 return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                             }
