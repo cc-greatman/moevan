@@ -697,7 +697,7 @@ class InternetController extends Controller
                     $dataType->name = 'SMALL BUNDLES';
                 } elseif ($dataType->name == 'GIFTING') {
                     $dataType->name = 'BIG BUNDLES';
-                } elseif ($dataType->name == 'CORPORATE GIFTING') {
+                } elseif ($dataType->name == 'SME2') {
                     $dataType->name = 'SMALL BUNDLES 2';
                 }
                 return $dataType;
