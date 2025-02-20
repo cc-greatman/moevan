@@ -110,7 +110,7 @@ class InternetController extends Controller
 
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
 
-        if($planDetails->dataType->id == '6' || $planDetails->dataType->id == '7') {
+        if($planDetails->dataType->id == '7') {
             try {
                 // Your Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
@@ -658,7 +658,7 @@ class InternetController extends Controller
         // Check if the user's account_type is 1
         if (Auth::user()->account_type == '1' && $networkId == '1') {
             // Modify the query to include data types 2, 3, 4, 5, and 6
-            $query->whereIn('id', [2, 4, 8, 9]);
+            $query->whereIn('id', [2, 3, 4, 8, 9]);
         } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
@@ -733,6 +733,8 @@ class InternetController extends Controller
             $dataTypes->transform(function ($dataType) {
                 if ($dataType->name == 'SPECIAL OFFER') {
                     $dataType->name = 'SPECIAL BUNDLE';
+                } elseif ($dataType->name == 'SME2') {
+                    $dataType->name = 'COPORATE GIFTING';
                 }
                 return $dataType;
             });
