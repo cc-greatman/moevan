@@ -376,7 +376,7 @@ class InternetController extends Controller
 
                         		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
-                                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                                Log::error('An error occurred while processing the successful response: ');
                                                 return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                                         }
                         	    } catch (\Exception $e) {
@@ -749,6 +749,9 @@ class InternetController extends Controller
         } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
             // Modify the query to include data types 2, 3, 4, 5, and 6
             $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
+        } elseif (Auth::user()->account_type == '1' && $networkId == '4') {
+            // Modify the query to include data types 2, 3, 4, 5, and 6
+            $query->whereIn('id', [2, 4, 7, 8, 9]);
         }
 
         // If the selected network is not 1, modify the query to include data types 4, 5, and 6

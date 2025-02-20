@@ -168,7 +168,7 @@ class SocialiteController extends Controller
             $user = Socialite::driver('facebook')->user();
 
             // Check if the email is verified
-            if (!$user->hasValidEmail()) {
+            if (!$user->email_verified) {
                 // Handle unverified email address (optional)
                 return redirect()->route('login')->with('error', 'Facebook email is not verified.');
             }
