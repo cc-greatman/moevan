@@ -103,8 +103,8 @@ class LoginController extends Controller
 
         $user->session_id = session()->getId();
         $user->save();
-        
-        session()->put('show_modal_after_login', true);
+
+        session()->put('fresh_login', true);
 
         return redirect()->route('user.dashboard');
     }

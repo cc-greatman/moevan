@@ -3,17 +3,19 @@
 @include('user.partials.navbar')
 
     @if($popup->active === 1)
-                <!-- HTML Markup for Modal -->
-                <div class="container" id="cookiesPopup" style="display: none;"> <!-- Modal hidden by default -->
-                    <div class="cookiesContent">
-                        <button class="close" id="confirmNo" type="button">✖</button>
-                        <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
-                        <p style="text-align: left;">{!! $message->rolling_message !!}</p>
-                        <button id="confirmClose" type="submit" class="accept">Thank You!</button>
-                        <br>
-                        <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
-                    </div>
+        @if(session()->has('fresh_login'))
+            <!-- HTML Markup for Modal -->
+            <div class="container" id="cookiesPopup" style="display: none;"> <!-- Modal hidden by default -->
+                <div class="cookiesContent">
+                    <button class="close" id="confirmNo" type="button">✖</button>
+                    <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
+                    <p style="text-align: left;">{!! $message->rolling_message !!}</p>
+                    <button id="confirmClose" type="submit" class="accept">Thank You!</button>
+                    <br>
+                    <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
                 </div>
+            </div>
+        @endif
     @endif
 
 <div
