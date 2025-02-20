@@ -52,6 +52,9 @@
                 <thead class="text-lg text-gray-700 uppercase bg-gray-50">
                     <tr>
                         <th scope="col" class="px-6 py-3">
+                            Date
+                        </th>
+                        <th scope="col" class="px-6 py-3">
                             Transaction ID
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -70,9 +73,6 @@
                             Balance After
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Date
-                        </th>
-                        <th scope="col" class="px-6 py-3">
                             Status
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -83,6 +83,9 @@
                 <tbody>
                     @forelse($transactions as $dataTrx)
                     <tr class="text-lg odd:bg-white even:bg-gray-50 border-b-4 border-white">
+                        <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
+                            {{ \Carbon\Carbon::parse($dataTrx->created_at)->format('M. j, Y, g:i a') }}
+                        </td>
                         <th scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900 whitespace-nowrap">
                           {{ $dataTrx->trx }}
                         </th>
@@ -106,7 +109,7 @@
                         </td>
                         <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                             {{ \Carbon\Carbon::parse($dataTrx->created_at)->format('M. j, Y, g:i a') }}
-                          </td>
+                        </td>
                           @if ($dataTrx->status == '1')
                           <td scope="row" class="px-6 py-4 bg-gray-300 border-r-4 border-white font-bold text-gray-900">
                             <span class="bg-green-100 text-green-600 text-lg font-medium me-2 px-2.5 py-0.5 rounded border border-green-400">Successful</span>
