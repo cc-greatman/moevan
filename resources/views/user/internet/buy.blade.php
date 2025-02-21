@@ -29,9 +29,10 @@
                 <p><label for="">Network</label></p>
                 <select class="place-style rounded-sm h-14 w-full lg:w-3/4" name="network_id" id="network" aria-label="Default select example">
                         <option selected="" disabled>-------</option>
-                        @foreach ($networks as $line)
-                        <option value="{{ $line->network_id }}">{{ $line->name }}</option>
-                        @endforeach
+                        <option value="1">MTN</option>
+                        <option value="4">AIRTEL</option>
+                        <option value="2">GLO</option>
+                        <option value="3">9MOBILE</option>
                 </select>
               </div>
 
