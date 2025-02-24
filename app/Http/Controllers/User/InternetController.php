@@ -433,7 +433,7 @@ class InternetController extends Controller
                     Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
 
                     try{
-                        
+
                         $apiKey = env('JUSTPAY_API_KEY');
 
                         $callbackUrl = "https://moevan.com";
@@ -516,58 +516,10 @@ class InternetController extends Controller
 
                                 Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
 
-                                    try{
-                                        $apiKey = env('JUSTPAY_API_KEY');
+                                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
 
-                                        $callbackUrl = "https://moevan.com";
+                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
 
-                                        // Prepare the request payload
-                                        $payload = [
-                                            'api_key' => $apiKey,
-                                            'product_code' => $planDetails->product_code,
-                                            'phone' => $phone,
-                                            'callback' => $callbackUrl,
-                                        ];
-
-                                        // Define basic headers
-                                        $headers = [
-                                            'Accept' => 'application/json',
-                                            'Content-Type' => 'application/json',
-                                        ];
-
-                                        // Make the API request with headers
-                                        $response = Http::withHeaders($headers)->timeout(38001)
-                                                        ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                                        $responseData = $response->json();
-
-                                        // Check if the transaction was successful
-                                        if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                            $apiResponse = $responseData['data']['true_response'];
-                                            // Handle other cases
-                                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                            } else {
-
-                                                    $msg = $responseData['api_response'];
-
-                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                                    Log::error('An error occurred while processing the successful response: ');
-                                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                            }
-                                    } catch (\Exception $e) {
-
-                                        $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                        // Log the error or handle it as needed
-                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                    }
                             }
                         }
                     } catch (\Exception $e) {
