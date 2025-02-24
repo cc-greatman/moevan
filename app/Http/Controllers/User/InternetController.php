@@ -536,9 +536,17 @@ class InternetController extends Controller
     }
 
     public function getDataTypes() {
-
-         // Retrieve the 'network_id' from the query parameters
+    try {
+        // Retrieve the 'network_id' from the query parameters
         $networkId = request()->query('network_id');
+        if (is_null($networkId)) {
+            return response()->json(['error' => 'Network ID is required'], 400);
+        }
+
+        $user = Auth::user();
+        if (is_null($user)) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
 
         // Initialize the query builder for DataType
         $query = DataType::with('dataPlans')
@@ -546,129 +554,96 @@ class InternetController extends Controller
                 $query->where('network_id', $networkId);
             });
 
-        // Define the custom order for data types
+        // Define the custom order arrays
         $customOrder = [
             'SPECIAL DATA' => 1,
             'SME' => 2,
             'SME2' => 3,
             'CORPORATE GIFTING' => 4,
             'GIFTING' => 5,
-            // Add other data type names and their corresponding order numbers as needed
         ];
 
         $mtnOrder = [
             'SME' => 1,
-            //'SPECIAL OFFER' => 2,
             'CORPORATE GIFTING' => 2,
             'SME2' => 3,
             'GIFTING' => 4,
             'SPECIAL DATA' => 5
         ];
 
-        // Define the rearranged order for network_id == '3'
         $rearrangedOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
             'GIFTING' => 3,
             'SME' => 4,
-            'SME2' => 5,  // Last in new order
+            'SME2' => 5,
         ];
 
-        // Check if the user's account_type is 1
-        if (Auth::user()->account_type == '1' && $networkId == '1') {
-            // Modify the query to include data types 2, 3, 4, 5, and 6
+        // Adjust the query based on account_type and network_id
+        if ($user->account_type == '1' && $networkId == '1') {
             $query->whereIn('id', [2, 4, 7, 8, 9]);
-        } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3')  {
-            // Modify the query to include data types 2, 3, 4, 5, and 6
+        } elseif (in_array($user->account_type, ['2', '3'])) {
             $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
-        } elseif (Auth::user()->account_type == '1' && $networkId == '4') {
-            // Modify the query to include data types 2, 3, 4, 5, and 6
+        } elseif ($user->account_type == '1' && $networkId == '4') {
             $query->whereIn('id', [2, 4, 7, 8, 9]);
-        }
-
-        // If the selected network is not 1, modify the query to include data types 4, 5, and 6
-        if ($networkId != 1) {
-            $query->whereIn('id', [4, 5, 7, 8, 9]);
+        } elseif ($networkId != 1) {
+            $query->whereIn('id', [4, 5, 8, 9]);
         } else {
-            // If networkId is 1, remove 5 and 7
             $query->whereNotIn('id', 5);
         }
 
-        // Use the rearranged order if network_id == '3', otherwise use the default custom order
-        if ($networkId == 4 || $networkId == 2) {
-            $orderToUse = $rearrangedOrder;
-        } elseif ($networkId == 1) {
-            $orderToUse = $mtnOrder;
-        } else {
-            $orderToUse = $customOrder;
-        }
+        // Determine the order to use based on network_id
+        $orderToUse = match ($networkId) {
+            '2', '4' => $rearrangedOrder,
+            '1' => $mtnOrder,
+            default => $customOrder,
+        };
 
         // Get the data types with custom ordering
-        $dataTypes = $query->get()->sortBy(function ($dataType) use ($orderToUse) {
-            // Get the order number from the current order array, default to a high value if not found
-            return $orderToUse[$dataType->name] ?? PHP_INT_MAX;
-        })->values(); //
+        $dataTypes = $query->get()->sortBy(fn($dataType) => $orderToUse[$dataType->name] ?? PHP_INT_MAX)->values();
 
-        // Transform the data type names if the conditions are met
-        if (Auth::user()->account_type == '1' && $networkId == '1') {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'SME') {
-                    $dataType->name = 'SMALL BUNDLES';
-                } elseif ($dataType->name == 'GIFTING') {
-                    $dataType->name = 'BIG BUNDLES';
-                } elseif ($dataType->name == 'SME2') {
-                    $dataType->name = 'SMALL BUNDLES 2';
+        // Transform the data type names if conditions are met
+        $dataTypes->transform(function ($dataType) use ($user, $networkId) {
+            if ($user->account_type == '1') {
+                if ($networkId == '1') {
+                    $dataType->name = match ($dataType->name) {
+                        'SME' => 'SMALL BUNDLES',
+                        'GIFTING' => 'BIG BUNDLES',
+                        'SME2' => 'SMALL BUNDLES 2',
+                        default => $dataType->name,
+                    };
+                } elseif ($networkId == '2' || $networkId == '3') {
+                    $dataType->name = match ($dataType->name) {
+                        'CORPORATE GIFTING' => 'SMALL BUNDLES',
+                        'GIFTING' => 'BIG BUNDLES',
+                        default => $dataType->name,
+                    };
+                } elseif ($networkId == '4') {
+                    $dataType->name = match ($dataType->name) {
+                        'SPECIAL DATA' => 'SMALL BUNDLES',
+                        'GIFTING' => 'BIG BUNDLES',
+                        default => $dataType->name,
+                    };
                 }
-                return $dataType;
-            });
-        } elseif (Auth::user()->account_type == '1' && $networkId == '2') {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'CORPORATE GIFTING') {
-                    $dataType->name = 'SMALL BUNDLES';
-                } elseif ($dataType->name == 'GIFTING') {
-                    $dataType->name = 'BIG BUNDLES';
-                }
-                return $dataType;
-            });
-        } elseif (Auth::user()->account_type == '1' && $networkId == '3') {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'CORPORATE GIFTING') {
-                    $dataType->name = 'SMALL BUNDLES';
-                } elseif ($dataType->name == 'GIFTING') {
-                    $dataType->name = 'BIG BUNDLES';
-                }
-                return $dataType;
-            });
-        } elseif (Auth::user()->account_type == '1' && $networkId == '4') {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'SPECIAL DATA') {
-                    $dataType->name = 'SMALL BUNDLES';
-                } elseif ($dataType->name == 'GIFTING') {
-                    $dataType->name = 'BIG BUNDLES';
-                }
-                return $dataType;
-            });
-        } elseif (Auth::user()->account_type == '2' || Auth::user()->account_type == '3' && $networkId == '1') {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name == 'SPECIAL OFFER') {
-                    $dataType->name = 'SPECIAL BUNDLE';
-                } elseif ($dataType->name == 'SME2') {
-                    $dataType->name = 'COPORATE GIFTING';
-                }
-                return $dataType;
-            });
-        } elseif ($networkId === "4") {
-            $dataTypes->transform(function ($dataType) {
-                if ($dataType->name === "BROADBAND BUNDLES") {
-                    $dataType->name = 'ROUTER BUNDLES';
-                }
-                return $dataType;
-            });
-        }
+            } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
+                $dataType->name = match ($dataType->name) {
+                    'SPECIAL OFFER' => 'SPECIAL BUNDLE',
+                    'SME2' => 'COPORATE GIFTING',
+                    default => $dataType->name,
+                };
+            } elseif ($networkId === "4" && $dataType->name === "BROADBAND BUNDLES") {
+                $dataType->name = 'ROUTER BUNDLES';
+            }
 
+            return $dataType;
+        });
         return response()->json($dataTypes);
+    } catch (\Exception $e) {
+        Log::error('Error in getDataTypes: ' . $e->getMessage());
+        return response()->json(['error' => 'An unexpected error occurred'], 500);
 
     }
+}
 
     public function getDataPlans(Request $request) {
         $network = $request->input('network_id');
