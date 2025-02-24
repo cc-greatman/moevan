@@ -100,12 +100,6 @@
         >
           <li
             class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
-            style="background: #AE328E; color: #000000"
-          >
-          <a href="{{ route('user.top-up.fund.show') }}">Automated Funding</a>
-          </li>
-          <li
-            class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center"
             style="
               background-color: #fff000;
               color: #000;
@@ -114,6 +108,9 @@
               }
             "
           ><a href="{{ route('user.top-up.fund.manual.show') }}">Automated Manual Funding</a>
+          </li>
+          <li class="tablinks text-xl font-medium rounded border-1 border-solid border-black py-5 px-7 text-center" style="background: #AE328E; color: #000000">
+            <a href="{{ route('user.top-up.fund.show') }}">Automated Funding</a>
           </li>
         </ul>
 
