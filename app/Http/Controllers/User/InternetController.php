@@ -223,7 +223,6 @@ class InternetController extends Controller
             }
         }
 
-
         if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9'])) {
             try {
                 // Autopilot API key
@@ -319,145 +318,101 @@ class InternetController extends Controller
 
                     } elseif (isset($responseDa['status']) && ($responseDa['status'] === "failed" || $responseDa['status'] === "fail") || (isset($responseDa['message']) && $responseDa['message'] === "Transaction failed")) {
 
-                        try {
-                            // Make API request
-                            $header = [
-                                'Authorization' => 'Token '.env('BELLO_API_KEY'),
+                        try{
+                            $apiKey = env('JUSTPAY_API_KEY');
+
+                            $callbackUrl = "https://moevan.com";
+
+                            // Prepare the request payload
+                            $payload = [
+                                'api_key' => $apiKey,
+                                'product_code' => $planDetails->product_code,
+                                'phone' => $phone,
+                                'callback' => $callbackUrl,
+                            ];
+
+                            // Define basic headers
+                            $headers = [
+                                'Accept' => 'application/json',
                                 'Content-Type' => 'application/json',
                             ];
 
-                            $data = [
-                                'network' => $network,
-                                'mobile_number' => $phone,
-                                'plan' => $bello_id,
-                                'Ported_number' => true,
-                            ];
+                            // Make the API request with headers
+                            $response = Http::withHeaders($headers)->timeout(38001)
+                                            ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
 
-                            $response = Http::withHeaders($header)
-                                    ->timeout(38001)
-                                    ->post('https://bello-ventures.com/api/data/', $data);
+                            $responseData = $response->json();
 
-                            $responseDat = $response->json();
+                            // Check if the transaction was successful
+                            if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
 
-                            if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                try{
-                                    $apiKey = env('JUSTPAY_API_KEY');
-
-                                    $callbackUrl = "https://moevan.com";
-
-                                    // Prepare the request payload
-                                    $payload = [
-                                        'api_key' => $apiKey,
-                                        'product_code' => $planDetails->product_code,
-                                        'phone' => $phone,
-                                        'callback' => $callbackUrl,
-                                    ];
-
-                                    // Define basic headers
-                                    $headers = [
-                                        'Accept' => 'application/json',
-                                        'Content-Type' => 'application/json',
-                                    ];
-
-                                    // Make the API request with headers
-                                    $response = Http::withHeaders($headers)
-                                                    ->timeout(38001)
-                                                    ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                                    $responseData = $response->json();
-
-                                    // Check if the transaction was successful
-                                    if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                        $apiResponse = $responseData['data']['true_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                    } else {
-
-                                        $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                        	            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                    }
-                        	    } catch (\Exception $e) {
-
-                                    $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                    // Log the error or handle it as needed
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
-                            } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                try{
-                                    $apiKey = env('JUSTPAY_API_KEY');
-
-                                    $callbackUrl = "https://moevan.com";
-
-                                    // Prepare the request payload
-                                    $payload = [
-                                        'api_key' => $apiKey,
-                                        'product_code' => $planDetails->product_code,
-                                        'phone' => $phone,
-                                        'callback' => $callbackUrl,
-                                    ];
-
-                                    // Define basic headers
-                                    $headers = [
-                                        'Accept' => 'application/json',
-                                        'Content-Type' => 'application/json',
-                                    ];
-
-                                    // Make the API request with headers
-                                    $response = Http::withHeaders($headers)->timeout(38001)
-                                                    ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                                    $responseData = $response->json();
-
-                                    // Check if the transaction was successful
-                                    if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                        $apiResponse = $responseData['data']['true_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                        } else {
-
-                        		                $msg = $responseData['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                                Log::error('An error occurred while processing the successful response: ');
-                                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                        }
-                        	    } catch (\Exception $e) {
-
-                                    $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                    // Log the error or handle it as needed
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
-                            } else {
-                                $apiResponse = $responseDat['api_response'];
+                                $apiResponse = $responseData['data']['true_response'];
                                 // Handle other cases
-                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
+                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
 
                                 return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                            }
-    		            } catch (\Exception $e) {
+                                } else {
 
-    		                $msg = $responseDat['api_response']??$responseDat['error']??null;
+                                    try {
+                                        // Make API request
+                                        $header = [
+                                            'Authorization' => 'Token '.env('BELLO_API_KEY'),
+                                            'Content-Type' => 'application/json',
+                                        ];
 
-    		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'SUBARENA');
+                                        $data = [
+                                            'network' => $network,
+                                            'mobile_number' => $phone,
+                                            'plan' => $bello_id,
+                                            'Ported_number' => true,
+                                        ];
 
+                                        $response = Http::withHeaders($header)
+                                                ->timeout(38001)
+                                                ->post('https://bello-ventures.com/api/data/', $data);
+
+                                        $responseDat = $response->json();
+
+                                        if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
+                                            // Handle failed response
+                                            $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+
+                                        } elseif (isset($responseDat['error']) || empty($responseDat)) {
+                                            // Handle failed response
+                                            $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+
+                                        } else {
+                                            $apiResponse = $responseDat['api_response'];
+                                            // Handle other cases
+                                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                                        }
+                                    } catch (\Exception $e) {
+
+                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                                    }
+                                }
+                        } catch (\Exception $e) {
+
+                            $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
+
+                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
+
+                            // Log the error or handle it as needed
                             Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
                             return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                         }
@@ -477,198 +432,154 @@ class InternetController extends Controller
 
                     Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
 
-                    try {
-                            // Make API request
-                            $header = [
-                                'Authorization' => 'Token '.env('BELLO_API_KEY'),
-                                'Content-Type' => 'application/json',
-                            ];
+                    try{
+                        
+                        $apiKey = env('JUSTPAY_API_KEY');
 
-                            $data = [
-                                'network' => $network,
-                                'mobile_number' => $phone,
-                                'plan' => $bello_id,
-                                'Ported_number' => true,
-                            ];
+                        $callbackUrl = "https://moevan.com";
 
-                            $response = Http::withHeaders($header)
-                                    ->timeout(38001)
-                                    ->post('https://bello-ventures.com/api/data/', $data);
+                        // Prepare the request payload
+                        $payload = [
+                            'api_key' => $apiKey,
+                            'product_code' => $planDetails->product_code,
+                            'phone' => $phone,
+                            'callback' => $callbackUrl,
+                        ];
 
-                            $responseDat = $response->json();
+                        // Define basic headers
+                        $headers = [
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                        ];
 
-                            if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                try{
-                                    $apiKey = env('JUSTPAY_API_KEY');
+                        // Make the API request with headers
+                        $response = Http::withHeaders($headers)
+                                        ->timeout(38001)
+                                        ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
 
-                                    $callbackUrl = "https://moevan.com";
+                        $responseData = $response->json();
 
-                                    // Prepare the request payload
-                                    $payload = [
-                                        'api_key' => $apiKey,
-                                        'product_code' => $planDetails->product_code,
-                                        'phone' => $phone,
-                                        'callback' => $callbackUrl,
-                                    ];
+                        // Check if the transaction was successful
+                        if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
 
-                                    // Define basic headers
-                                    $headers = [
-                                        'Accept' => 'application/json',
-                                        'Content-Type' => 'application/json',
-                                    ];
+                            $apiResponse = $responseData['data']['true_response'];
+                            // Handle other cases
+                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
 
-                                    // Make the API request with headers
-                                    $response = Http::withHeaders($headers)
-                                                    ->timeout(38001)
-                                                    ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
+                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                        } else {
 
-                                    $responseData = $response->json();
+                            try {
+                                // Make API request
+                                $header = [
+                                    'Authorization' => 'Token '.env('BELLO_API_KEY'),
+                                    'Content-Type' => 'application/json',
+                                ];
 
-                                    // Check if the transaction was successful
-                                    if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
+                                $data = [
+                                    'network' => $network,
+                                    'mobile_number' => $phone,
+                                    'plan' => $bello_id,
+                                    'Ported_number' => true,
+                                ];
 
-                                        $apiResponse = $responseData['data']['true_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
+                                $response = Http::withHeaders($header)
+                                        ->timeout(38001)
+                                        ->post('https://bello-ventures.com/api/data/', $data);
 
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                    } else {
+                                $responseDat = $response->json();
+
+                                if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
+                                    // Handle failed response
+                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                                } elseif (isset($responseDat['error']) || empty($responseDat)) {
+                                    // Handle failed response
+                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                                } else {
+                                    $apiResponse = $responseDat['api_response'];
+                                    // Handle other cases
+                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                                }
+                            } catch (\Exception $e) {
+
+                                $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+
+                                    try{
+                                        $apiKey = env('JUSTPAY_API_KEY');
+
+                                        $callbackUrl = "https://moevan.com";
+
+                                        // Prepare the request payload
+                                        $payload = [
+                                            'api_key' => $apiKey,
+                                            'product_code' => $planDetails->product_code,
+                                            'phone' => $phone,
+                                            'callback' => $callbackUrl,
+                                        ];
+
+                                        // Define basic headers
+                                        $headers = [
+                                            'Accept' => 'application/json',
+                                            'Content-Type' => 'application/json',
+                                        ];
+
+                                        // Make the API request with headers
+                                        $response = Http::withHeaders($headers)->timeout(38001)
+                                                        ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
+
+                                        $responseData = $response->json();
+
+                                        // Check if the transaction was successful
+                                        if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
+
+                                            $apiResponse = $responseData['data']['true_response'];
+                                            // Handle other cases
+                                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
+
+                                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                                            } else {
+
+                                                    $msg = $responseData['api_response'];
+
+                                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
+
+                                                    Log::error('An error occurred while processing the successful response: ');
+                                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                                            }
+                                    } catch (\Exception $e) {
 
                                         $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
 
-                        	            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
+                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
-                        	            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                                        // Log the error or handle it as needed
+                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                                     }
-                        	    } catch (\Exception $e) {
-
-                                    $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                    // Log the error or handle it as needed
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
-                            } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                try{
-                                    $apiKey = env('JUSTPAY_API_KEY');
-
-                                    $callbackUrl = "https://moevan.com";
-
-                                    // Prepare the request payload
-                                    $payload = [
-                                        'api_key' => $apiKey,
-                                        'product_code' => $planDetails->product_code,
-                                        'phone' => $phone,
-                                        'callback' => $callbackUrl,
-                                    ];
-
-                                    // Define basic headers
-                                    $headers = [
-                                        'Accept' => 'application/json',
-                                        'Content-Type' => 'application/json',
-                                    ];
-
-                                    // Make the API request with headers
-                                    $response = Http::withHeaders($headers)->timeout(38001)
-                                                    ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                                    $responseData = $response->json();
-
-                                    // Check if the transaction was successful
-                                    if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                        $apiResponse = $responseData['data']['true_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                        } else {
-
-                        		                $msg = $responseData['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                                Log::error('An error occurred while processing the successful response: ');
-                                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                        }
-                        	    } catch (\Exception $e) {
-
-                                    $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                    // Log the error or handle it as needed
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
-                            } else {
-                                $apiResponse = $responseDat['api_response'];
-                                // Handle other cases
-                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                             }
-    		            } catch (\Exception $e) {
-
-    		                $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                            Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-
-                            try{
-                                    $apiKey = env('JUSTPAY_API_KEY');
-
-                                    $callbackUrl = "https://moevan.com";
-
-                                    // Prepare the request payload
-                                    $payload = [
-                                        'api_key' => $apiKey,
-                                        'product_code' => $planDetails->product_code,
-                                        'phone' => $phone,
-                                        'callback' => $callbackUrl,
-                                    ];
-
-                                    // Define basic headers
-                                    $headers = [
-                                        'Accept' => 'application/json',
-                                        'Content-Type' => 'application/json',
-                                    ];
-
-                                    // Make the API request with headers
-                                    $response = Http::withHeaders($headers)->timeout(38001)
-                                                    ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                                    $responseData = $response->json();
-
-                                    // Check if the transaction was successful
-                                    if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                        $apiResponse = $responseData['data']['true_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                        } else {
-
-                        		                $msg = $responseData['api_response'];
-
-                        		                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                                Log::error('An error occurred while processing the successful response: ');
-                                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                        }
-                        	    } catch (\Exception $e) {
-
-                                    $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        	        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                                    // Log the error or handle it as needed
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
                         }
+                    } catch (\Exception $e) {
+
+                        $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
+
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
+
+                        // Log the error or handle it as needed
+                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                    }
                 }
     }
 
