@@ -44,7 +44,7 @@
                     </span>
                     Copy
                 </button>
-                <span style="color: rgb(255, 0, 0) !important;">6483803832 - (Monnify Moevan Enterprise - MONIEPOINTE)</span>
+                <span style="color: rgb(255, 0, 0) !important;">6483803832 - (Monnify Moevan Enterprise - MONIEPOINT)</span>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('0818170354')"
@@ -60,7 +60,7 @@
                 <span style="color: rgb(255, 0, 0) !important;">0818170354 - (Moevan Enterprise - GTBANK)</span>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="copyToClipboard('8064324511')"
+                <button onclick="copyToClipboard('8143341690')"
                     style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; color: #000;"
                     onmouseover="this.style.backgroundColor='#000'; this.style.color='#FFF'; this.querySelector('span').style.color='#FFF';"
                     onmouseout="this.style.backgroundColor='#e5e7eb'; this.style.color='#000'; this.querySelector('span').style.color='#000';">
@@ -70,7 +70,7 @@
                     </span>
                     Copy
                 </button>
-                <span style="color: rgb(255, 0, 0) !important;">8064324511 - (Chukwuma Moses Chukwunazaekpere- OPAY)</span>
+                <span style="color: rgb(255, 0, 0) !important;">8143341690 - (Moevan Enterprise - OPAY)</span>
             </div>
         </p>
         <p class="text-xl md:text-xl font-bold" style="font-weight: 700;">
@@ -90,7 +90,7 @@
                   <option selected="" disabled>-------</option>
                   <option value="MONIEPOINT">MONIEPOINT - MONNIFY MOEVAN ENTERPRISES</option>
                   <option value="GTB">GTB - Moevan Enterprise</option>
-                  <option value="OPAY">OPAY - Chukwuma Moses</option>
+                  <option value="OPAY">OPAY - Moevan Enterprise</option>
                 </select>
               </div>
 
@@ -125,7 +125,7 @@
         const bankAccountNumbers = {
           MONIEPOINT: "6483803832",
           GTB: "0818170354",
-          OPAY: "8064324511",
+          OPAY: "8143341690",
         };
 
         // Update the account number when a bank is selected
