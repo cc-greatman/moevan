@@ -596,7 +596,7 @@ class InternetController extends Controller
         // Use the rearranged order if network_id == '3', otherwise use the default custom order
         if ($networkId == 4 || $networkId == 2) {
             $orderToUse = $rearrangedOrder;
-        } elseif ($networkId ==1) {
+        } elseif ($networkId == 1) {
             $orderToUse = $mtnOrder;
         } else {
             $orderToUse = $customOrder;
