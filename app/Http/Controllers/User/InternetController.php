@@ -168,6 +168,61 @@ class InternetController extends Controller
             }
         }
 
+        if($networkId == '2' && $planDetails->dataType->id == '5') {
+
+            try {
+                // Your Autopilot API key
+                $autopilotApiKey = env('AUTOPILOT_API_KEY');
+
+                // Base URL of the API
+                $baseUrl = 'https://autopilotng.com/api/live';
+
+                $body = [
+                    'networkId' => $networkId,
+                ];
+
+                $body['dataType'] = 'CORPORATE GIFTING';
+
+                $body['planId'] = $planDetails->plan_id;
+                $body['phone'] = $phone;
+                $body['reference'] = $reference;
+
+                $head = [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $autopilotApiKey,
+                ];
+
+                // Make the HTTP request
+                $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
+
+                $responseData = $responses->json();
+
+                // Check response status and content
+                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
+                    $apiResponse = $responseData['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $responseData['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            } catch (\Exception $e) {
+
+                $message = $responseData['data']['message'];
+
+                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
+                return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
+            }
+        }
+
 
         if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9'])) {
             try {
