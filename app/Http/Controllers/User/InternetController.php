@@ -168,7 +168,7 @@ class InternetController extends Controller
             }
         }
 
-        if($networkId == '2' && $planDetails->dataType->id == '5') {
+        if($network_id == '2' && $planDetails->dataType->id == '5') {
 
             try {
                 // Your Autopilot API key
