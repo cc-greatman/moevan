@@ -562,6 +562,7 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME2' => 3,
             'GIFTING' => 4,
+            'SPECIAL DATA' => 5
         ];
 
         // Define the rearranged order for network_id == '3'
