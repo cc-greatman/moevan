@@ -590,7 +590,7 @@ class InternetController extends Controller
             $query->whereIn('id', [4, 5, 7, 8, 9]);
         } else {
             // If networkId is 1, remove 5 and 7
-            $query->whereNotIn('id', [5, 7]);
+            $query->whereNotIn('id', [5]);
         }
 
         // Use the rearranged order if network_id == '3', otherwise use the default custom order
