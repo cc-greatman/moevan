@@ -281,6 +281,64 @@ class InternetController extends Controller
             }
         }
 
+        if ($network_id == '1' && $planDetails->dataType->id == '7' && in_array(optional($plan_id), ['111111', '1111', '1222', '1223', '1224', '1225', '1226', '1227'])) {
+            try {
+                // Autopilot API key
+                $autopilotApiKey = env('AUTOPILOT_API_KEY');
+                $baseUrl = 'https://autopilotng.com/api/live';
+
+                // Determine dataType
+                $dataType = in_array(optional($planDetails->dataType)->id, ['8', '9'])
+                    ? 'DIRECT GIFTING'
+                    : 'BROADBAND GIFTING';
+
+                // Prepare request body
+                $body = [
+                    'networkId' => $networkId,
+                    'dataType' => $dataType,
+                    'planId' => $planDetails->plan_id,
+                    'phone' => $phone,
+                    'reference' => $reference
+                ];
+
+                // Headers
+                $head = [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $autopilotApiKey,
+                ];
+
+                // Make the HTTP request
+                $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
+                $responseData = $responses->json();
+
+                // Check response status and content
+                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
+                    $apiResponse = $responseData['data']['message'] ?? 'Transaction Successful';
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with([
+                        'response' => $apiResponse,
+                        'success' => 'Transaction Successful! Data Subscription Successful!'
+                    ]);
+                } else {
+                    $message = $responseData['data']['message'] ?? 'Unknown error occurred.';
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            } catch (\Exception $e) {
+                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
+
+                $message = 'Network is currently unavailable.';
+                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                return redirect()->route('user.trx.error')->with('error', $message);
+            }
+        }
+
                 try {
                     $header = [
                         'Content-Type' => 'application/json',
