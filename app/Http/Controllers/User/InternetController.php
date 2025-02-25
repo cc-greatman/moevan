@@ -288,9 +288,7 @@ class InternetController extends Controller
                 $baseUrl = 'https://autopilotng.com/api/live';
 
                 // Determine dataType
-                $dataType = in_array(optional($planDetails->dataType)->id, ['8', '9'])
-                    ? 'DIRECT GIFTING'
-                    : 'BROADBAND GIFTING';
+                $dataType = 'DIRECT GIFTING';
 
                 // Prepare request body
                 $body = [
