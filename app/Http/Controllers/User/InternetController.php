@@ -620,11 +620,11 @@ class InternetController extends Controller
         ];
 
         $mtnOrder = [
-            'SME' => 1,
-            'CORPORATE GIFTING' => 2,
-            'SME2' => 3,
-            'GIFTING' => 4,
-            'SPECIAL DATA' => 5
+            'SPECIAL DATA' => 1,
+            'SME' => 2,
+            'CORPORATE GIFTING' => 3,
+            'SME2' => 4,
+            'GIFTING' => 5,
         ];
 
         $rearrangedOrder = [
