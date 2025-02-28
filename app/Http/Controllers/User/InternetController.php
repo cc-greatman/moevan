@@ -639,9 +639,9 @@ class InternetController extends Controller
         if ($user->account_type == '1' && $networkId == '1') {
             $query->whereIn('id', [2, 4, 7, 8, 9]);
         } elseif (in_array($user->account_type, ['2', '3'])) {
-            $query->whereIn('id', [2, 4, 7, 8, 9]);
+            $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
         } elseif ($user->account_type == '1' && $networkId == '4') {
-            $query->whereIn('id', [2, 4, 7, 8, 9]);
+            $query->whereIn('id', [2, 4, 5, 7, 8, 9]);
         } elseif ($networkId != 1) {
             $query->whereIn('id', [4, 5, 7, 8, 9]);
         } else {
