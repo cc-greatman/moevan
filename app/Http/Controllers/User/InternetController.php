@@ -625,8 +625,7 @@ class InternetController extends Controller
             'XTRASPECIAL' => 1,
             'SPECIAL DATA' => 2,
             'SME' => 3,
-            'SME2' => 4,
-            'GIFTING' => 5,
+            'GIFTING' => 4,
         ];
 
         $rearrangedOrder = [
@@ -638,16 +637,16 @@ class InternetController extends Controller
         ];
 
         // Adjust the query based on account_type and network_id
-        if ($user->account_type == '1' && $networkId == '1') {
-            $query->whereIn('id', [2, 3, 4, 7, 10]);
-        } elseif (in_array($user->account_type, ['2', '3'])) {
-            $query->whereIn('id', [2, 3, 4, 7, 10]);
+        if ($networkId == '1') {
+            $query->whereIn('id', [2, 4, 7, 10]);
         } elseif ($user->account_type == '1' && $networkId == '4') {
-            $query->whereIn('id', [2, 4, 7]);
-        } elseif ($networkId != 1) {
+            $query->whereIn('id', [4, 7]);
+        } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
             $query->whereIn('id', [4, 5, 7]);
-        } else {
-            $query->whereNotIn('id', 5);
+        } elseif ($networkId == '2') {
+            $query->whereIn('id', [4, 5, 7]);
+        } elseif ($networkId == '3') {
+            $query->whereIn('id', [4, 5]);
         }
 
         // Determine the order to use based on network_id
