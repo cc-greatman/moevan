@@ -223,16 +223,18 @@ class InternetController extends Controller
             }
         }
 
-        if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9'])) {
+        if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9', '10'])) {
             try {
                 // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
                 $baseUrl = 'https://autopilotng.com/api/live';
 
                 // Determine dataType
-                $dataType = in_array(optional($planDetails->dataType)->id, ['8', '9'])
-                    ? 'DIRECT GIFTING'
-                    : 'BROADBAND GIFTING';
+                 if (optional($planDetails->dataType)->id == '8' || optional($planDetails->dataType)->id == '9') {
+                        $dataType = 'BROADBAND GIFTING';
+                    } else {
+                        $dataType = 'DIRECT GIFTING';
+                    }
 
                 // Prepare request body
                 $body = [
@@ -620,9 +622,9 @@ class InternetController extends Controller
         ];
 
         $mtnOrder = [
-            'SPECIAL DATA' => 1,
-            'SME' => 2,
-            'CORPORATE GIFTING' => 3,
+            'XTRA SPECIAL' => 1,
+            'SPECIAL DATA' => 2,
+            'SME' => 3,
             'SME2' => 4,
             'GIFTING' => 5,
         ];
@@ -637,9 +639,9 @@ class InternetController extends Controller
 
         // Adjust the query based on account_type and network_id
         if ($user->account_type == '1' && $networkId == '1') {
-            $query->whereIn('id', [2, 4, 7]);
+            $query->whereIn('id', [2, 3, 4, 7, 10]);
         } elseif (in_array($user->account_type, ['2', '3'])) {
-            $query->whereIn('id', [2, 4, 5, 7]);
+            $query->whereIn('id', [2, 3, 4, 7, 10]);
         } elseif ($user->account_type == '1' && $networkId == '4') {
             $query->whereIn('id', [2, 4, 7]);
         } elseif ($networkId != 1) {
