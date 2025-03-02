@@ -622,7 +622,7 @@ class InternetController extends Controller
         ];
 
         $mtnOrder = [
-            'XTRA SPECIAL' => 1,
+            'XTRASPECIAL' => 1,
             'SPECIAL DATA' => 2,
             'SME' => 3,
             'SME2' => 4,
@@ -800,6 +800,7 @@ class InternetController extends Controller
             'SME2' => 4,
             'CORPORATE GIFTING' => 5,
             'GIFTING' => 6,
+            'XTRASPECIAL' => 7,
             // Add other data type names and their corresponding order numbers as needed
         ];
 
@@ -849,6 +850,7 @@ class InternetController extends Controller
             'SME2' => 4,
             'CORPORATE GIFTING' => 5,
             'GIFTING' => 6,
+            'XTRASPECIAL' => 7,
             // Add other data type names and their corresponding order numbers as needed
         ];
 
@@ -898,6 +900,7 @@ class InternetController extends Controller
             'SME2' => 4,
             'CORPORATE GIFTING' => 5,
             'GIFTING' => 6,
+            'XTRASPECIAL' => 7,
             // Add other data type names and their corresponding order numbers as needed
         ];
 
