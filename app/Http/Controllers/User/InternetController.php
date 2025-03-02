@@ -807,10 +807,10 @@ class InternetController extends Controller
         // Check if the selected network is 1
         if ($networkId == 1) {
             // If the selected network is 1, modify the query to include data types 2, 3, 4, and 5
-            $query->whereIn('id', [2, 4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [2, 4, 5, 6, 7, 8, 9, 10]);
         } else {
             // If the selected network is not 1, modify the query to include data types 4 and 5
-            $query->whereIn('id', [4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [4, 5, 6, 7, 8, 9, 10]);
         }
 
         // Get the data types with custom ordering
@@ -857,10 +857,10 @@ class InternetController extends Controller
         // Check if the selected network is 1
         if ($networkId == 1) {
             // If the selected network is 1, modify the query to include data types 2, 3, 4, and 5
-            $query->whereIn('id', [2, 3, 4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [2, 3, 4, 5, 6, 7, 8, 9, 10]);
         } else {
             // If the selected network is not 1, modify the query to include data types 4 and 5
-            $query->whereIn('id', [4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [4, 5, 6, 7, 8, 9, 10]);
         }
 
         // Get the data types with custom ordering
@@ -907,10 +907,10 @@ class InternetController extends Controller
         // Check if the selected network is 1
         if ($networkId == 1) {
             // If the selected network is 1, modify the query to include data types 2, 3, 4, and 5
-            $query->whereIn('id', [2, 3, 4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [2, 3, 4, 5, 6, 7, 8, 9, 10]);
         } else {
             // If the selected network is not 1, modify the query to include data types 4 and 5
-            $query->whereIn('id', [4, 5, 6, 7, 8, 9]);
+            $query->whereIn('id', [4, 5, 6, 7, 8, 9, 10]);
         }
 
         // Get the data types with custom ordering
