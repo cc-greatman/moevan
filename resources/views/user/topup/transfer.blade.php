@@ -34,7 +34,7 @@
         Fund your wallet through the following methods <br>
         <p class="text-xl md:text-xl font-medium" style="color: rgb(255, 0, 0) !important;">
             <div class="flex items-center space-x-2">
-                <button onclick="copyToClipboard('6483803832')"
+                <button onclick="copyToClipboard('5483803701')"
                     style="display: inline-flex; align-items: center; gap: 5px; background-color: #e5e7eb; padding: 5px 10px; font-size: 16px; border-radius: 5px; border: none; cursor: pointer; color: #000;"
                     onmouseover="this.style.backgroundColor='#000'; this.style.color='#FFF'; this.querySelector('span').style.color='#FFF';"
                     onmouseout="this.style.backgroundColor='#e5e7eb'; this.style.color='#000'; this.querySelector('span').style.color='#000';">
@@ -44,7 +44,7 @@
                     </span>
                     Copy
                 </button>
-                <span style="color: rgb(255, 0, 0) !important;">6483803832 - (Monnify Moevan Enterprise - MONIEPOINT)</span>
+                <span style="color: rgb(255, 0, 0) !important;">5483803701 - (Monnify Moevan Enterprise - MONIEPOINT)</span>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('0818170354')"
@@ -123,7 +123,7 @@
     <script>
         // Map of bank names to account numbers
         const bankAccountNumbers = {
-          MONIEPOINT: "6483803832",
+          MONIEPOINT: "5483803701",
           GTB: "0818170354",
           OPAY: "8143341690",
         };
