@@ -44,7 +44,7 @@
                     </span>
                     Copy
                 </button>
-                <span style="color: rgb(255, 0, 0) !important;">5483803701 - (Monnify Moevan Enterprise - MONIEPOINT)</span>
+                <span style="color: rgb(255, 0, 0) !important;">5483803701 - (Moevan Enterprise - MONIEPOINT)</span>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="copyToClipboard('0818170354')"
@@ -88,7 +88,7 @@
                 <p><label for="">Select Bank to Pay to</label></p>
                 <select type="text" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="bank" id="bank" onchange="updateAccountNumber()">
                   <option selected="" disabled>-------</option>
-                  <option value="MONIEPOINT">MONIEPOINT - MONNIFY MOEVAN ENTERPRISES</option>
+                  <option value="MONIEPOINT">MONIEPOINT - MOEVAN ENTERPRISES</option>
                   <option value="GTB">GTB - Moevan Enterprise</option>
                   <option value="OPAY">OPAY - Moevan Enterprise</option>
                 </select>
