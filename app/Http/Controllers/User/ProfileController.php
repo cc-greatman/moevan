@@ -333,7 +333,7 @@ class ProfileController extends Controller
         $update->dob = $request->dob;
         $update->address = $request->address;
         $update->save();
-        
+
         return redirect()->route('user.trx.success')->with('success', 'Your Profile Details have been updated Successfully');
     }
 
@@ -348,7 +348,7 @@ class ProfileController extends Controller
 
         $user = User::findOrFail($id);
 
-        if ($request->input('id_type') === 'nin') {
+        if ($request->input('id_type') === "nin") {
 
             // Validate the incoming request
             $request->validate([
@@ -376,49 +376,49 @@ class ProfileController extends Controller
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $yourAccessToken,
             ])->timeout(380001)->post('https://api.monnify.com/api/v1/vas/nin-details', $payload);
-            
+
             $responseData = $response->json();
-            
+
             // Check if the API request was successful
             if ($response->successful()) {
-                
+
                 if($responseData['requestSuccessful'] === true) {
 
                     // Compare details: first name, last name, and date of birth
                     $matches = strtolower(trim($user->first_name)) === strtolower(trim($responseData['responseBody']['firstName'])) &&
                                 strtolower(trim($user->last_name)) === strtolower(trim($responseData['responseBody']['lastName'])) &&
                                 \Carbon\Carbon::parse($user->dob)->format('Y-m-d') === \Carbon\Carbon::parse($responseData['responseBody']['dateOfBirth'])->format('Y-m-d');
-    
+
                     if ($matches) {
-    
+
                         $user->is_kyc_verified = 1;
                         $user->nin = $responseData['responseBody']['nin'];
                         $user->save();
-                        
+
                         session()->put('kyc_verification', true);
-    
+
                         return redirect()->route('user.trx.success')->with('success', 'You have successfully verified your identity');
                     } else {
-                        
+
                         session()->put('kyc_verification', true);
-                        
+
                         return redirect()->route('user.trx.error')->with('error', 'Your Profile Details do not Match with that in the Provided NIN');
                     }
                 } else {
                     $message = $responseData['responseMessage'];
-                    
+
                     session()->put('kyc_verification', true);
-                    
+
                     return redirect()->route('user.trx.error')->with('error', $message);
                 }
             } else {
-                
+
                 session()->put('kyc_verification', true);
-                
+
                 return redirect()->route('user.trx.error')->with('error', 'Incomplete or Wrong NIN🤦‍♀️. Please try inputtng the correct one');
             }
-            
-        } elseif ($request->input('id_type') === 'bvn') {
+
+        } elseif ($request->input('id_type') === "bvn") {
 
             // Validate the incoming request
             $request->validate([
@@ -455,44 +455,44 @@ class ProfileController extends Controller
             ])->timeout(380001)->post('https://api.monnify.com/api/v1/vas/bvn-details-match', $payload);
 
             $responseData = $response->json();
-            
+
              // Check if the API request was successful
             if ($response->successful()) {
-            
+
                 // Check if request was successful (boolean check)
                 if($responseData['requestSuccessful'] === true) {
-            
+
                     // Compare details: first name, last name, and date of birth
                     $matches = $responseData['responseBody']['name']['matchPercentage'];
-            
+
                     if ($matches == 100) {
-            
+
                         // Update user details if it's a full match
                         $user->is_kyc_verified = 1;
                         $user->bvn = $responseData['responseBody']['bvn'];
                         $user->save();
-                        
+
                         session()->put('kyc_verification', true);
-                        
+
                         return redirect()->route('user.trx.success')->with('success', 'You have successfully verified your identity');
                     } else {
                         // Handle partial or no match
                         session()->put('kyc_verification', true);
-                        
+
                         return redirect()->route('user.trx.error')->with('error', 'Your Personal Details do not Match with that in the Provided BVN');
                     }
                 } else {
                     // Handle case when API response indicates failure
                     $message = $responseData['responseMessage'];
-                    
+
                     session()->put('kyc_verification', true);
-                    
+
                     return redirect()->route('user.trx.error')->with('error', $message);
                 }
             } else {
-                
+
                 session()->put('kyc_verification', true);
-                
+
                 return redirect()->route('user.trx.error')->with('error', 'Incomplete or Wrong NIN🤦‍♀️. Please try inputtng the correct one');
             }
 
