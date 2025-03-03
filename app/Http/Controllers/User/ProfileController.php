@@ -456,8 +456,6 @@ class ProfileController extends Controller
 
             $responseData = $response->json();
 
-            return $responseData;
-
              // Check if the API request was successful
             if ($response->successful()) {
 
@@ -495,7 +493,7 @@ class ProfileController extends Controller
 
                 session()->put('kyc_verification', true);
 
-                return redirect()->route('user.trx.error')->with('error', 'Incomplete or Wrong BVN/NIN🤦‍♀️. Please try inputtng the correct one');
+                return redirect()->route('user.trx.error')->with('error', 'Incomplete or Wrong BVN🤦‍♀️. Please try inputtng the correct one');
             }
 
         }
