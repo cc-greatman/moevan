@@ -11,8 +11,9 @@
                     <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
                     <p style="text-align: left;">{!! $message->rolling_message !!}</p>
                     <button id="confirmClose" type="submit" class="accept">Thank You!</button>
-                    <br>
-                    <button id="confirmYes" type="submit" class="decline" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
+                    <br><!--
+                       <button id="confirmYes" type="submit" class="decline" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
+                       -->
                 </div>
             </div>
 
