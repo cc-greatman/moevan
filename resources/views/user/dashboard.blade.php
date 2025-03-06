@@ -12,7 +12,7 @@
                     <p style="text-align: left;">{!! $message->rolling_message !!}</p>
                     <button id="confirmClose" type="submit" class="accept">Thank You!</button>
                     <br>
-                    <button id="confirmYes" type="submit" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
+                    <button id="confirmYes" type="submit" class="decline" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
                 </div>
             </div>
 
