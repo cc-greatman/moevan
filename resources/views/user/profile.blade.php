@@ -17,7 +17,7 @@
           <button class="accept" id="confirmYes" type="submit">Proceed to KYC Verification</button>
         </div>
     </div>
-    
+
     @if(session()->has('error'))
                     <div class="fixed inset-x-0 top-10 pb-2 sm:pb-5 z-50">
                         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -107,12 +107,12 @@
         </form>
       </div>
    </div
-   
+
        <div>
           <div class="text-center text-4xl text-blue-990 font-bold mt-12 mb-8">
             KYC Verification
           </div>
-    
+
           <div
             class="bg-gray-300 text-blue-950 font-medium text-xl shadow-gray-600 shadow-md space-y-5 pt-7 pl-3 pr-3 md:pl-12 lg:ml-40 md:ml-14 lg:mr-40 md:mr-14 mb-10 pb-16"
           >
@@ -163,7 +163,7 @@
    <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            document.getElementById('cookiesPopup').style.display = 'block'; // Hide modal by default
+            document.getElementById('cookiesPopup').style.display = 'none'; // Hide modal by default
 
             // Handle "Yes" button click
             document.getElementById("confirmYes").addEventListener("click", function() {

@@ -5,6 +5,7 @@
     <!-- HTML Markup for Modal-->
     <div class="container" id="cookiesPopup">
         <div class="cookiesContents">
+          <button class="close" id="confirmNo" type="button">✖</button>
           <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
           <p>The Central Bank of Nigeria, released a circular recently, regarding virtual accounts issued to customers, as follows:
           </p>
