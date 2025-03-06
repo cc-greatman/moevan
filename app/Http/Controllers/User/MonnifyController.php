@@ -35,8 +35,6 @@ class MonnifyController extends Controller
 
         $responseData = $response->json();
 
-        return $responseData;
-
         $accessToken = $responseData['responseBody']['accessToken'];
         $expiresIn = $responseData['responseBody']['expiresIn'];
 
