@@ -88,7 +88,7 @@ class MonnifyController extends Controller
             $responseData = $responses->json();
 
             // Check response status and content
-            if (isset($responseData['code']) && $responseData['code'] == '200' || $responseData['code'] == '201') {
+            if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
 
                 $apiResponse = $responseData['data']['message'];
 
