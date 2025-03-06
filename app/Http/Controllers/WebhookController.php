@@ -255,11 +255,10 @@ class WebhookController extends Controller
 
         // Get raw JSON request string
         $raw_request = $request->getContent();
-
-        // Your Secret Key found in your Monnify dashboard, developer menu
+        
         $SECRET_KEY = env('IPAYNG_API_KEY');
 
-        // Next, we need to compute and compare the hash sent via the header as "monnify-signature".
+        // Next, we need to compute and compare the hash 
         $signature = $request->header('signedData');
         $computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
         if ($computedHash !== $signature) {
