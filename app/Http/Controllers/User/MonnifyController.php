@@ -23,8 +23,8 @@ class MonnifyController extends Controller
 
         MonnifyToken::truncate();
 
-        $api_key = config('app.monnify_api_key');
-        $secret_key = config('app.monnify_secret_key');
+        $api_key = env('MONNIFY_API_KEY');
+        $secret_key = env('MONNIFY_SECRET_KEY');
 
         $credentials = base64_encode("$api_key:$secret_key");
 
@@ -34,6 +34,9 @@ class MonnifyController extends Controller
         ])->post('https://api.monnify.com/api/v1/auth/login');
 
         $responseData = $response->json();
+
+        return $responseData;
+
         $accessToken = $responseData['responseBody']['accessToken'];
         $expiresIn = $responseData['responseBody']['expiresIn'];
 

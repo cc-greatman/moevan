@@ -255,10 +255,10 @@ class WebhookController extends Controller
 
         // Get raw JSON request string
         $raw_request = $request->getContent();
-        
+
         $SECRET_KEY = env('IPAYNG_API_KEY');
 
-        // Next, we need to compute and compare the hash 
+        // Next, we need to compute and compare the hash
         $signature = $request->header('signedData');
         $computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
         if ($computedHash !== $signature) {
@@ -288,7 +288,7 @@ class WebhookController extends Controller
                  // Find the user by email
                  $user_trx = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
 
-                 $user = User::where('id', $user_trx->user_id)->first();
+                 $user = User::findorFail($user_trx->user_id);
 
                  if (!$user) {
                      // Handle user not found
@@ -297,14 +297,7 @@ class WebhookController extends Controller
 
                  $preBal = $user->balance;
 
-                 if($user->account_type === 1) {
-
-                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
-                 } else {
-
-                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
-                 }
-
+                 $depositAmount = $request_array['data']['response']['inputtedAmount'];
 
                  // Generate transaction
                  $trx = getTrx();
@@ -485,7 +478,7 @@ class WebhookController extends Controller
                  // Find the user by email
                  $user_trx = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
 
-                 $user = User::where('id', $user_trx->user_id)->first();
+                 $user = User::findOrFail($user_trx->user_id);
 
                  if (!$user) {
                      // Handle user not found
@@ -494,14 +487,7 @@ class WebhookController extends Controller
 
                  $preBal = $user->balance;
 
-                 if($user->account_type === 1) {
-
-                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
-                 } else {
-
-                     $depositAmount = $request_array['data']['response']['inputtedAmount'];
-                 }
-
+                 $depositAmount = $request_array['data']['response']['inputtedAmount'];
 
                  // Generate transaction
                  $trx = getTrx();

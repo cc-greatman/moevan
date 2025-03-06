@@ -28,6 +28,7 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
+
         // Validate the form data
         $validatedData = $request->validate([
             'phone' => 'required|numeric',
