@@ -8,8 +8,7 @@
           <button class="close" id="confirmNo" type="button">✖</button>
           <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
           <p>The Central Bank of Nigeria, released a circular recently, regarding virtual accounts issued to customers, as follows:
-          </p>
-          <p style="text-align: left;">
+            <br>
             <strong><span style="font-size: 18px;">&middot;</span> Every virtual account(Personal Wallet) must be linked with either a Bank Verification Number (BVN) or National Identification Number (NIN).</strong>
             <br>
             <br>
