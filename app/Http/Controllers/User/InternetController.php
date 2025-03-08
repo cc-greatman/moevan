@@ -461,7 +461,12 @@ class InternetController extends Controller
 
                                         $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
 
-                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
+
+                                        // Ensure $msg is a string
+                                        if (is_array($msg)) {
+                                            $msg = json_encode($msg);
+                                        }
                                         return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                                     }
                                 }
@@ -471,8 +476,12 @@ class InternetController extends Controller
 
                             $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
-                            // Log the error or handle it as needed
-                            Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                            Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
+
+                            // Ensure $msg is a string
+                            if (is_array($msg)) {
+                                $msg = json_encode($msg);
+                            }
                             return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                         }
 
@@ -489,7 +498,7 @@ class InternetController extends Controller
 
                     $msg = $responseDa['content']??$responseDa['message']??null;
 
-                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage().$msg);
 
                     try{
 
@@ -554,12 +563,24 @@ class InternetController extends Controller
 
                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
 
+                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
+
+                                    // Ensure $msg is a string
+                                    if (is_array($msg)) {
+                                        $msg = json_encode($msg);
+                                    }
+
                                     return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                                 } elseif (isset($responseDat['error']) || empty($responseDat)) {
                                     // Handle failed response
                                     $msg = $responseDat['api_response']??$responseDat['error']??null;
 
                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                    // Ensure $msg is a string
+                                    if (is_array($msg)) {
+                                        $msg = json_encode($msg);
+                                    }
 
                                     return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                                 } else {
@@ -573,9 +594,14 @@ class InternetController extends Controller
 
                                 $msg = $responseDat['api_response']??$responseDat['error']??null;
 
-                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage().$msg);
 
                                 $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                // Ensure $msg is a string
+                                if (is_array($msg)) {
+                                    $msg = json_encode($msg);
+                                }
 
                                 return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
 
@@ -588,7 +614,13 @@ class InternetController extends Controller
                         $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
 
                         // Log the error or handle it as needed
-                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage());
+                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage(). $msg);
+
+                        // Ensure $msg is a string
+                        if (is_array($msg)) {
+                            $msg = json_encode($msg);
+                        }
+                        
                         return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                     }
                 }
