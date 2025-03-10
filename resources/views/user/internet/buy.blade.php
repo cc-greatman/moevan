@@ -9,7 +9,8 @@
         <img src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png" alt="cookies-img" />
         <p>Are you sure you want to continue to buy <strong><span id="networkName"></span> <span id="planDetails"></span> for <span id="phoneNumber"></span></strong>?</p>
         <!-- Additional message element -->
-        <p id="additionalMessage" style="display: none; color: red;">You must be on  MTN XTRA-SPECIAL TARIFF, change tariff by texting 408 to 312 to migrate</p>
+        <p id="additionalMessage1" style="display: none; color: red;">You must be on  MTN XTRA-SPECIAL TARIFF, change tariff by texting 408 to 312 to migrate</p>
+        <p id="additionalMessage2" style="display: none; color: red;">MAKE SURE YOU ARE NOT OWING AIRTEL AIRTIME/DATA</p>
         <button class="accept" id="confirmYes" type="submit">Yes, Proceed!</button>
       </div>
     </div>
@@ -266,7 +267,8 @@
                 var phoneNumber = document.getElementById('phone').value;
                 var selectedNetworkId = document.getElementById('network').value;
                 var selectedDataType = document.getElementById('dataType').value;
-                var additionalMessage = document.getElementById('additionalMessage');
+                var additionalMessage1 = document.getElementById('additionalMessage1');
+                var additionalMessage2 = document.getElementById('additionalMessage2');
 
                 document.getElementById('networkName').innerText = networkName;
                 document.getElementById('planDetails').innerText = planDetails;
@@ -274,11 +276,19 @@
 
                 // Show additional message only for specific network_id and dataType values
                 if (selectedNetworkId === "1" && selectedDataType === "10") {
-                        additionalMessage.style.display = 'block';
+                        additionalMessage1.style.display = 'block';
                         console.log("Additional message displayed"); // Debugging
-                    } else {
-                        additionalMessage.style.display = 'none';
-                    }
+                } else {
+                        additionalMessage1.style.display = 'none';
+                }
+
+                // Show additional message only for specific network_id and dataType values
+                if (selectedNetworkId === "4" && selectedDataType === "4" || selectedDataType === "7") {
+                        additionalMessage2.style.display = 'block';
+                        console.log("Additional message displayed"); // Debugging
+                } else {
+                        additionalMessage2.style.display = 'none';
+                }
 
                 document.getElementById('cookiesPopup').style.display = 'block'; // Show modal
                 console.log("Popup displayed"); // Debugging
