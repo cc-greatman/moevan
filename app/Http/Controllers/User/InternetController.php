@@ -711,6 +711,7 @@ class InternetController extends Controller
                 } elseif ($networkId == '4') {
                     $dataType->name = match ($dataType->name) {
                         'SPECIAL DATA' => 'SMALL BUNDLES',
+                        'CORPORATE GIFTING' => 'SMALL BUNDLES 2',
                         'GIFTING' => 'BIG BUNDLES',
                         default => $dataType->name,
                     };
