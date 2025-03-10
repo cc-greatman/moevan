@@ -620,7 +620,7 @@ class InternetController extends Controller
                         if (is_array($msg)) {
                             $msg = json_encode($msg);
                         }
-                        
+
                         return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
                     }
                 }
@@ -673,7 +673,7 @@ class InternetController extends Controller
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 7, 10]);
         } elseif ($user->account_type == '1' && $networkId == '4') {
-            $query->whereIn('id', [4, 7]);
+            $query->whereIn('id', [4, 5, 7]);
         } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
             $query->whereIn('id', [4, 5, 7]);
         } elseif ($networkId == '2') {
