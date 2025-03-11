@@ -86,7 +86,7 @@ class TransactionsController extends Controller
                                     ->where('id', $id)
                                     ->first();
 
-        return view('user.receipts.data', compact('pageTitle', 'electric', 'user'));
+        return view('user.receipts.electric', compact('pageTitle', 'electric', 'user'));
     }
 
     public function airtime() {
