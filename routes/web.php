@@ -177,9 +177,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
                         Route::get('cable', 'User\TransactionsController@cable')->name('cable.show');
                     });
 
-                    //Transaction History Routes
+                    //Transaction Receipt Routes
                     Route::name('receipt.')->prefix('view/receipt')->group(function() {
                         Route::get('data/{id}', 'User\TransactionsController@viewReceipt')->name('data.show');
+                        Route::get('electric/{id}', 'User\TransactionsController@viewElectricReceipt')->name('electric.show');
                     });
 
                     //Pricing Routes

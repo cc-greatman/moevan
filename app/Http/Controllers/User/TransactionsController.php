@@ -61,19 +61,32 @@ class TransactionsController extends Controller
 
         return view('user.transactions.data', compact('pageTitle', 'data'));
     }
-    
+
     public function viewReceipt($id) {
-        
+
         $pageTitle = 'Data Transaction Receipt - Moevan';
-        
+
         $user = Auth::guard('web')->user();
-        
+
         $data = DataTransactions::where('user_id', $user->id)
                                     ->where('id', $id)
                                     ->with('dataPlan')
                                     ->first();
 
         return view('user.receipts.data', compact('pageTitle', 'data', 'user'));
+    }
+
+    public function viewElectricReceipt($id) {
+
+        $pageTitle = 'Electric Transaction Receipt - Moevan';
+
+        $user = Auth::guard('web')->user();
+
+        $electric = ElectricTransaction::where('user_id', $user->id)
+                                    ->where('id', $id)
+                                    ->first();
+
+        return view('user.receipts.data', compact('pageTitle', 'electric', 'user'));
     }
 
     public function airtime() {
@@ -130,19 +143,19 @@ class TransactionsController extends Controller
     }
 
     public function searchAirtime(Request $request) {
-        
+
         // Validate the search request
         $request->validate([
             'search_type' => 'required|string|in:phone,date,amount,trx,network',
             'query' => 'required|string',
         ]);
-    
+
         // Extract search parameters from the request
         $searchType = $request->input('search_type');
         $query = $request->input('query');
-        
+
         $user = Auth::user();
-    
+
         // Perform the search based on the selected search type
         $transactionsQuery = $user->airtimeTransactions()
             ->where(function ($q) use ($searchType, $query) {
@@ -167,10 +180,10 @@ class TransactionsController extends Controller
                 }
             })
             ->orderBy('created_at', 'desc');
-            
+
             // Paginate the search results
             $transactions = $transactionsQuery->paginate(10)->appends(['query' => $query, 'search_type' => $searchType]);
-    
+
         // Pass the search results to the view
         return view('user.search.voice', ['transactions' => $transactions, 'query' => $query, 'pageTitle' => 'Airtime Search History - Moevan']);
     }
@@ -181,13 +194,13 @@ class TransactionsController extends Controller
             'search_type' => 'required|string|in:phone,date,amount,trx,network,status',
             'query' => 'required|string',
         ]);
-    
+
         // Extract search parameters from the request
         $searchType = $request->input('search_type');
         $query = $request->input('query');
-        
+
         $user = Auth::user();
-    
+
         // Perform the search based on the selected search type
         $transactionsQuery = $user->dataTransactions()
             ->where(function ($q) use ($searchType, $query) {
@@ -222,7 +235,7 @@ class TransactionsController extends Controller
                 }
             })
             ->orderBy('created_at', 'desc');
-            
+
             // Paginate the search results
             $transactions = $transactionsQuery->paginate(10)->appends(['query' => $query, 'search_type' => $searchType]);
 
@@ -230,19 +243,19 @@ class TransactionsController extends Controller
     }
 
     public function searchCable(Request $request) {
-        
+
         // Validate the search request
         $request->validate([
             'search_type' => 'required|string|in:date,amount,trx',
             'query' => 'required|string',
         ]);
-    
+
         // Extract search parameters from the request
         $searchType = $request->input('search_type');
         $query = $request->input('query');
-        
+
         $user = Auth::user();
-    
+
         // Perform the search based on the selected search type
         $transactionsQuery = $user->cableTransactions()
             ->where(function ($q) use ($searchType, $query) {
@@ -256,7 +269,7 @@ class TransactionsController extends Controller
                 }
             })
             ->orderBy('created_at', 'desc');
-            
+
             // Paginate the search results
             $transactions = $transactionsQuery->paginate(10)->appends(['query' => $query, 'search_type' => $searchType]);
 
@@ -269,13 +282,13 @@ class TransactionsController extends Controller
             'search_type' => 'required|string|in:date,amount,trx,meter_no,meter_type,units,phone',
             'query' => 'required|string',
         ]);
-    
+
         // Extract search parameters from the request
         $searchType = $request->input('search_type');
         $query = $request->input('query');
-        
+
         $user = Auth::user();
-    
+
         // Perform the search based on the selected search type
         $transactionsQuery = $user->electricTransactions()
             ->where(function ($q) use ($searchType, $query) {
@@ -297,7 +310,7 @@ class TransactionsController extends Controller
                 }
             })
             ->orderBy('created_at', 'desc');
-            
+
             // Paginate the search results
             $transactions = $transactionsQuery->paginate(10)->appends(['query' => $query, 'search_type' => $searchType]);
 
@@ -305,19 +318,19 @@ class TransactionsController extends Controller
     }
 
     public function searchWallet(Request $request) {
-        
+
         // Validate the search request
         $request->validate([
             'search_type' => 'required|string|in:mode,date,amount,trx,type',
             'query' => 'required|string',
         ]);
-    
+
         // Extract search parameters from the request
         $searchType = $request->input('search_type');
         $query = $request->input('query');
-        
+
          $user = Auth::user();
-    
+
         // Perform the search based on the selected search type
         $transactionsQuery = $user->walletTransactions()
             ->where(function ($q) use ($searchType, $query) {
@@ -341,7 +354,7 @@ class TransactionsController extends Controller
                 }
             })
             ->orderBy('created_at', 'desc');
-            
+
             // Paginate the search results
             $transactions = $transactionsQuery->paginate(10)->appends(['query' => $query, 'search_type' => $searchType]);
 

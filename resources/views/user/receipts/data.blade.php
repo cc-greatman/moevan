@@ -96,13 +96,13 @@
                 <div class="hidden sm:grid sm:grid-cols-2">
                   <div class="text-xs font-medium text-gray-500 uppercase">Summary</div>
                 </div>
-            
+
                 <div class="hidden sm:block border-b border-gray-200"></div>
-            
+
                 @php
                   $plan = $data->dataPlan->network->name.' '.$data->dataPlan->size.' @ '.$data->dataPlan->validity.'Days';
                 @endphp
-            
+
                 <!-- Row 1: Product -->
                 <div class="grid grid-cols-2 gap-2 py-4">
                   <div>
@@ -112,7 +112,7 @@
                     <p class="text text-gray-800">{{ $plan }}</p>
                   </div>
                 </div>
-                
+
                 <div class="grid grid-cols-2 gap-2 py-4">
                   <div>
                     <p class="text font-medium text-gray-800">Phone</p>
@@ -121,9 +121,9 @@
                     <p class="text text-gray-800">{{ $data->phone }}</p>
                   </div>
                 </div>
-            
+
                 <div class="sm:hidden border-b border-gray-200"></div>
-            
+
                 <!-- Row 2: Response -->
                 <div class="grid grid-cols-2 gap-2 py-4">
                   <div>
@@ -133,9 +133,9 @@
                     <p class="text text-gray-800">{!! $data->response !!}</p>
                   </div>
                 </div>
-            
+
                 <div class="sm:hidden border-b border-gray-200"></div>
-            
+
                 <!-- Row 3: Amount -->
                 <div class="grid grid-cols-2 gap-2 py-4">
                   <div>
@@ -174,7 +174,7 @@
         </div>
       </div>
 
-      <p class="text mt-5 text-sm text-gray-500">© 2024 Moevan.</p>
+      <p class="text mt-5 text-sm text-gray-500">© 2025 Moevan.</p>
     </div>
     <!-- End Card -->
 
@@ -199,10 +199,10 @@
     function printInvoice() {
         // Get the content of the invoice
         const printContent = document.getElementById('invoice-to-print').innerHTML;
-        
+
         // Create a new iframe
         const printWindow = window.open('', '', 'width=800,height=600');
-        
+
         // Write the content into the iframe's document
         printWindow.document.write(`
           <html>
@@ -232,10 +232,10 @@
             </body>
           </html>
         `);
-    
+
         // Close the document to ensure it is fully loaded
         printWindow.document.close();
-    
+
         // Trigger the print function once the content is loaded
         printWindow.onload = function() {
           printWindow.focus(); // Ensure the window is focused before printing
@@ -243,19 +243,19 @@
           printWindow.close(); // Close the print window after printing
         };
     }
-    
+
     // Download Invoice as Image
     function downloadAsImage() {
-        
+
         const element = document.getElementById('invoice-to-print');
-        
+
         // Use html2canvas to capture the div content
         html2canvas(element).then(function(canvas) {
           // Create a link element to trigger download
           const link = document.createElement('a');
           link.download = 'invoice.png';
           link.href = canvas.toDataURL('image/png');
-          
+
           // Trigger the download
           link.click();
         });

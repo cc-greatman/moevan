@@ -139,6 +139,13 @@
                               <span class="bg-red-100 text-red-600 text-lg font-medium me-2 px-2.5 py-0.5 rounded border border-red-400">Failed</span>
                             </td>
                         @endif
+                        <td>
+                            <div class="text-center">
+                              <a href="{{ route('user.receipt.electric.show', $electricTrx->id) }}" target="_blank" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                                View Receipt
+                              </a>
+                            </div>
+                        </td>
                     </tr>
                     @empty
                     <tr class="text-lg border-b-4 border-white">
