@@ -5,7 +5,7 @@
     <!-- HTML Markup for Modal-->
     <div class="container" id="cookiesPopup">
         <div class="cookiesContents">
-          <a href="{{ route('user.profile.show') }}" class="close" id="confirmNo" type="button" style="margin-left: 240px; color: red !important;">">✖ <br> <span style="">No Skip!</span></a>
+          <a href="{{ route('user.profile.show') }}" class="close" id="confirmNo" type="button" style="margin-left: 240px; color: red !important;">✖</a>
           <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
           <p>The Central Bank of Nigeria, released a circular recently, regarding virtual accounts issued to customers, as follows:
             <br>
