@@ -15,7 +15,13 @@
             <strong><span style="font-size: 18px;">&middot;</span> Ensure Your Personal Details are the same as the one linked to your BVN/NIN</strong>
           </p>
           <button class="accept" id="confirmYes" type="submit">Proceed to KYC Verification</button>
-          <button formmethod="GET" formaction="{{ route('user.profile.show') }}" name="submit" id="confirmYes" type="submit" class="decline" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
+            <form method="GET" action="{{ route('user.profile.show') }}">
+                <button type="submit" id="confirmYes" class="decline"
+                    style="margin-top: 5px; font-size: 12px; font-weight: bold;">
+                    No, Skip!
+                </button>
+            </form>
+
         </div>
     </div>
 
