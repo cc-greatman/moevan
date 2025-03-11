@@ -10,7 +10,7 @@
         <link href="{{ asset('../backend/css3/output.css') }}?v={{ time() }}" rel="stylesheet" />
     @endif
 
-    @if(Route::is('user.transactions.data.show') || Route::is('user.receipt.data.show') || Route::is('user.data.search.transactions'))
+    @if(Route::is('user.transactions.data.show') || Route::is('user.receipt.data.show') || Route::is('user.data.search.transactions') || Route::is('user.transactions.electric.show') || Route::is('user.receipt.electric.show') || Route::is('user.utility.electric.search.transactions'))
         <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     @endif
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -22,7 +22,7 @@
     <link rel="manifest" href="{{ asset("../frontend/fav/site.webmanifest") }}">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=content_copy" />
-    
+
     <title>{{ $pageTitle }}</title>
     <!-- CSS Styling for Modal -->
     <style>
