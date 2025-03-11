@@ -16,8 +16,8 @@
           </p>
           <button class="accept" id="confirmYes" type="submit">Proceed to KYC Verification</button>
             <form method="GET" action="{{ route('user.profile.show') }}">
-                <button type="submit" id="confirmYes" class="decline"
-                    style="margin-top: 5px; font-size: 12px; font-weight: bold;">
+                <button type="submit" id="confirmClose" class="decline"
+                    style="background-color: red; border: none; border-radius: 5px; width: 200px; padding: 14px; font-size: 16px; color: white; margin-top: 5px; font-weight: bold;">
                     No, Skip!
                 </button>
             </form>
