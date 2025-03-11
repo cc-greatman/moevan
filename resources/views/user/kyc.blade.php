@@ -5,7 +5,7 @@
     <!-- HTML Markup for Modal-->
     <div class="container" id="cookiesPopup">
         <div class="cookiesContents">
-          <a href="{{ route('user.profile.show') }}" class="close" id="confirmNo" type="button" style="margin-left: 240px;">✖ <br> <span style="color: red;">No Skip!</span></a>
+          <a href="{{ route('user.profile.show') }}" class="close" id="confirmNo" type="button" style="margin-left: 240px; color: red !important;">">✖ <br> <span style="">No Skip!</span></a>
           <img src="https://cdn-icons-png.flaticon.com/512/2014/2014825.png" alt="cookies-img" />
           <p>The Central Bank of Nigeria, released a circular recently, regarding virtual accounts issued to customers, as follows:
             <br>
@@ -15,6 +15,7 @@
             <strong><span style="font-size: 18px;">&middot;</span> Ensure Your Personal Details are the same as the one linked to your BVN/NIN</strong>
           </p>
           <button class="accept" id="confirmYes" type="submit">Proceed to KYC Verification</button>
+          <button formmethod="GET" formaction="{{ route('user.profile.show') }}" name="submit" id="confirmYes" type="submit" class="decline" style="margin-top: 5px; font-size: 12px; font-weight: bold;">No, Skip!</button>
         </div>
     </div>
 

@@ -469,7 +469,7 @@ class WebhookController extends Controller
                  // Return error response
                  return response()->json(['error' => 'Transaction failed'], 500);
              }
-         } elseif (isset($request_array['code']) && $request_array['code'] == '500' || $request_array['code'] == '424') {
+         } elseif (isset($request_array['code']) && $request_array['code'] == '500' ) {
 
              try {
                  // Start a database transaction
@@ -517,7 +517,7 @@ class WebhookController extends Controller
                  $transaction->post_balance = $user->balance;
                  $transaction->trx_type = '+';
                  $transaction->details = $request_array['data']['message'];
-                 $transaction->status = '1';
+                 $transaction->status = '2';
                  $transaction->trx = $user_trx->trx;
                  $transaction->save();
 
@@ -536,6 +536,73 @@ class WebhookController extends Controller
                  // Return error response
                  return response()->json(['error' => 'Transaction failed'], 500);
              }
+         } elseif (isset($request_array['code']) && $request_array['code'] == '424') {
+
+            try {
+                // Start a database transaction
+                DB::beginTransaction();
+
+                // Find the user by email
+                $user_trx = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                $user = User::findOrFail($user_trx->user_id);
+
+                if (!$user) {
+                    // Handle user not found
+                    return response()->json(['error' => 'User not found'], 404);
+                }
+
+                $preBal = $user->balance;
+
+                $depositAmount = $request_array['data']['response']['inputtedAmount'];
+
+                // Generate transaction
+                $trx = getTrx();
+
+                // Create WalletTransactions record
+                $walletTransaction = WalletTransactions::where('receipt_path', $request_array['data']['reference'])->first();
+
+                $walletTransaction->user_id = $user->id;
+                $walletTransaction->pre_bal = $preBal;
+
+                $walletTransaction->sender_name = $request_array['data']['response']['sessionIdOrReference'];
+                $walletTransaction->amount = $depositAmount;
+                $walletTransaction->post_bal = $user->balance;
+                $walletTransaction->reference_number = $request_array['data']['customerReference'];
+                $walletTransaction->mode = "Manual TopUp";
+                $walletTransaction->details = $request_array['data']['message'];
+                $walletTransaction->status = '3';
+                $walletTransaction->type = "+";
+                $walletTransaction->receipt_path = $request_array['data']['reference'];
+                $walletTransaction->trx = $user_trx->trx;
+                $walletTransaction->save();
+
+                // Create Transaction record
+                $transaction = Transaction::where('trx', $user_trx->trx)->first();
+                $transaction->user_id = $user->id;
+                $transaction->amount = $depositAmount;
+                $transaction->post_balance = $user->balance;
+                $transaction->trx_type = '+';
+                $transaction->details = $request_array['data']['message'];
+                $transaction->status = '3';
+                $transaction->trx = $user_trx->trx;
+                $transaction->save();
+
+                // Commit the transaction
+                DB::commit();
+
+                // Return success response
+                return response()->json(['message' => 'User balance has been updated successfully'], 200);
+            } catch (\Exception $e) {
+                // Rollback the transaction on error
+                DB::rollBack();
+
+                // Log the error for further investigation
+                \Illuminate\Support\Facades\Log::error('Transaction failed: ' . $e->getMessage());
+
+                // Return error response
+                return response()->json(['error' => 'Transaction failed'], 500);
+            }
          }
     }
 
