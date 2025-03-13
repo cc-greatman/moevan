@@ -284,7 +284,7 @@ class InternetController extends Controller
             }
         }
 
-        if ($network_id == '1' && $planDetails->dataType->id == '7' ||$planDetails->dataType->id == '2' && in_array(optional($plan_id), ['111111', '226', '1111', '1222', '1223', '1224', '1225', '1226', '1227'])) {
+        if ($network_id == '1' && $planDetails->dataType->id == '7' ||$planDetails->dataType->id == '2' && in_array(optional($plan_id), ['111111', '226', '1111', '1222', '1223', '1224', '1225', '1226', '1227', '80010'])) {
             try {
                 // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
