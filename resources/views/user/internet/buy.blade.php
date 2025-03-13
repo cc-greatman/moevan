@@ -283,7 +283,7 @@
                 }
 
                 // Show additional message only for specific network_id and dataType values
-                if (selectedNetworkId === "4" && selectedDataType === "4" || selectedDataType === "7") {
+                if (selectedNetworkId === "4" && selectedDataType === "4" || selectedNetworkId === "4" && selectedDataType === "7") {
                         additionalMessage.style.display = 'block';
                         console.log("Additional message displayed"); // Debugging
                 } else {
