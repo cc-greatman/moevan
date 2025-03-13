@@ -102,6 +102,18 @@
                 <!-- Row 2: Response -->
                 <div class="grid grid-cols-2 gap-2 py-4">
                     <div>
+                      <p class="text font-medium text-gray-800">Disco Name</p>
+                    </div>
+                    <div class="text-end">
+                      <p class="text text-gray-800">{{ $electric->provider ?? 'N/A' }}</p>
+                    </div>
+                </div>
+
+                <div class="sm:hidden border-b border-gray-200"></div>
+
+                <!-- Row 2: Response -->
+                <div class="grid grid-cols-2 gap-2 py-4">
+                    <div>
                       <p class="text font-medium text-gray-800">Token</p>
                     </div>
                     <div class="text-end">
