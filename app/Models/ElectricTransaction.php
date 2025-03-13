@@ -15,6 +15,7 @@ class ElectricTransaction extends Model
         'electric_trx',
         'user_id',
         'trx',
+        'provider',
         'phone',
         'amount',
         'token',
