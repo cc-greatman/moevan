@@ -80,6 +80,7 @@ class ElectricityController extends Controller
             $update->post_bal = $user->balance;
             $update->user_id = $user->id;
             $update->trx = $trx;
+            $update->provider = $serviceID;
             $update->electric_trx = $requestID;
             $update->meter_no = $meter_number;
             $update->meter_type = $variation_code;
@@ -162,6 +163,7 @@ class ElectricityController extends Controller
                         $update->post_bal = $user->balance;
                         $update->user_id = $user->id;
                         $update->trx = $trx;
+                        $update->provider = $serviceID;
                         $update->electric_trx = $requestID;
                         $update->meter_no = $meter_number;
                         $update->meter_type = $variation_code;
@@ -241,6 +243,7 @@ class ElectricityController extends Controller
                         $update->post_bal = $user->balance;
                         $update->user_id = $user->id;
                         $update->trx = $trx;
+                        $update->provider = $serviceID;
                         $update->electric_trx = $requestID;
                         $update->meter_no = $validatedData['meter-number'];
                         $update->meter_type = $validatedData['meter-type'];
@@ -299,6 +302,7 @@ class ElectricityController extends Controller
                         $update->post_bal = $user->balance;
                         $update->user_id = $user->id;
                         $update->trx = $trx;
+                        $update->provider = $serviceID;
                         $update->electric_trx = $requestID;
                         $update->meter_no = $validatedData['meter-number'];
                         $update->meter_type = $validatedData['meter-type'];
