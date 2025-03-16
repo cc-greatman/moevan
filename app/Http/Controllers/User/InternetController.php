@@ -657,7 +657,7 @@ class InternetController extends Controller
         $mtnOrder = [
             'XTRASPECIAL' => 1,
             'SPECIAL DATA' => 2,
-            'SME' => 3,
+            'SPECIAL OFFER' => 3,
             'GIFTING' => 4,
         ];
 
@@ -671,11 +671,11 @@ class InternetController extends Controller
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
-            $query->whereIn('id', [2, 4, 7, 10]);
+            $query->whereIn('id', [4, 6, 7, 10]);
         } elseif ($user->account_type == '1' && $networkId == '4') {
             $query->whereIn('id', [4, 5, 7]);
         } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
-            $query->whereIn('id', [4, 5, 7]);
+            $query->whereIn('id', [4, 5,7]);
         } elseif ($networkId == '2') {
             $query->whereIn('id', [4, 5, 7]);
         } elseif ($networkId == '3') {
@@ -697,7 +697,7 @@ class InternetController extends Controller
             if ($user->account_type == '1') {
                 if ($networkId == '1') {
                     $dataType->name = match ($dataType->name) {
-                        'SME' => 'SMALL BUNDLES',
+                        'SPECIAL OFFER' => 'SMALL BUNDLES',
                         'GIFTING' => 'BIG BUNDLES',
                         'SME2' => 'SMALL BUNDLES 2',
                         default => $dataType->name,
@@ -718,7 +718,7 @@ class InternetController extends Controller
                 }
             } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
                 $dataType->name = match ($dataType->name) {
-                    'SPECIAL OFFER' => 'SPECIAL BUNDLE',
+                    'SPECIAL OFFER' => 'SME',
                     'SME2' => 'COPORATE GIFTING',
                     default => $dataType->name,
                 };
