@@ -224,7 +224,7 @@ class InternetController extends Controller
             }
         }
 
-        if($network_id == '1' && $planDetails->dataType->id == '6') {
+        if($network_id == '1' || $network_id == '2' || $network_id == '4' && $planDetails->dataType->id == '6' || $planDetails->dataType->id == '5') {
             try {
                 // Your Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
@@ -371,7 +371,7 @@ class InternetController extends Controller
                         if (is_array($msg)) {
                             $msg = json_encode($msg);
                         }
-                        
+
                         return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
 
                     }
