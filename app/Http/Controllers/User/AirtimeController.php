@@ -195,7 +195,7 @@ class AirtimeController extends Controller
     protected function createNewTransaction($user, $requestID, $trx, $network_id, $phone, $price, $networkName, $amount) {
 
         $preBal = $user->balance;
-        $user->balance -= number_format($price, 2);
+        $user->balance -= (float) $price;
         $user->save();
 
         $transaction = new AirtimeTransactions;
