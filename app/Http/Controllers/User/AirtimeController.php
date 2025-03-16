@@ -29,7 +29,7 @@ class AirtimeController extends Controller
             'amount.min' => 'The minimum possible amount is ₦50'
         ]);
         $amount =  $validatedData['amount'];
-        
+
         // Check user's balance
         $user = User::find(auth()->guard('web')->id()); // Assuming the user is logged in
 
@@ -67,8 +67,8 @@ class AirtimeController extends Controller
             return redirect()->route('user.trx.error')->with('error', 'An error occurred while processing your request.');
         }
 
-        $trx = getTrx(); 
-        
+        $trx = getTrx();
+
         $this->handleSuccessfulResponse($requestID, $user, $network_id, $phone, $networkName, $amount, $trx);
 
         try {
@@ -138,18 +138,18 @@ class AirtimeController extends Controller
     }
 
     public function handleSuccessfulResponse($requestID, $user, $network_id, $phone, $networkName, $amount, $trx) {
-        
+
         // Apply discount to determine the final price for the airtime
         $price = round($this->applyDiscount($user->account_type, $amount), 2);
-    
+
         DB::beginTransaction();
-    
+
         try {
             // Check if transaction with the same request ID or trx exists
             $existingTransaction = AirtimeTransactions::where('request_id', $requestID)
                 ->orWhere('trx', $trx)
                 ->first();
-    
+
             if ($existingTransaction) {
                 // Update existing transaction record
                 $this->updateExistingTransaction($existingTransaction, $user, $networkName, $amount, $phone, $requestID);
@@ -157,10 +157,10 @@ class AirtimeController extends Controller
                 // Create a new transaction if none exists
                 $this->createNewTransaction($user, $requestID, $trx, $network_id, $phone, $price, $networkName, $amount);
             }
-    
+
             // Update or create transaction record in the Transaction table
             $this->updateTransactionTable($trx, $user, $price, $networkName, $amount, $phone);
-    
+
             // Commit the transaction after all updates
             DB::commit();
         } catch (\Exception $e) {
@@ -169,18 +169,18 @@ class AirtimeController extends Controller
             throw $e;
         }
     }
-    
+
     /**
      * Updates an existing AirtimeTransaction record.
      */
     protected function updateExistingTransaction($existingTransaction, $user, $networkName, $amount, $phone, $requestID) {
-        
+
         $existingTransaction->type = 'VTU';
         $existingTransaction->post_bal = $user->balance;
         $existingTransaction->details = 'Bought '.$networkName.' ₦'.$amount.' Airtime VTU for '.$phone;
         $existingTransaction->status = '1';
         $existingTransaction->save();
-    
+
         // Log processed notification for tracking
         DB::table('processed_notifications')->insert([
             'reference_number' => $requestID,
@@ -188,16 +188,16 @@ class AirtimeController extends Controller
             'updated_at' => now(),
         ]);
     }
-    
+
     /**
      * Creates a new AirtimeTransaction and updates the user's balance.
      */
     protected function createNewTransaction($user, $requestID, $trx, $network_id, $phone, $price, $networkName, $amount) {
-        
+
         $preBal = $user->balance;
-        $user->balance -= number_format($price);
+        $user->balance -= number_format($price, 2);
         $user->save();
-    
+
         $transaction = new AirtimeTransactions;
         $transaction->request_id = $requestID;
         $transaction->pre_bal = $preBal;
@@ -213,14 +213,14 @@ class AirtimeController extends Controller
         $transaction->details = 'Initiated Airtime Transactions';
         $transaction->save();
     }
-    
+
     /**
      * Updates the Transaction table or creates a new record if none exists.
      */
     protected function updateTransactionTable($trx, $user, $price, $networkName, $amount, $phone){
-        
+
         $transaction = Transaction::where('trx', $trx)->first();
-    
+
         if ($transaction) {
             $transaction->post_balance = $user->balance;
             $transaction->status = '1';
