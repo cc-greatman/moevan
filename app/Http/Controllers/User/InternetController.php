@@ -236,7 +236,11 @@ class InternetController extends Controller
                     'networkId' => $networkId,
                 ];
 
-                $body['dataType'] = 'DATA TRANSFER';
+                if($planDetails->dataType->id == '6') {
+                    $body['dataType'] = 'DATA TRANSFER';
+                } else {
+                    $body['dataType'] = 'CORPORATE GIFTING';
+                }
 
                 $body['planId'] = $planDetails->plan_id;
                 $body['phone'] = $phone;
