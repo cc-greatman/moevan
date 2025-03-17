@@ -296,62 +296,66 @@ class InternetController extends Controller
 
                         } elseif (isset($responseDa['status']) && ($responseDa['status'] === "failed" || $responseDa['status'] === "fail") || (isset($responseDa['message']) && $responseDa['message'] === "Transaction failed")) {
 
-                            try {
-                                // Make API request
-                                $header = [
-                                    'Authorization' => 'Token '.env('BELLO_API_KEY'),
-                                    'Content-Type' => 'application/json',
-                                ];
+                            if ($network_id == '1' && $planDetails->dataType->id == '6') {
+                                try {
+                                    // Make API request
+                                    $header = [
+                                        'Authorization' => 'Token '.env('BELLO_API_KEY'),
+                                        'Content-Type' => 'application/json',
+                                    ];
 
-                                $data = [
-                                    'network' => $network,
-                                    'mobile_number' => $phone,
-                                    'plan' => $bello_id,
-                                    'Ported_number' => true,
-                                ];
+                                    $data = [
+                                        'network' => $network,
+                                        'mobile_number' => $phone,
+                                        'plan' => $bello_id,
+                                        'Ported_number' => true,
+                                    ];
 
-                                $response = Http::withHeaders($header)
-                                        ->timeout(38001)
-                                        ->post('https://bello-ventures.com/api/data/', $data);
+                                    $response = Http::withHeaders($header)
+                                            ->timeout(38001)
+                                            ->post('https://bello-ventures.com/api/data/', $data);
 
-                                $responseDat = $response->json();
+                                    $responseDat = $response->json();
 
-                                if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                    // Handle failed response
+                                    if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
+                                        // Handle failed response
+                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+
+                                    } elseif (isset($responseDat['error']) || empty($responseDat)) {
+                                        // Handle failed response
+                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
+
+                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+
+                                    } else {
+                                        $apiResponse = $responseDat['api_response'];
+                                        // Handle other cases
+                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
+
+                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                                    }
+                                } catch (\Exception $e) {
+
                                     $msg = $responseDat['api_response']??$responseDat['error']??null;
 
                                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
 
+                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
+
+                                    // Ensure $msg is a string
+                                    if (is_array($msg)) {
+                                        $msg = json_encode($msg);
+                                    }
                                     return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                    // Handle failed response
-                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                } else {
-                                    $apiResponse = $responseDat['api_response'];
-                                    // Handle other cases
-                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                                 }
-                            } catch (\Exception $e) {
-
-                                $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                                // Ensure $msg is a string
-                                if (is_array($msg)) {
-                                    $msg = json_encode($msg);
-                                }
-                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                            } else {
+                                $responseDa['status'] = 'failed';
                             }
 
                         } elseif (isset($responseDa['status']) && $responseDa['status'] === 'pending') {
