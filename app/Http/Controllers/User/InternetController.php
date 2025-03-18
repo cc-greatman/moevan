@@ -426,7 +426,10 @@ class InternetController extends Controller
 
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
+
                 $responseData = $responses->json();
+
+                return $responseData;
 
                 // Check response status and content
                 if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
