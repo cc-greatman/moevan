@@ -954,6 +954,7 @@ class InternetController extends Controller
     }
 
     public function generateRequestId() {
+        
         $requestId = date('Ymdhis', time()).
                      strtoupper(bin2hex(openssl_random_pseudo_bytes(6))).
                      'MOEVAN';
