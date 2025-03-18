@@ -395,7 +395,7 @@ class InternetController extends Controller
             }
         }
 
-        if (in_array(optional($planDetails->dataType)->id, ['4', '8', '9', '10'])) {
+        if (in_array($planDetails->dataType->id, ['4', '8', '9', '10'])) {
             try {
                 // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
