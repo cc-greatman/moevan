@@ -427,6 +427,8 @@ class InternetController extends Controller
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
 
+                return $body;
+
                 $responseData = $responses->json();
 
                 // Check response status and content
@@ -954,7 +956,7 @@ class InternetController extends Controller
     }
 
     public function generateRequestId() {
-        
+
         $requestId = date('Ymdhis', time()).
                      strtoupper(bin2hex(openssl_random_pseudo_bytes(6))).
                      'MOEVAN';
