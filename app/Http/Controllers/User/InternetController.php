@@ -975,11 +975,11 @@ class InternetController extends Controller
         $timestamp = $now->format('YmdHis');
 
         // Generate random characters (alphanumeric)
-        $randomLength = rand(13, 18); // Ensuring total length between 25 and 30
-        $randomString = strtoupper(bin2hex(random_bytes(ceil($randomLength / 2)))); 
+        $randomLength = rand(8, 10); // Ensuring total length between 25 and 30
+        $randomString = strtoupper(bin2hex(random_bytes(ceil($randomLength / 2))));
 
         // Final Request ID
-        $requestId = $timestamp . substr($randomString, 0, $randomLength);
+        $requestId = $timestamp . substr($randomString, 0, $randomLength). 'MOEVAN';
 
         return $requestId;
     }
