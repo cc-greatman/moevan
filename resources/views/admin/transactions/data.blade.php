@@ -66,6 +66,7 @@
                                                 <th scope="col">Provider</th>
                                                 <th scope="col">Network</th>
                                                 <th scope="col">Data Type</th>
+                                                <th scope="col">Reference</th>
                                                 <th scope="col">Plan</th>
                                                 <th scope="col">Balance Before</th>
                                                 <th scope="col">Amount</th>
@@ -89,6 +90,7 @@
                                                     <td>{{ optional($dataTrx->dataPlan)->size ?? 'N/A' }} @ {{ optional($dataTrx->dataPlan)->validity ?? 'N/A' }} Days</td>
                                                     <td>{{ optional(optional($dataTrx->dataPlan)->network)->name ?? 'Unknown Network' }}</td>
                                                     <td>{{ optional(optional($dataTrx->dataPlan)->dataType)->name ?? 'Unknown Type' }}</td>
+                                                    <td>{{ $dataTrx->reference }}</td>
                                                     <td>₦{{ number_format($dataTrx->pre_bal, 2) }}</td>
                                                     <td>₦{{ number_format($dataTrx->amount, 2) }}</td>
                                                     <td>₦{{ number_format($dataTrx->post_bal, 2) }}</td>
