@@ -429,8 +429,6 @@ class InternetController extends Controller
 
                 $responseData = $responses->json();
 
-                return $responseData;
-
                 // Check response status and content
                 if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
                     $apiResponse = $responseData['data']['message'] ?? 'Transaction Successful';
@@ -956,7 +954,6 @@ class InternetController extends Controller
     }
 
     public function generateRequestId() {
-
         // Set the timezone to GMT+1
         $timezone = new DateTimeZone('Europe/Berlin'); // GMT+1
 
@@ -964,27 +961,14 @@ class InternetController extends Controller
         $now = new DateTime('now', $timezone);
 
         // Format the date and time as YYYYMMDDHHII
-        $formattedDateTime = $now->format('YmdHi');
+        $timestamp = $now->format('YmdHi');
 
-        // Generate a random alphanumeric string (you can adjust the length as needed)
-        $randomString = Str::random(9); // Adjust the length as needed
+        // Generate a more unique ID using uniqid() with entropy
+        $uniquePart = substr(md5(uniqid(mt_rand(), true)), 0, 17); // 17 characters
 
-        // Concatenate the formatted date and time with the random string
-        $requestId = $formattedDateTime . $randomString;
+        // Final request ID (25 characters)
+        $requestId = $timestamp . $uniquePart; // 8 + 17 = 25
 
-        // Check if the length of $requestId is at least 25 characters
-        if (strlen($requestId) < 25) {
-            // Calculate the number of additional characters needed
-            $additionalCharactersNeeded = 25 - strlen($requestId);
-
-            // Append additional random alphanumeric characters to reach 25 characters
-            $additionalRandomString = Str::random($additionalCharactersNeeded);
-
-            // Concatenate the additional random string
-            $requestId .= $additionalRandomString;
-        }
-
-        // Use $requestId as needed
         return $requestId;
     }
 
