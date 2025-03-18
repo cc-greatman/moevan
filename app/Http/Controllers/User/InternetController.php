@@ -975,7 +975,7 @@ class InternetController extends Controller
         $timestamp = $now->format('YmdHis');
 
         // Generate random characters (alphanumeric)
-        $randomLength = rand(8, 10); // Ensuring total length between 25 and 30
+        $randomLength = rand(3, 7); // Ensuring total length between 25 and 30
         $randomString = strtoupper(bin2hex(random_bytes(ceil($randomLength / 2))));
 
         // Final Request ID
