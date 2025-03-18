@@ -404,9 +404,9 @@ class InternetController extends Controller
                 // Determine dataType
                  if (optional($planDetails->dataType)->id == '8' || optional($planDetails->dataType)->id == '9') {
                         $dataType = 'BROADBAND GIFTING';
-                    } else {
+                } else {
                         $dataType = 'DIRECT GIFTING';
-                    }
+                }
 
                 // Prepare request body
                 $body = [
@@ -423,6 +423,8 @@ class InternetController extends Controller
                     'Accept' => 'application/json',
                     'Authorization' => 'Bearer ' . $autopilotApiKey,
                 ];
+
+                return $body;
 
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
