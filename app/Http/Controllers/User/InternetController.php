@@ -426,8 +426,6 @@ class InternetController extends Controller
                     'Authorization' => 'Bearer ' . $autopilotApiKey,
                 ];
 
-                return $body;
-
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
 
