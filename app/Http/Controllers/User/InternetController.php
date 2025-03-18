@@ -968,9 +968,18 @@ class InternetController extends Controller
 
     public function generateRequestId() {
 
-        $requestId = date('Ymdhis', time()).
-                     strtoupper(bin2hex(openssl_random_pseudo_bytes(6))).
-                     'MOEVAN';
+        // Set the timezone to Africa/Lagos
+        $timezone = new DateTimeZone('Africa/Lagos');
+        $now = new DateTime('now', $timezone);
+
+        $timestamp = $now->format('YmdHis');
+
+        // Generate random characters (alphanumeric)
+        $randomLength = rand(13, 18); // Ensuring total length between 25 and 30
+        $randomString = strtoupper(bin2hex(random_bytes(ceil($randomLength / 2)))); 
+
+        // Final Request ID
+        $requestId = $timestamp . substr($randomString, 0, $randomLength);
 
         return $requestId;
     }
