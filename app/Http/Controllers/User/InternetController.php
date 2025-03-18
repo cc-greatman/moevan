@@ -799,114 +799,114 @@ class InternetController extends Controller
     }
 
     public function getDataTypes() {
-    try {
-        // Retrieve the 'network_id' from the query parameters
-        $networkId = request()->query('network_id');
-        if (is_null($networkId)) {
-            return response()->json(['error' => 'Network ID is required'], 400);
-        }
-
-        $user = Auth::user();
-        if (is_null($user)) {
-            return response()->json(['error' => 'User not authenticated'], 401);
-        }
-
-        // Initialize the query builder for DataType
-        $query = DataType::with('dataPlans')
-            ->whereHas('dataPlans', function ($query) use ($networkId) {
-                $query->where('network_id', $networkId);
-            });
-
-        // Define the custom order arrays
-        $customOrder = [
-            'SPECIAL DATA' => 1,
-            'SME' => 2,
-            'SME2' => 3,
-            'CORPORATE GIFTING' => 4,
-            'GIFTING' => 5,
-        ];
-
-        $mtnOrder = [
-            'XTRASPECIAL' => 1,
-            'SPECIAL DATA' => 2,
-            'SPECIAL OFFER' => 3,
-            'GIFTING' => 4,
-        ];
-
-        $rearrangedOrder = [
-            'SPECIAL DATA' => 1,
-            'CORPORATE GIFTING' => 2,
-            'GIFTING' => 3,
-            'SME' => 4,
-            'SME2' => 5,
-        ];
-
-        // Adjust the query based on account_type and network_id
-        if ($networkId == '1') {
-            $query->whereIn('id', [4, 6, 7, 10]);
-        } elseif ($user->account_type == '1' && $networkId == '4') {
-            $query->whereIn('id', [4, 5, 7]);
-        } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
-            $query->whereIn('id', [4, 5,7]);
-        } elseif ($networkId == '2') {
-            $query->whereIn('id', [4, 5, 7]);
-        } elseif ($networkId == '3') {
-            $query->whereIn('id', [4, 5]);
-        }
-
-        // Determine the order to use based on network_id
-        $orderToUse = match ($networkId) {
-            '2', '4' => $rearrangedOrder,
-            '1' => $mtnOrder,
-            default => $customOrder,
-        };
-
-        // Get the data types with custom ordering
-        $dataTypes = $query->get()->sortBy(fn($dataType) => $orderToUse[$dataType->name] ?? PHP_INT_MAX)->values();
-
-        // Transform the data type names if conditions are met
-        $dataTypes->transform(function ($dataType) use ($user, $networkId) {
-            if ($user->account_type == '1') {
-                if ($networkId == '1') {
-                    $dataType->name = match ($dataType->name) {
-                        'SPECIAL OFFER' => 'SMALL BUNDLES',
-                        'GIFTING' => 'BIG BUNDLES',
-                        'SME2' => 'SMALL BUNDLES 2',
-                        default => $dataType->name,
-                    };
-                } elseif ($networkId == '2' || $networkId == '3') {
-                    $dataType->name = match ($dataType->name) {
-                        'CORPORATE GIFTING' => 'SMALL BUNDLES',
-                        'GIFTING' => 'BIG BUNDLES',
-                        default => $dataType->name,
-                    };
-                } elseif ($networkId == '4') {
-                    $dataType->name = match ($dataType->name) {
-                        'SPECIAL DATA' => 'SMALL BUNDLES',
-                        'CORPORATE GIFTING' => 'SMALL BUNDLES 2',
-                        'GIFTING' => 'BIG BUNDLES',
-                        default => $dataType->name,
-                    };
-                }
-            } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
-                $dataType->name = match ($dataType->name) {
-                    'SPECIAL OFFER' => 'SME',
-                    'SME2' => 'COPORATE GIFTING',
-                    default => $dataType->name,
-                };
-            } elseif ($networkId === "4" && $dataType->name === "BROADBAND BUNDLES") {
-                $dataType->name = 'ROUTER BUNDLES';
+        try {
+            // Retrieve the 'network_id' from the query parameters
+            $networkId = request()->query('network_id');
+            if (is_null($networkId)) {
+                return response()->json(['error' => 'Network ID is required'], 400);
             }
 
-            return $dataType;
-        });
-        return response()->json($dataTypes);
-    } catch (\Exception $e) {
-        Log::error('Error in getDataTypes: ' . $e->getMessage());
-        return response()->json(['error' => 'An unexpected error occurred'], 500);
+            $user = Auth::user();
+            if (is_null($user)) {
+                return response()->json(['error' => 'User not authenticated'], 401);
+            }
 
+            // Initialize the query builder for DataType
+            $query = DataType::with('dataPlans')
+                ->whereHas('dataPlans', function ($query) use ($networkId) {
+                    $query->where('network_id', $networkId);
+                });
+
+            // Define the custom order arrays
+            $customOrder = [
+                'SPECIAL DATA' => 1,
+                'SME' => 2,
+                'SME2' => 3,
+                'CORPORATE GIFTING' => 4,
+                'GIFTING' => 5,
+            ];
+
+            $mtnOrder = [
+                'XTRASPECIAL' => 1,
+                'SPECIAL DATA' => 2,
+                'SPECIAL OFFER' => 3,
+                'GIFTING' => 4,
+            ];
+
+            $rearrangedOrder = [
+                'SPECIAL DATA' => 1,
+                'CORPORATE GIFTING' => 2,
+                'GIFTING' => 3,
+                'SME' => 4,
+                'SME2' => 5,
+            ];
+
+            // Adjust the query based on account_type and network_id
+            if ($networkId == '1') {
+                $query->whereIn('id', [4, 6, 7, 10]);
+            } elseif ($user->account_type == '1' && $networkId == '4') {
+                $query->whereIn('id', [4, 5, 7]);
+            } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
+                $query->whereIn('id', [4, 5,7]);
+            } elseif ($networkId == '2') {
+                $query->whereIn('id', [4, 5, 7]);
+            } elseif ($networkId == '3') {
+                $query->whereIn('id', [4, 5]);
+            }
+
+            // Determine the order to use based on network_id
+            $orderToUse = match ($networkId) {
+                '2', '4' => $rearrangedOrder,
+                '1' => $mtnOrder,
+                default => $customOrder,
+            };
+
+            // Get the data types with custom ordering
+            $dataTypes = $query->get()->sortBy(fn($dataType) => $orderToUse[$dataType->name] ?? PHP_INT_MAX)->values();
+
+            // Transform the data type names if conditions are met
+            $dataTypes->transform(function ($dataType) use ($user, $networkId) {
+                if ($user->account_type == '1') {
+                    if ($networkId == '1') {
+                        $dataType->name = match ($dataType->name) {
+                            'SPECIAL OFFER' => 'SMALL BUNDLES',
+                            'GIFTING' => 'BIG BUNDLES',
+                            'SME2' => 'SMALL BUNDLES 2',
+                            default => $dataType->name,
+                        };
+                    } elseif ($networkId == '2' || $networkId == '3') {
+                        $dataType->name = match ($dataType->name) {
+                            'CORPORATE GIFTING' => 'SMALL BUNDLES',
+                            'GIFTING' => 'BIG BUNDLES',
+                            default => $dataType->name,
+                        };
+                    } elseif ($networkId == '4') {
+                        $dataType->name = match ($dataType->name) {
+                            'SPECIAL DATA' => 'SMALL BUNDLES',
+                            'CORPORATE GIFTING' => 'SMALL BUNDLES 2',
+                            'GIFTING' => 'BIG BUNDLES',
+                            default => $dataType->name,
+                        };
+                    }
+                } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
+                    $dataType->name = match ($dataType->name) {
+                        'SPECIAL OFFER' => 'SME',
+                        'SME2' => 'COPORATE GIFTING',
+                        default => $dataType->name,
+                    };
+                } elseif ($networkId === "4" && $dataType->name === "BROADBAND BUNDLES") {
+                    $dataType->name = 'ROUTER BUNDLES';
+                }
+
+                return $dataType;
+            });
+            return response()->json($dataTypes);
+        } catch (\Exception $e) {
+            Log::error('Error in getDataTypes: ' . $e->getMessage());
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
+
+        }
     }
-}
 
     public function getDataPlans(Request $request) {
         $network = $request->input('network_id');
@@ -963,11 +963,14 @@ class InternetController extends Controller
         // Format the date and time as YYYYMMDDHHII
         $timestamp = $now->format('YmdHi');
 
-        // Generate a more unique ID using uniqid() with entropy
-        $uniquePart = substr(md5(uniqid(mt_rand(), true)), 0, 17); // 17 characters
+        do {
+            // Generate a unique 17-character part
+            $uniquePart = substr(md5(uniqid(mt_rand(), true)), 0, 17);
 
-        // Final request ID (25 characters)
-        $requestId = $timestamp . $uniquePart; // 8 + 17 = 25
+            // Combine timestamp and unique part (25 characters in total)
+            $requestId = $timestamp . $uniquePart;
+
+        } while (DB::table('data_transactions')->where('reference', $requestId)->exists());
 
         return $requestId;
     }
