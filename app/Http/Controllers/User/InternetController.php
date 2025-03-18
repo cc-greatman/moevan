@@ -954,23 +954,9 @@ class InternetController extends Controller
     }
 
     public function generateRequestId() {
-        // Set the timezone to GMT+1
-        $timezone = new DateTimeZone('Europe/Berlin'); // GMT+1
-
-        // Get the current date and time
-        $now = new DateTime('now', $timezone);
-
-        // Format the date and time as YYYYMMDDHHII
-        $timestamp = $now->format('YmdHi');
-
-        do {
-            // Generate a unique 17-character part
-            $uniquePart = substr(md5(uniqid(mt_rand(), true)), 0, 17);
-
-            // Combine timestamp and unique part (25 characters in total)
-            $requestId = $timestamp . $uniquePart;
-
-        } while (DB::table('data_transactions')->where('reference', $requestId)->exists());
+        $requestId = date('Ymdhis', time()).
+                     strtoupper(bin2hex(openssl_random_pseudo_bytes(6))).
+                     'MOEVAN';
 
         return $requestId;
     }
