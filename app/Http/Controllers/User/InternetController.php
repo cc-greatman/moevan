@@ -34,7 +34,8 @@ class InternetController extends Controller
             'phone' => 'required|numeric',
             'plan' => 'required|numeric',
             'network_id' => 'required|numeric',
-            'amount' => 'required|numeric|min:50'
+            'amount' => 'required|numeric|min:50',
+            'dataType' => 'required|numeric'
         ], [
             'amount.min' => 'The minimum possible amount is ₦50'
         ]);
@@ -64,6 +65,7 @@ class InternetController extends Controller
         $networkName = Networks::findOrFail($planDetails->network_id);
         $networkId   = $networkName->networkId;
         $network = $networkName->network;
+        $dataType = $validatedData['dataType'];
 
         $trx = getTrx();
 
@@ -395,7 +397,7 @@ class InternetController extends Controller
             }
         }
 
-        if (in_array($planDetails->dataType->id, ['4', '8', '9', '10'])) {
+        if (in_array($dataType, ['4', '8', '9', '10'])) {
             try {
                 // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
