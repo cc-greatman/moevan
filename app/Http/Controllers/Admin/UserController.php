@@ -176,36 +176,36 @@ class UserController extends Controller
 
         return redirect()->route('admin.user.debit')->with('success', 'User Balance Has been Updated Successfully');
     }
-    
+
     public function approveManualTransactions(Request $request, WalletTransactions $transaction) {
-        
+
         // Optionally update user balance
         $user = $transaction->user;
-        
+
         $transaction->status = 1;
         $transaction->pre_bal = $user->balance;
         $transaction->details = '₦' . number_format($transaction->amount, 2) . ' has been added to your balance';
-        
+
         $user->balance += $transaction->amount;
         $user->save();
-        
+
         $transaction->post_bal = $user->balance;
         $transaction->save();
 
         return redirect()->route('admin.transactions.manual.transactions')->with('success', 'Transaction approved and user funded.');
     }
-    
+
     public function disapproveManualTransactions(Request $request, WalletTransactions $transaction) {
-        
+
          $request->validate([
             'rejection_reason' => 'required|string|max:255',
         ]);
-    
+
         // Update transaction status to '3' (rejected) and add rejection reason to details
         $transaction->status = '3'; // Rejected status
         $transaction->details = 'Rejected: ' . $request->rejection_reason;
         $transaction->save();
-    
+
         return redirect()->route('admin.transactions.manual.transactions')->with('success', 'Transaction rejected successfully.');
     }
 
@@ -353,7 +353,7 @@ class UserController extends Controller
     public function searchData(Request $request) {
         // Validate the search request
         $request->validate([
-            'search_type' => 'required|string|in:phone,date,amount,trx,network,status,username,provider,datatype',
+            'search_type' => 'required|string|in:phone,date,amount,trx,network,status,username,provider,datatype,reference',
             'query' => 'required|string',
         ]);
 
@@ -388,6 +388,9 @@ class UserController extends Controller
                         } else {
                             $q->whereDoesntHave('dataPlan');
                         }
+                        break;
+                    case 'reference':
+                        $q->where('reference', 'LIKE', "%$query%");
                         break;
                     case 'date':
                         try {

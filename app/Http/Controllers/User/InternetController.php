@@ -436,7 +436,6 @@ class InternetController extends Controller
                     $message->subject('API Request Data with Headers');
                 });
 
-
                 // Make the HTTP request
                 $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
 
@@ -970,7 +969,7 @@ class InternetController extends Controller
 
         // Set the timezone to Africa/Lagos
         $timezone = new DateTimeZone('Africa/Lagos');
-        
+
         $now = new DateTime('now', $timezone);
 
         $timestamp = $now->format('YmdHis');
