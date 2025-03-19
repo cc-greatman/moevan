@@ -9,17 +9,12 @@ use App\Models\DataControls;
 use App\Models\DataTransactions;
 use App\Models\DataType;
 use App\Models\Networks;
-use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\User;
-use App\Models\WalletTransactions;
-use App\Rules\ReCaptchaV3;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use GeoIp2\Database\Reader;
 use Illuminate\Console\View\Components\Info;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -36,38 +31,43 @@ class InternetController extends Controller
             'phone' => 'required|numeric',
             'plan' => 'required|numeric',
             'network_id' => 'required|numeric',
-            'amount' => 'required|numeric|min:50',
             'dataType' => 'required|numeric'
-        ], [
-            'amount.min' => 'The minimum possible amount is ₦50'
         ]);
-        $amount =  $validatedData['amount'];
-
         // Check user's balance
-        $user = User::find(auth()->guard('web')->id()); // Assuming the user is logged in
+        $user = User::findOrFail(auth()->guard('web')->id()); // Assuming the user is logged in
 
         if(!$user) {
             return redirect()->route('user.trx.error')->with('error', 'Nice one Thief');
         }
-        if ($amount > $user->balance) {
-            return redirect()->route('user.trx.error')->with('error', 'Insufficient balance.');
-        }
-
-        $dataType = $request->input('dataType');
 
         // Get form data
         $phone = $validatedData['phone'];
         $plan_id = $validatedData['plan'];
         $network_id = $validatedData['network_id'];
-        $commission = $amount * 0.01;
-
-        $planDetails = DataPlans::where('data_id', $plan_id)->with('dataType')->first();
-        $sub_id      = $planDetails->sub_id;
-        $bello_id    = $planDetails->bello_id;
+        $planDetails = DataPlans::where('data_id', $plan_id)->with('dataType')->first();// Get the plan details
         $networkName = Networks::findOrFail($planDetails->network_id);
         $networkId   = $networkName->networkId;
         $network = $networkName->network;
         $dataType = $validatedData['dataType'];
+        $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
+
+        $amount = match ($user->account_type) {
+            1 => $planDetails->price,
+            2 => $planDetails->r_price,
+            3 => $agentPrice,
+            default => null,
+        };
+
+        if (!$planDetails) {
+            
+            return redirect()->route('user.trx.error')->with('error', 'Unidentified data plan.');
+        }
+
+        if ($amount === null || $amount > $user->balance) {
+            return redirect()->route('user.trx.error')->with('error', 'Insufficient balance.');
+        }
+
+        $commission = $amount * 0.01;
 
         $trx = getTrx();
 
@@ -77,740 +77,383 @@ class InternetController extends Controller
         $main_switch = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
         $agent = DataControls::where('id', 14)->first();
 
-        if($manual->status == '1') {
+        //Checking if the Data Bundle is active
+        $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
-            $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
-
-            return redirect()->route('user.trx.success')->with(['response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!', 'success' => 'Transaction Successful! Data Subscription Successful!']);
-        }
-
-        if($main_switch->active == '0') {
-
-            return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
-        }
-
-        if($user->account_type == '3' && $planDetails->dataType->id == '6' && $agent->status == '1' ) {
-
-             $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
-
-            return redirect()->route('user.trx.success')->with(['response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!', 'success' => 'Transaction Successful! Data Subscription Successful!']);
-        }
-
-        if($user->account_type == '3' && $planDetails->dataType->id == '6' && $agent->active == '0') {
-
-             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
-        }
-
-        if($user->account_type == '2' && $planDetails->dataType->id == '6' && $planDetails->dataType->status == '1') {
-
-             $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
-
-            return redirect()->route('user.trx.success')->with(['response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!', 'success' => 'Transaction Successful! Data Subscription Successful!']);
-        }
-
-        if($user->account_type == '2' && $planDetails->dataType->id == '6' && $planDetails->dataType->active == '0') {
-
-             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
-        }
-
+        //Initiate initial data transaction on user account
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
 
-        if($planDetails->dataType->id == '7') {
-            try {
-                // Your Autopilot API key
-                $autopilotApiKey = env('AUTOPILOT_API_KEY');
+        //MTN Network Calls
+        if ($network_id === 1) {
+            //MTN SME
+            if($planDetails->dataType->id === 2) {
+                $apiType = "SME";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
-                // Base URL of the API
-                $baseUrl = 'https://autopilotng.com/api/live';
-
-                $body = [
-                    'networkId' => $networkId,
-                ];
-
-                if($planDetails->data_id != '3004') {
-                    $body['dataType'] = 'DATA TRANSFER';
-                } else {
-                    $body['dataType'] = 'AWOOF GIFTING';
-                }
-
-                $body['planId'] = $planDetails->plan_id;
-                $body['phone'] = $phone;
-                $body['reference'] = $reference;
-
-                $head = [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $autopilotApiKey,
-                ];
-
-                // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
-
-                $responseData = $responses->json();
-
-                // Check response status and content
-                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
-                    $apiResponse = $responseData['data']['message'];
-
-                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
-
-                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                } else {
-                    $message = $responseData['data']['message'];
-
-                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
-                }
-            } catch (\Exception $e) {
-
-                $message = $responseData['data']['message'];
-
-                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
-                return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
-            }
-        }
-
-        if($network_id == '2' && $planDetails->dataType->id == '5') {
-
-            try {
-                // Your Autopilot API key
-                $autopilotApiKey = env('AUTOPILOT_API_KEY');
-
-                // Base URL of the API
-                $baseUrl = 'https://autopilotng.com/api/live';
-
-                $body = [
-                    'networkId' => $networkId,
-                ];
-
-                $body['dataType'] = 'CORPORATE GIFTING';
-
-                $body['planId'] = $planDetails->plan_id;
-                $body['phone'] = $phone;
-                $body['reference'] = $reference;
-
-                $head = [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $autopilotApiKey,
-                ];
-
-                // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
-
-                $responseData = $responses->json();
-
-                // Check response status and content
-                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
-                    $apiResponse = $responseData['data']['message'];
-
-                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
-
-                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                } else {
-                    $message = $responseData['data']['message'];
-
-                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
-                }
-            } catch (\Exception $e) {
-
-                $message = $responseData['data']['message'];
-
-                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
-                return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
-            }
-        }
-
-        if($network_id == '1' || $network_id == '2' || $network_id == '4' && $planDetails->dataType->id == '6' || $planDetails->dataType->id == '5') {
-
-            try {
-                // Your Autopilot API key
-                $autopilotApiKey = env('AUTOPILOT_API_KEY');
-
-                // Base URL of the API
-                $baseUrl = 'https://autopilotng.com/api/live';
-
-                $body = [
-                    'networkId' => $networkId,
-                ];
-
-                if($planDetails->dataType->id == '6') {
-                    $body['dataType'] = 'DATA TRANSFER';
-                } else {
-                    $body['dataType'] = 'CORPORATE GIFTING';
-                }
-
-                $body['planId'] = $planDetails->plan_id;
-                $body['phone'] = $phone;
-                $body['reference'] = $reference;
-
-                $head = [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $autopilotApiKey,
-                ];
-
-                // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(38001)->post($baseUrl . '/v1/data', $body);
-
-                $responseData = $responses->json();
-
-                // Check response status and content
-                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
-                    $apiResponse = $responseData['data']['message'];
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
 
                     $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
 
                     return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                 } else {
 
-                    try {
-                        $header = [
-                            'Content-Type' => 'application/json',
-                            'Authorization' => 'Bearer '.env('AREWA_API_KEY'),
-                        ];
+                    $finalResponse = $this->justpayApi($planDetails, $phone);
 
-                        $payload = [
-                            'service' => 'buy-data',
-                            'network' => $networkName->name,
-                            'mobile' => $phone,
-                            'bundle_id' => $planDetails->are_id,
-                        ];
+                    if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
 
-                        $response = Http::withHeaders($header)
-                                            ->timeout(38001)
-                                            ->post('https://arewabundleapi.com/api/v2/buyservice', $payload);
+                        $apiResponse = $finalResponse['data']['true_response'];
+                        // Handle other cases
+                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
 
-                        $responseDa = $response->json();
+                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                    } else {
 
-                        if(isset($responseDa['status']) && $responseDa['status'] === 'success') {
+                        $message = $finalResponse['data']['true_response'] ?? $finalResponse['server_message'] ?? $finalResponse['data']['server_message'] ?? $finalResponse['error'] ?? "Transaction Declined by Provider JPNG. Refer to them";
 
-                            $apiResponse = $responseDa['content'];
-
-                            // Handle other cases
-                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AREWA');
-
-                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-
-                        } elseif (isset($responseDa['status']) && ($responseDa['status'] === "failed" || $responseDa['status'] === "fail") || (isset($responseDa['message']) && $responseDa['message'] === "Transaction failed")) {
-
-                            if ($network_id == '1' && $planDetails->dataType->id == '6') {
-                                try {
-                                    // Make API request
-                                    $header = [
-                                        'Authorization' => 'Token '.env('BELLO_API_KEY'),
-                                        'Content-Type' => 'application/json',
-                                    ];
-
-                                    $data = [
-                                        'network' => $network,
-                                        'mobile_number' => $phone,
-                                        'plan' => $bello_id,
-                                        'Ported_number' => true,
-                                    ];
-
-                                    $response = Http::withHeaders($header)
-                                            ->timeout(38001)
-                                            ->post('https://bello-ventures.com/api/data/', $data);
-
-                                    $responseDat = $response->json();
-
-                                    if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                        // Handle failed response
-                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                    } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                        // Handle failed response
-                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                    } else {
-                                        $apiResponse = $responseDat['api_response'];
-                                        // Handle other cases
-                                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                    }
-                                } catch (\Exception $e) {
-
-                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                                    // Ensure $msg is a string
-                                    if (is_array($msg)) {
-                                        $msg = json_encode($msg);
-                                    }
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                }
-                            } else {
-                                $responseDa['status'] = 'failed';
-                            }
-
-                        } elseif (isset($responseDa['status']) && $responseDa['status'] === 'pending') {
-
-                            $apiResponse = $responseDa['content'];
-
-                            // Handle other cases
-                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AREWA');
-
-                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                        }
-                    } catch (\Exception $e) {
-
-                        $msg = $responseDa['content']??$responseDa['message']??null;
-
-                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                        // Ensure $msg is a string
-                        if (is_array($msg)) {
-                            $msg = json_encode($msg);
+                        if (empty($message)) {
+                            $message = "Network is currently Unavailable";
                         }
 
-                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'JUSTPAY');
 
+                        return redirect()->route('user.trx.error')->with('error', $message);
                     }
                 }
-            } catch (\Exception $e) {
-
-                $message = $responseData['data']['message'];
-
-                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
-                return redirect()->route('user.trx.error')->with('error', 'Network is currently unavailable.');
             }
-        }
-
-        if (in_array($dataType, ['4', '8', '9', '10'])) {
-            info('2'. $phone.now());
-            try {
-                // Autopilot API key
-                $autopilotApiKey = env('AUTOPILOT_API_KEY');
-                $baseUrl = 'https://autopilotng.com/api/live';
-
-                // Determine dataType
-                 if (optional($planDetails->dataType)->id == '8' || optional($planDetails->dataType)->id == '9') {
-                        $dataType = 'BROADBAND GIFTING';
-                } else {
-                        $dataType = 'DIRECT GIFTING';
-                }
-
-                // Prepare request body
-                $body = [
-                    'networkId' => $networkId,
-                    'dataType' => $dataType,
-                    'planId' => $planDetails->plan_id,
-                    'phone' => $phone,
-                    'reference' => $reference
-                ];
-
-                // Headers
-                $head = [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $autopilotApiKey,
-                ];
-
-                // Merge headers and request body for email
-                $emailData = array_merge($body, ['autopilotApiKey' => $autopilotApiKey]);
-
-                // Send email
-                Mail::send('user.auth.mails.apiRequest', $emailData, function ($message) {
-                    $message->to(['blessedgreatman96@gmail.com', 'msenterprise4321@gmail.com']);
-                    $message->subject('API Request Data with Headers');
-                });
-
-                // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
-
-                $responseData = $responses->json();
+            //MTN GIFTING
+            elseif ($planDetails->dataType->id === 4) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
                 // Check response status and content
-                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
-                    $apiResponse = $responseData['data']['message'] ?? 'Transaction Successful';
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
 
                     $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
 
-                    return redirect()->route('user.trx.success')->with([
-                        'response' => $apiResponse,
-                        'success' => 'Transaction Successful! Data Subscription Successful!'
-                    ]);
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                 } else {
-                    $message = $responseData['data']['message'] ?? 'Unknown error occurred.';
+                    $message = $finalResponse['data']['message'];
 
                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
 
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
-            } catch (\Exception $e) {
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
-
-                $message = 'Network is currently unavailable.';
-                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                return redirect()->route('user.trx.error')->with('error', $message);
             }
-        }
-
-        if ($network_id == '1' && $planDetails->dataType->id == '7' ||$planDetails->dataType->id == '2' && in_array(optional($plan_id), ['111111', '226', '1111', '1222', '1223', '1224', '1225', '1226', '1227', '80010'])) {
-            try {
-                // Autopilot API key
-                $autopilotApiKey = env('AUTOPILOT_API_KEY');
-                $baseUrl = 'https://autopilotng.com/api/live';
-
-                // Determine dataType
-                $dataType = 'DIRECT GIFTING';
-
-                // Prepare request body
-                $body = [
-                    'networkId' => $networkId,
-                    'dataType' => $dataType,
-                    'planId' => $planDetails->plan_id,
-                    'phone' => $phone,
-                    'reference' => $reference
-                ];
-
-                // Headers
-                $head = [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $autopilotApiKey,
-                ];
-
-                // Make the HTTP request
-                $responses = Http::withHeaders($head)->timeout(30)->post("$baseUrl/v1/data", $body);
-                $responseData = $responses->json();
+            //MTN DATA TRANSFER
+            elseif ($planDetails->dataType->id === 6) {
+                $apiType = "DATA TRANSFER";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
                 // Check response status and content
-                if (isset($responseData['code']) && in_array($responseData['code'], ['200', '201', '500'])) {
-                    $apiResponse = $responseData['data']['message'] ?? 'Transaction Successful';
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
 
                     $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
 
-                    return redirect()->route('user.trx.success')->with([
-                        'response' => $apiResponse,
-                        'success' => 'Transaction Successful! Data Subscription Successful!'
-                    ]);
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                 } else {
-                    $message = $responseData['data']['message'] ?? 'Unknown error occurred.';
+                    $message = $finalResponse['data']['message'];
 
                     $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
 
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
-            } catch (\Exception $e) {
-                Log::error('Caught exception: ' . get_class($e) . ' - ' . $e->getMessage());
+            }
+            //MTN SPECIAL DATA
+            elseif ($planDetails->dataType->id === 7) {
+                $apiType = "DIRECT GIFTING";
+                // Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
-                $message = 'Network is currently unavailable.';
-                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
 
-                return redirect()->route('user.trx.error')->with('error', $message);
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //MTN BROADBAND & UNLIMITED
+            elseif ($planDetails->dataType->id === 8 || $planDetails->dataType->id === 9) {
+                $apiType = "BROADBAND GIFTING";
+                // Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //MTN XTRASPECIAL
+            elseif ($planDetails->dataType->id === 10) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+        }
+        //GLO Network Calls
+        elseif ($network_id === 2) {
+            //GLO GIFTING
+            if ($planDetails->dataType->id === 4) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //GLO CORPORATE GIFITING
+            elseif ($planDetails->dataType->id === 5) {
+                $apiType = "CORPORATE GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+
+                    $finalResponse = $this->justpayApi($planDetails, $phone);
+
+                    if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
+
+                        $apiResponse = $finalResponse['data']['true_response'];
+                        // Handle other cases
+                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                    } else {
+
+                        $message = $finalResponse['data']['true_response'] ?? $finalResponse['server_message'] ?? $finalResponse['data']['server_message'] ?? $finalResponse['error'] ?? "Transaction Declined by Provider JPNG. Refer to them";
+
+                        if (empty($message)) {
+                            $message = "Network is currently Unavailable";
+                        }
+
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.error')->with('error', $message);
+                    }
+                }
+            }
+            //GLO SPECIAL DATA
+            elseif ($planDetails->dataType->id === 7) {
+                $apiType = "AWOOF GIFTING";
+                // Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+        }
+        //9MOBILE Network Calls
+        elseif ($network_id === 3) {
+            //9MOBILE GIFTING
+            if ($planDetails->dataType->id === 4) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //9MOBILE CORPORATE GIFTING
+            elseif ($planDetails->dataType->id === 5) {
+                $apiType = "CORPORATE GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+
+                    $finalResponse = $this->justpayApi($planDetails, $phone);
+
+                    if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
+
+                        $apiResponse = $finalResponse['data']['true_response'];
+                        // Handle other cases
+                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                    } else {
+
+                        $message = $finalResponse['data']['true_response'] ?? $finalResponse['server_message'] ?? $finalResponse['data']['server_message'] ?? $finalResponse['error'] ?? "Transaction Declined by Provider JPNG. Refer to them";
+
+                        if (empty($message)) {
+                            $message = "Network is currently Unavailable";
+                        }
+
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.error')->with('error', $message);
+                    }
+                }
+            }
+        }
+        //AIRTEL Network Calls
+        elseif ($network_id === 4) {
+            //AIRTEL GIFTING
+            if ($planDetails->dataType->id === 4) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //AIRTEL CORPORATE GIFTING
+            elseif ($planDetails->dataType->id === 5) {
+                $apiType = "CORPORATE GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+
+                    $finalResponse = $this->justpayApi($planDetails, $phone);
+
+                    if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
+
+                        $apiResponse = $finalResponse['data']['true_response'];
+                        // Handle other cases
+                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                    } else {
+
+                        $message = $finalResponse['data']['true_response'] ?? $finalResponse['server_message'] ?? $finalResponse['data']['server_message'] ?? $finalResponse['error'] ?? "Transaction Declined by Provider JPNG. Refer to them";
+
+                        if (empty($message)) {
+                            $message = "Network is currently Unavailable";
+                        }
+
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'JUSTPAY');
+
+                        return redirect()->route('user.trx.error')->with('error', $message);
+                    }
+                }
+            }
+            //AIRTEL SPECIAL DATA
+            elseif ($planDetails->dataType->id === 7) {
+                $apiType = "AWOOF GIFTING";
+                // Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
             }
         }
 
-                try {
-                    $header = [
-                        'Content-Type' => 'application/json',
-                        'Authorization' => 'Bearer '.env('AREWA_API_KEY'),
-                    ];
-
-                    $payload = [
-                        'service' => 'buy-data',
-                        'network' => $networkName->name,
-                        'mobile' => $phone,
-                        'bundle_id' => $planDetails->are_id,
-                    ];
-
-                    if($planDetails->dataType->id == '5' && $network_id == '4') {
-                        $responseDa = [
-                            'status' => 'failed',
-                        ];
-                    } else {
-
-                        $response = Http::withHeaders($header)
-                                        ->timeout(38001)
-                                        ->post('https://arewabundleapi.com/api/v2/buyservice', $payload);
-
-                        $responseDa = $response->json();
-                    }
-
-                    if(isset($responseDa['status']) && $responseDa['status'] === 'success') {
-
-                        $apiResponse = $responseDa['content'];
-
-                        // Handle other cases
-                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AREWA');
-
-                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-
-                    } elseif (isset($responseDa['status']) && ($responseDa['status'] === "failed" || $responseDa['status'] === "fail") || (isset($responseDa['message']) && $responseDa['message'] === "Transaction failed")) {
-
-                        try{
-                            $apiKey = env('JUSTPAY_API_KEY');
-
-                            $callbackUrl = "https://moevan.com";
-
-                            // Prepare the request payload
-                            $payload = [
-                                'api_key' => $apiKey,
-                                'product_code' => $planDetails->product_code,
-                                'phone' => $phone,
-                                'callback' => $callbackUrl,
-                            ];
-
-                            // Define basic headers
-                            $headers = [
-                                'Accept' => 'application/json',
-                                'Content-Type' => 'application/json',
-                            ];
-
-                            // Make the API request with headers
-                            $response = Http::withHeaders($headers)->timeout(38001)
-                                            ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                            $responseData = $response->json();
-
-                            // Check if the transaction was successful
-                            if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                                $apiResponse = $responseData['data']['true_response'];
-                                // Handle other cases
-                                $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                                return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                } else {
-
-                                    try {
-                                        // Make API request
-                                        $header = [
-                                            'Authorization' => 'Token '.env('BELLO_API_KEY'),
-                                            'Content-Type' => 'application/json',
-                                        ];
-
-                                        $data = [
-                                            'network' => $network,
-                                            'mobile_number' => $phone,
-                                            'plan' => $bello_id,
-                                            'Ported_number' => true,
-                                        ];
-
-                                        $response = Http::withHeaders($header)
-                                                ->timeout(38001)
-                                                ->post('https://bello-ventures.com/api/data/', $data);
-
-                                        $responseDat = $response->json();
-
-                                        if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                            // Handle failed response
-                                            $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                        } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                            // Handle failed response
-                                            $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                                        } else {
-                                            $apiResponse = $responseDat['api_response'];
-                                            // Handle other cases
-                                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                        }
-                                    } catch (\Exception $e) {
-
-                                        $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                                        // Ensure $msg is a string
-                                        if (is_array($msg)) {
-                                            $msg = json_encode($msg);
-                                        }
-                                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                    }
-                                }
-                        } catch (\Exception $e) {
-
-                            $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                            $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                            Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                            // Ensure $msg is a string
-                            if (is_array($msg)) {
-                                $msg = json_encode($msg);
-                            }
-                            return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                        }
-
-                    } elseif (isset($responseDa['status']) && $responseDa['status'] === 'pending') {
-
-                        $apiResponse = $responseDa['content'];
-
-                        // Handle other cases
-                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AREWA');
-
-                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                    }
-                } catch (\Exception $e) {
-
-                    $msg = $responseDa['content']??$responseDa['message']??null;
-
-                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage().$msg);
-
-                    try{
-
-                        $apiKey = env('JUSTPAY_API_KEY');
-
-                        $callbackUrl = "https://moevan.com";
-
-                        // Prepare the request payload
-                        $payload = [
-                            'api_key' => $apiKey,
-                            'product_code' => $planDetails->product_code,
-                            'phone' => $phone,
-                            'callback' => $callbackUrl,
-                        ];
-
-                        // Define basic headers
-                        $headers = [
-                            'Accept' => 'application/json',
-                            'Content-Type' => 'application/json',
-                        ];
-
-                        // Make the API request with headers
-                        $response = Http::withHeaders($headers)
-                                        ->timeout(38001)
-                                        ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
-
-                        $responseData = $response->json();
-
-                        // Check if the transaction was successful
-                        if ($responseData['error_code'] == '1986' && $responseData['status'] === true) {
-
-                            $apiResponse = $responseData['data']['true_response'];
-                            // Handle other cases
-                            $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                            return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                        } else {
-
-                            try {
-                                // Make API request
-                                $header = [
-                                    'Authorization' => 'Token '.env('BELLO_API_KEY'),
-                                    'Content-Type' => 'application/json',
-                                ];
-
-                                $data = [
-                                    'network' => $network,
-                                    'mobile_number' => $phone,
-                                    'plan' => $bello_id,
-                                    'Ported_number' => true,
-                                ];
-
-                                $response = Http::withHeaders($header)
-                                        ->timeout(38001)
-                                        ->post('https://bello-ventures.com/api/data/', $data);
-
-                                $responseDat = $response->json();
-
-                                if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED' || empty($responseDat) || isset($responseDat['plan']['0'])) {
-                                    // Handle failed response
-                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    Log::error('An error occurred while processing the successful response: ' . $e->getMessage() .$msg);
-
-                                    // Ensure $msg is a string
-                                    if (is_array($msg)) {
-                                        $msg = json_encode($msg);
-                                    }
-
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                } elseif (isset($responseDat['error']) || empty($responseDat)) {
-                                    // Handle failed response
-                                    $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    // Ensure $msg is a string
-                                    if (is_array($msg)) {
-                                        $msg = json_encode($msg);
-                                    }
-
-                                    return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                                } else {
-                                    $apiResponse = $responseDat['api_response'];
-                                    // Handle other cases
-                                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                                }
-                            } catch (\Exception $e) {
-
-                                $msg = $responseDat['api_response']??$responseDat['error']??null;
-
-                                Log::error('An error occurred while processing the successful response: ' . $e->getMessage().$msg);
-
-                                $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'BELLO-VENTURES');
-
-                                // Ensure $msg is a string
-                                if (is_array($msg)) {
-                                    $msg = json_encode($msg);
-                                }
-
-                                return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-
-                            }
-                        }
-                    } catch (\Exception $e) {
-
-                        $msg = $responseData['data']['true_response']??$responseData['server_message']??$responseData['data']['server_message']??$responseData['error']??"Transaction Declined by Provider JPNG. Refer to them";
-
-                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $msg, $phone, $plan_id, 'JUSTPAY');
-
-                        // Log the error or handle it as needed
-                        Log::error('An error occurred while processing the successful response: ' . $e->getMessage(). $msg);
-
-                        // Ensure $msg is a string
-                        if (is_array($msg)) {
-                            $msg = json_encode($msg);
-                        }
-
-                        return redirect()->route('user.trx.error')->with('error', $msg??'Network is currently Unavailable');
-                    }
-                }
     }
 
     public function getDataTypes() {
@@ -1331,6 +974,88 @@ class InternetController extends Controller
             $transaction->save();
         }
 
+    }
+
+    function autopilotApi($networkId, $planDetails, $phone, $reference, $dataType) {
+
+        $autopilotApiKey = Env::get('AUTOPILOT_API_KEY');
+
+        $baseUrl = 'https://autopilotng.com/api/live';
+
+        $body = [
+            'networkId' => $networkId,
+            'dataType' => $dataType,
+            'planId' => $planDetails->plan_id,
+            'phone' => $phone,
+            'reference' => $reference,
+        ];
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $autopilotApiKey,
+        ];
+
+        $response = Http::withHeaders($headers)->timeout(38001)->post("$baseUrl/v1/data", $body);
+
+        return $response->json();
+    }
+
+    function justpayApi($planDetails, $phone) {
+
+        $apiKey = Env::get('JUSTPAY_API_KEY');
+        $callbackUrl = "https://moevan.com";
+
+        $payload = [
+            'api_key' => $apiKey,
+            'product_code' => $planDetails->product_code,
+            'phone' => $phone,
+            'callback' => $callbackUrl,
+        ];
+
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        $response = Http::withHeaders($headers)->timeout(38001)
+            ->post('https://justpayng.com/api/v2/datashare/index.php', $payload);
+
+        $justpay = $response->json();
+
+        return $justpay;
+    }
+
+    function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
+        if ($manual->status === '1') {
+            return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
+        }
+
+        if ($main_switch->active === '0') {
+            return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
+        }
+
+        if ($user->account_type === '3' && $planDetails->dataType->id === '6') {
+            if ($agent->status === '1') {
+                return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
+            }
+            return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
+        }
+
+        if ($user->account_type === '2' && $planDetails->dataType->id === '6') {
+            if ($planDetails->dataType->status == '1') {
+                return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
+            }
+            return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
+        }
+    }
+
+    function handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id) {
+        $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
+        return redirect()->route('user.trx.success')->with([
+            'response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!',
+            'success' => 'Transaction Successful! Data Subscription Successful!'
+        ]);
     }
 
 }
