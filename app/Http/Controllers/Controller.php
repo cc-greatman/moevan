@@ -9,6 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
+use Illuminate\Support\Env;
 
 class Controller extends BaseController
 {
@@ -101,11 +102,11 @@ class Controller extends BaseController
             ]);
         }
     }
-    
+
     public function postData()
     {
         $baseUrl = 'https://autopilotng.com/api/live'; // Replace with your actual base URL
-        $api_key = 'live_8b890150fc9a4548a2f75f78e90320c4xt2itq23'; // Replace with your actual API key
+        $api_key = Env::get('AUTOPILOT_API_KEY'); // Replace with your actual API key
 
         $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
@@ -113,7 +114,7 @@ class Controller extends BaseController
                 'Authorization' => 'Bearer ' . $api_key,
             ])
             ->post($baseUrl . '/v1/load/data-types', [
-                'networkId' => '2',
+                'networkId' => '4',
             ]);
 
         // You can handle the response as needed
@@ -124,28 +125,28 @@ class Controller extends BaseController
 
         return $responseData;
     }
-    
+
     public function success() {
-        
-        
+
+
         return view('user.messages.success');
     }
-    
+
     public function error() {
-        
+
         if (!session()->has('error')) {
             return redirect()->route('user.dashboard');
         }
-        
+
         return view('user.messages.error');
     }
-    
+
     public function warning() {
-        
+
         if (!session()->has('warning')) {
             return redirect()->route('user.dashboard');
         }
-        
+
         return view('user.messages.warning');
     }
 }
