@@ -54,6 +54,8 @@ class InternetController extends Controller
             $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
         }
 
+        dd($agentPrice);
+
         $amount = match ($user->account_type) {
             1 => $planDetails->price,
             2 => $planDetails->r_price,
