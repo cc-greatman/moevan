@@ -975,7 +975,7 @@ class InternetController extends Controller
         $timestamp = $now->format('YmdHis');
 
         // Generate 10 random alphanumeric characters
-        $randomString = strtoupper(bin2hex(random_bytes(5))); // 10 characters
+        $randomString = strtoupper(bin2hex(random_bytes(4))); // 10 characters
 
         // Last 5 characters (Fixed identifier)
         $fixedSuffix = 'MOEVAN';
