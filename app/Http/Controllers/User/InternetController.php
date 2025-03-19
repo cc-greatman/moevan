@@ -970,6 +970,7 @@ class InternetController extends Controller
 
         // Set the timezone to Africa/Lagos
         $timezone = new DateTimeZone('Africa/Lagos');
+        
         $now = new DateTime('now', $timezone);
 
         $timestamp = $now->format('YmdHis');
@@ -981,7 +982,7 @@ class InternetController extends Controller
         $fixedSuffix = 'MOEVAN';
 
         // Generate 9 random alphanumeric characters (27 - 12 - 6 = 9)
-        $randomString = strtoupper(bin2hex(random_bytes(5))); 
+        $randomString = strtoupper(bin2hex(random_bytes(5)));
 
         // Ensure the final request ID is exactly 27 characters
         $requestId = $timestamp . substr($randomString, 0, 9) . $fixedSuffix;
