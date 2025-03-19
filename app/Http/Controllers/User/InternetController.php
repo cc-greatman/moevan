@@ -30,8 +30,7 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
-        info($request->all());
-        
+
         // Validate the form data
         $validatedData = $request->validate([
             'phone' => 'required|numeric',
@@ -230,6 +229,7 @@ class InternetController extends Controller
         }
 
         if($network_id == '1' || $network_id == '2' || $network_id == '4' && $planDetails->dataType->id == '6' || $planDetails->dataType->id == '5') {
+            info($phone.now());
             try {
                 // Your Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
@@ -401,6 +401,7 @@ class InternetController extends Controller
         }
 
         if (in_array($dataType, ['4', '8', '9', '10'])) {
+            info('2'. $phone.now());
             try {
                 // Autopilot API key
                 $autopilotApiKey = env('AUTOPILOT_API_KEY');
