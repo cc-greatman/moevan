@@ -55,7 +55,7 @@ class InternetController extends Controller
                                                     'data_id' => $plan_id])->first();
         }
 
-        dd($agentPrice);
+        dd($agentPrice->price);
 
         $amount = match ($user->account_type) {
             1 => $planDetails->price,
