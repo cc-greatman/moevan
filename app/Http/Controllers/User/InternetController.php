@@ -55,11 +55,10 @@ class InternetController extends Controller
             1 => $planDetails->price,
             2 => $planDetails->r_price,
             3 => $agentPrice,
-            default => null,
         };
 
         if (!$planDetails) {
-            
+
             return redirect()->route('user.trx.error')->with('error', 'Unidentified data plan.');
         }
 
