@@ -977,11 +977,14 @@ class InternetController extends Controller
         // Generate 10 random alphanumeric characters
         $randomString = strtoupper(bin2hex(random_bytes(4))); // 10 characters
 
-        // Last 5 characters (Fixed identifier)
+        // Last 6 characters (Fixed identifier)
         $fixedSuffix = 'MOEVAN';
 
+        // Generate 9 random alphanumeric characters (27 - 12 - 6 = 9)
+        $randomString = strtoupper(bin2hex(random_bytes(5))); 
+
         // Ensure the final request ID is exactly 27 characters
-        $requestId = $timestamp . substr($randomString, 0, 10) . substr($fixedSuffix, 0, 5);
+        $requestId = $timestamp . substr($randomString, 0, 9) . $fixedSuffix;
 
         return $requestId;
     }
