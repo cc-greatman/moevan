@@ -231,7 +231,7 @@ class InternetController extends Controller
             }
         }
         //GLO Network Calls
-        elseif ($network_id === 2) {
+        elseif ($network_id == 2) {
             //GLO GIFTING
             if ($planDetails->dataType->id === 4) {
                 $apiType = "DIRECT GIFTING";
@@ -313,7 +313,7 @@ class InternetController extends Controller
             }
         }
         //9MOBILE Network Calls
-        elseif ($network_id === 3) {
+        elseif ($network_id == 3) {
             //9MOBILE GIFTING
             if ($planDetails->dataType->id === 4) {
                 $apiType = "DIRECT GIFTING";
@@ -374,7 +374,7 @@ class InternetController extends Controller
             }
         }
         //AIRTEL Network Calls
-        elseif ($network_id === 4) {
+        elseif ($network_id == 4) {
             //AIRTEL GIFTING
             if ($planDetails->dataType->id === 4) {
                 $apiType = "DIRECT GIFTING";
