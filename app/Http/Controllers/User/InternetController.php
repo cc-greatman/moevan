@@ -86,7 +86,7 @@ class InternetController extends Controller
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
 
         //MTN Network Calls
-        if ($network_id === 1) {
+        if ($network_id == 1) {
             //MTN SME
             if($planDetails->dataType->id === 2) {
                 $apiType = "SME";
