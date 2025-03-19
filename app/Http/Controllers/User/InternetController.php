@@ -49,9 +49,10 @@ class InternetController extends Controller
         $networkId   = $networkName->networkId;
         $network = $networkName->network;
         $dataType = $validatedData['dataType'];
-        $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
 
-        dd($agentPrice);
+        if ($user->account_type === 3) {
+            $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
+        }
 
         $amount = match ($user->account_type) {
             1 => $planDetails->price,
