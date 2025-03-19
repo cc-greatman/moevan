@@ -19,6 +19,7 @@ use DateTimeZone;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use GeoIp2\Database\Reader;
+use Illuminate\Console\View\Components\Info;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +30,8 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
-
+        info($request->all());
+        
         // Validate the form data
         $validatedData = $request->validate([
             'phone' => 'required|numeric',
