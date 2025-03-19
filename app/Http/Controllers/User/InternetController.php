@@ -51,7 +51,7 @@ class InternetController extends Controller
         $dataType = $validatedData['dataType'];
 
         if ($user->account_type === 3) {
-            $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
+            $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->first();
         }
 
         dd($agentPrice);
@@ -59,7 +59,7 @@ class InternetController extends Controller
         $amount = match ($user->account_type) {
             1 => $planDetails->price,
             2 => $planDetails->r_price,
-            3 => $agentPrice,
+            3 => $agentPrice->price,
         };
 
         if (!$planDetails) {
