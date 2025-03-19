@@ -66,6 +66,7 @@
                                                 <th scope="col">Provider</th>
                                                 <th scope="col">Network</th>
                                                 <th scope="col">Data Type</th>
+                                                <th scope="col">Reference</th>
                                                 <th scope="col">Plan</th>
                                                 <th scope="col">Balance Before</th>
                                                 <th scope="col">Amount</th>
