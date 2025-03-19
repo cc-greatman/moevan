@@ -974,12 +974,14 @@ class InternetController extends Controller
 
         $timestamp = $now->format('YmdHis');
 
-        // Generate random characters (alphanumeric)
-        $randomLength = rand(13, 18); // Ensuring total length between 25 and 30
-        $randomString = strtoupper(bin2hex(random_bytes(ceil($randomLength / 2))));
+        // Generate 10 random alphanumeric characters
+        $randomString = strtoupper(bin2hex(random_bytes(5))); // 10 characters
 
-        // Final Request ID
-        $requestId = $timestamp . substr($randomString, 0, $randomLength). 'MOEVAN';
+        // Last 5 characters (Fixed identifier)
+        $fixedSuffix = 'MOEVAN';
+
+        // Ensure the final request ID is exactly 27 characters
+        $requestId = $timestamp . substr($randomString, 0, 10) . substr($fixedSuffix, 0, 5);
 
         return $requestId;
     }
