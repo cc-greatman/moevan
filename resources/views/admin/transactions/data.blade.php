@@ -42,6 +42,7 @@
                                             <option value="username">User</option>
                                             <option value="provider">Provider</option>
                                             <option value="datatype">Datatype</option>
+                                            <option value="reference">Reference</option>
                                             <option value="network">Network</option>
                                             <option value="phone">Phone</option>
                                             <option value="date">Date</option>
