@@ -51,6 +51,8 @@ class InternetController extends Controller
         $dataType = $validatedData['dataType'];
         $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)->where('data_id', $planDetails->id)->value('price');
 
+        dd($agentPrice);
+
         $amount = match ($user->account_type) {
             1 => $planDetails->price,
             2 => $planDetails->r_price,
@@ -58,7 +60,6 @@ class InternetController extends Controller
         };
 
         if (!$planDetails) {
-
             return redirect()->route('user.trx.error')->with('error', 'Unidentified data plan.');
         }
 
