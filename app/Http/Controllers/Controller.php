@@ -113,8 +113,9 @@ class Controller extends BaseController
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer ' . $api_key,
             ])
-            ->post($baseUrl . '/v1/load/data-types', [
+            ->post($baseUrl . '/v1/load/data', [
                 'networkId' => '4',
+                'dataType' => "CORPORATE GIFTING"
             ]);
 
         // You can handle the response as needed
