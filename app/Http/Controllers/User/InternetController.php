@@ -351,8 +351,6 @@ class InternetController extends Controller
 
                     $finalResponse = $this->justpayApi($planDetails, $phone);
 
-                    return $finalResponse;
-
                     if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
 
                         $apiResponse = $finalResponse['data']['true_response'];
