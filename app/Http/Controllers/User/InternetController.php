@@ -967,24 +967,15 @@ class InternetController extends Controller
 
     public function generateRequestId() {
 
-        // Set the timezone to Africa/Lagos
-        $timezone = new DateTimeZone('Africa/Lagos');
+        $timestamp = now('Africa/Lagos')->format('YmdHis');
 
-        $now = new DateTime('now', $timezone);
-
-        $timestamp = $now->format('YmdHis');
-
-        // Generate 10 random alphanumeric characters
-        $randomString = strtoupper(bin2hex(random_bytes(4))); // 10 characters
-
-        // Last 6 characters (Fixed identifier)
-        $fixedSuffix = 'MOEVAN';
+        $prefix = "MOEVAN";
 
         // Generate 9 random alphanumeric characters (27 - 12 - 6 = 9)
-        $randomString = strtoupper(bin2hex(random_bytes(5)));
+        $randomString = Str::random(7);
 
         // Ensure the final request ID is exactly 27 characters
-        $requestId = $timestamp . substr($randomString, 0, 9) . $fixedSuffix;
+        $requestId = strtoupper(substr($prefix . $timestamp . $randomString, 0, 30));
 
         return $requestId;
     }
