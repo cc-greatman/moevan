@@ -25,21 +25,14 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
-        $token = $request->input('transaction_token');
-        $sessionToken = session('transaction_token');
-
-        info('Checking transaction token', [
-            'Expected' => $sessionToken,
-            'Received' => $token,
-            'Match' => ($token === $sessionToken) ? 'Yes' : 'No'
-        ]);
-
+        
         // Validate the transaction token
-        if ($token === null || $sessionToken === null || $token !== $sessionToken) {
+        if (($token = $request->input('transaction_token')) != session('transaction_token')) {
             Log::warning('Invalid transaction token', [
-                'expected' => $sessionToken,
+                'expected' => session('transaction_token'),
                 'received' => $token,
             ]);
+
             return redirect()->route('user.transactions.data.show');
         }
 
