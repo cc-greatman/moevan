@@ -977,7 +977,7 @@ class ViewController extends Controller
         $networks = Networks::take(4)->get();
         $type = DataType::all();
 
-        $transactionToken = Str::uuid(); // Unique token
+        $transactionToken = (string) Str::uuid(); // Unique token
         session()->put('transaction_token', $transactionToken);
 
 
