@@ -977,6 +977,10 @@ class ViewController extends Controller
         $networks = Networks::take(4)->get();
         $type = DataType::all();
 
+        $transactionToken = Str::uuid(); // Unique token
+        session(['transaction_token' => $transactionToken]);
+
+
         return view('user.internet.buy', compact('pageTitle', 'networks', 'type'));
     }
     public function buyAirtime() {

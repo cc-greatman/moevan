@@ -43,7 +43,7 @@
                         <option selected="" disabled>-------</option>
                 </select>
               </div>
-
+              <input type="hidden" name="transaction_token" value="{{ session('transaction_token') }}">
               <div class="space-y-4 mb-5">
                 <p><label for="">Data Plans</label></p>
                 <select class="place-style rounded-sm h-14 w-full lg:w-3/4" name="plan" id="plan" aria-label="Default select example">

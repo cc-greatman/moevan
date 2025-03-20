@@ -25,6 +25,15 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
+        // Validate the token
+        $token = $request->input('transaction_token');
+
+        if (!$token || session('transaction_token') !== $token) {
+            return redirect()->route('user.dashboard');
+        }
+
+        // Invalidate the token after use
+        session()->forget('transaction_token');
 
         // Validate the form data
         $validatedData = $request->validate([
