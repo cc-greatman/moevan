@@ -53,6 +53,18 @@ class InternetController extends Controller
         if ($user->account_type === 3) {
             $agentPrice = AgentDataPlanPrice::where(['agent_id' => $user->id,
                                                     'data_id' => $plan_id])->first();
+            if ($agentPrice === null) {
+                // Populate the agent_data_plan_prices table for the newly upgraded agent
+                $dataPlans = DataPlans::all();
+                foreach ($dataPlans as $dataPlan) {
+                    AgentDataPlanPrice::updateOrCreate(
+                        ['agent_id' => $user->id, 'data_id' => $dataPlan->data_id],
+                        ['price' => $dataPlan->a_price]
+                    );
+                }
+                $agentPrice = AgentDataPlanPrice::where(['agent_id' => $user->id,
+                                                    'data_id' => $plan_id])->first();
+            }
         }
 
         $amount = match ($user->account_type) {
