@@ -978,7 +978,7 @@ class ViewController extends Controller
         $type = DataType::all();
 
         $transactionToken = Str::uuid(); // Unique token
-        session()->put(['transaction_token' => $transactionToken]);
+        session()->put('transaction_token', $transactionToken);
 
 
         return view('user.internet.buy', compact('pageTitle', 'networks', 'type'));
