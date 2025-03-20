@@ -25,6 +25,10 @@ class InternetController extends Controller
 {
     public function processDataSub(Request $request)
     {
+
+        \Log::info('Session Token: ' . session('transaction_token'));
+        \Log::info('Request Token: ' . $request->input('transaction_token'));
+
         // Validate the token
         $token = $request->input('transaction_token');
 
