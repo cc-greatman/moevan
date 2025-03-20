@@ -28,12 +28,6 @@ class InternetController extends Controller
         $token = $request->input('transaction_token');
         $sessionToken = session('transaction_token');
 
-        info('Checking transaction token', [
-            'Expected' => $sessionToken,
-            'Received' => $token,
-            'Match' => ($token === $sessionToken) ? 'Yes' : 'No'
-        ]);
-
         // Validate the transaction token
         if ($token === null || $sessionToken === null || $token !== $sessionToken) {
             Log::warning('Invalid transaction token', [
