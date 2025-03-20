@@ -29,7 +29,7 @@ class InternetController extends Controller
         $token = $request->input('transaction_token');
 
         if (!$token || session('transaction_token') !== $token) {
-            return redirect()->route('user.dashboard');
+            return redirect()->route('user.transactions.data.show');
         }
 
         // Invalidate the token after use
