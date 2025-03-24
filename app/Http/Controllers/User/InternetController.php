@@ -107,7 +107,7 @@ class InternetController extends Controller
         $agent = DataControls::where('id', 14)->first();
 
         //Checking if the Data Bundle is active
-        $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
+        return $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
         //Initiate initial data transaction on user account
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
@@ -1059,7 +1059,6 @@ class InternetController extends Controller
         $main_actv = $main_switch->active;
 
         if ($manual->status == 1) {
-            info('Condition met: Manual switch is inactive');
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
