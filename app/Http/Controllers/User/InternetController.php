@@ -109,6 +109,7 @@ class InternetController extends Controller
         //Initiate initial data transaction on user account
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
 
+        //Checking if the Data Bundle is active
         $statusCheck = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
         if (strpos($statusCheck, 'success:') === 0) {
@@ -1063,12 +1064,14 @@ class InternetController extends Controller
     }
 
     public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
+        $main_actv = $main_switch->active;
+
         if ($manual->status == 1) {
             $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        if ($main_switch->active == 0) {
-            info('error: This Bundle is currently not available at the moment. Use other types of bundles.');
+        if ($main_actv === 0) {
+            info('Condition met: Main switch is inactive');
             return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
 
@@ -1091,7 +1094,10 @@ class InternetController extends Controller
 
     public function handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id) {
         $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
-        return 'success: Your Data Purchase was successful. Enjoy premium services with Moevan!';
+        return redirect()->route('user.trx.success')->with([
+            'response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!',
+            'success' => 'Transaction Successful! Data Subscription Successful!'
+        ]);
     }
 
 }
