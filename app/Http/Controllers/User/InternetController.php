@@ -1062,7 +1062,7 @@ class InternetController extends Controller
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        if ($main_switch->active === 0) {
+        if ($main_switch->active == 0) {
             info('Condition met: Main switch is inactive');
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
