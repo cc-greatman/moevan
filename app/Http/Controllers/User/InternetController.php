@@ -1067,7 +1067,7 @@ class InternetController extends Controller
             $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        if ($main_switch->active === 0) {
+        if ($main_switch->active == 0) {
             info('error: This Bundle is currently not available at the moment. Use other types of bundles.');
             return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
