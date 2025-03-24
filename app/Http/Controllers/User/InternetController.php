@@ -109,9 +109,11 @@ class InternetController extends Controller
         //Checking if the Data Bundle is active
         $manualResponse = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
-        // If the manual check returns a redirect, return immediately
-        if ($manualResponse instanceof \Illuminate\Http\RedirectResponse) {
-            return $manualResponse;
+        if ($manualResponse !== null) {
+            // If the manual check returns a redirect, return immediately
+            if ($manualResponse instanceof \Illuminate\Http\RedirectResponse) {
+                return $manualResponse->send();
+            }
         }
 
         //Initiate initial data transaction on user account
@@ -1085,6 +1087,8 @@ class InternetController extends Controller
             }
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
+
+        return null;
     }
 
     public function handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id) {
