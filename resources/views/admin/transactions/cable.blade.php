@@ -73,7 +73,7 @@
                                             @foreach($cable as $cableTrx)
                                                 <tr>
                                                     <td>{{ $cableTrx->trx }}</td>
-                                                    <td>{{ $cableTrx->user->username }}</td>
+                                                    <td>{{ optional($cableTrx->user)->username }}</td>
                                                     <td>{{ $cableTrx->providers->name }}</td>
                                                     <td>{{ strtoupper($cableTrx->package) }}</td>
                                                     <td>{{ $cableTrx->type }}</td>
