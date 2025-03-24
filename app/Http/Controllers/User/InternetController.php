@@ -1068,6 +1068,7 @@ class InternetController extends Controller
         }
 
         if ($main_switch->active === 0) {
+            info('error: This Bundle is currently not available at the moment. Use other types of bundles.');
             return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
 
