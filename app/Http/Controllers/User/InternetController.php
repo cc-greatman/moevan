@@ -106,9 +106,6 @@ class InternetController extends Controller
         $main_switch = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
         $agent = DataControls::where('id', 14)->first();
 
-        //Initiate initial data transaction on user account
-        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
-
         if ($manual->status == 1) {
             $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
             return redirect()->route('user.trx.success')->with([
@@ -116,7 +113,7 @@ class InternetController extends Controller
                 'success' => 'Transaction Successful! Data Subscription Successful!'
             ]);
         }
-
+        info($main_switch->active);
         if ($main_switch->active === 0) {
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
@@ -142,6 +139,9 @@ class InternetController extends Controller
             }
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
+
+        //Initiate initial data transaction on user account
+        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
 
         //MTN Network Calls
         if ($network_id == 1) {
