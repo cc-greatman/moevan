@@ -839,7 +839,7 @@ class InternetController extends Controller
 
     }
 
-    function handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
+    public function handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
 
         // Check if a transaction with the same reference or trx already exists
         $existingTransaction = DataTransactions::where('reference', $reference)->orWhere('trx', $trx)->first();
@@ -907,7 +907,7 @@ class InternetController extends Controller
 
     }
 
-    function handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
+    public function handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
 
         // Check if a transaction with the same reference or trx already exists
         $existingTransaction = DataTransactions::where('reference', $reference)->orWhere('trx', $trx)->first();
@@ -975,7 +975,7 @@ class InternetController extends Controller
 
     }
 
-    function handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
+    public function handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, $provider) {
 
         // Check if a transaction with the same reference or trx already exists
         $existingTransaction = DataTransactions::where('reference', $reference)->orWhere('trx', $trx)->first();
@@ -1005,7 +1005,7 @@ class InternetController extends Controller
 
     }
 
-    function autopilotApi($networkId, $planDetails, $phone, $reference, $dataType) {
+    public function autopilotApi($networkId, $planDetails, $phone, $reference, $dataType) {
 
         $autopilotApiKey = Env::get('AUTOPILOT_API_KEY');
 
@@ -1030,7 +1030,7 @@ class InternetController extends Controller
         return $response->json();
     }
 
-    function justpayApi($planDetails, $phone) {
+    public function justpayApi($planDetails, $phone) {
 
         $apiKey = Env::get('JUSTPAY_API_KEY');
         $callbackUrl = "https://moevan.com";
@@ -1055,7 +1055,7 @@ class InternetController extends Controller
         return $justpay;
     }
 
-    function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
+    public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
         $main_actv = $main_switch->active;
 
         if ($manual->status == 1) {
@@ -1063,7 +1063,6 @@ class InternetController extends Controller
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        info($main_actv);
         if ($main_actv === 0) {
             info('Condition met: Main switch is inactive');
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
@@ -1084,7 +1083,7 @@ class InternetController extends Controller
         }
     }
 
-    function handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id) {
+    public function handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id) {
         $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
         return redirect()->route('user.trx.success')->with([
             'response' => 'Your Data Purchase was successful. Enjoy premium services with Moevan!',
