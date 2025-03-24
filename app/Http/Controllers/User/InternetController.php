@@ -107,7 +107,12 @@ class InternetController extends Controller
         $agent = DataControls::where('id', 14)->first();
 
         //Checking if the Data Bundle is active
-        return $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
+        $manualResponse = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
+
+        // If the manual check returns a redirect, return immediately
+        if ($manualResponse instanceof \Illuminate\Http\RedirectResponse) {
+            return $manualResponse;
+        }
 
         //Initiate initial data transaction on user account
         $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, null, $phone, $plan_id, 'INITIAL');
