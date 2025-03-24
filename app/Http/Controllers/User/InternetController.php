@@ -106,9 +106,6 @@ class InternetController extends Controller
         $main_switch = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
         $agent = DataControls::where('id', 14)->first();
 
-        info($main_switch);
-        info($agent);
-
         //Checking if the Data Bundle is active
         $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
@@ -1063,7 +1060,9 @@ class InternetController extends Controller
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        if ($main_switch->active == 0) {
+        if ($main_switch->active === 0) {
+            info($main_switch);
+            info($main_switch->active);
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
 
