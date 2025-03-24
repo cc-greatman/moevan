@@ -112,8 +112,8 @@ class InternetController extends Controller
         //Checking if the Data Bundle is active
         $manualResponse = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
 
-        if ($manualResponse !== null) {
-            
+        if ($manualResponse != null) {
+
                 return $manualResponse;
         }
 
