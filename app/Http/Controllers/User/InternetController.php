@@ -1056,13 +1056,14 @@ class InternetController extends Controller
     }
 
     function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
-
+        $main_actv = $main_switch->active;
+        
         if ($manual->status == 1) {
             info('Condition met: Manual switch is inactive');
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
 
-        if ($main_switch->active == 0) {
+        if ($main_actv === 0) {
             info('Condition met: Main switch is inactive');
             return redirect()->route('user.trx.error')->with('error', 'This Bundle is currently not available at the moment. Use other types of bundles.');
         }
