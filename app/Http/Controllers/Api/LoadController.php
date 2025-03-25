@@ -62,7 +62,7 @@ class LoadController extends Controller
             'networks' => 'required|string|in:all',
         ]);
 
-        if ($validatedData !== "all") {
+        if ($validatedData !== 'all') {
             return response()->json(['status' => false, 'code' => 403, 'message' => 'Invalid query parameters for this resource'], 403);
         }
 
