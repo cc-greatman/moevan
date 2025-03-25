@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['namespace' => 'App\Http\Controllers'], function () {
+Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
     //Domain Verification
     Route::domain(env('USER_DOMAIN'))->group(function () {
         //Api Key Protection
