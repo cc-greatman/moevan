@@ -55,6 +55,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
+        'auth.api' => \App\Http\Middleware\ApiKeyCheck::class,
         'ensure.subdomain' => \App\Http\Middleware\EnsureSubDomain::class,
         'single.login.session' => \App\Http\Middleware\EnsureSingleLoginSession::class,
         'auth.admin' => \App\Http\Middleware\Authenticate::class,

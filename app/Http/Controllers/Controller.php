@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProvidersSubscription;
+use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -10,6 +11,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Env;
+use Illuminate\Support\Str;
 
 class Controller extends BaseController
 {
@@ -105,6 +107,15 @@ class Controller extends BaseController
 
     public function postData()
     {
+
+        $users = User::whereNull('api_key')->get();
+
+        foreach ($users as $user) {
+            $user->api_key = 'mepay_' . Str::random(40);
+            $user->save();
+        }
+
+        /*
         $baseUrl = 'https://autopilotng.com/api/live'; // Replace with your actual base URL
         $api_key = Env::get('AUTOPILOT_API_KEY'); // Replace with your actual API key
 
@@ -124,7 +135,7 @@ class Controller extends BaseController
 
         // Additional processing based on your requirements
 
-        return $responseData;
+        return $responseData; */
     }
 
     public function success() {

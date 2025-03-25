@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -29,6 +30,15 @@ class User extends Authenticatable
         'last_name',
         'referral_code',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->api_key = 'mepay_' . Str::random(40);
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
