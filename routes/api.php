@@ -27,6 +27,8 @@ Route::group(['namespace' => 'App\Http\Controllers\Api'], function () {
                     Route::post('wallet-balance', 'LoadController@wallet')->name('wallet-balance');
                     //Display Networks
                     Route::post('networks-view', 'LoadController@networks')->name('networks.view');
+                    //Display DataTypes
+                    Route::post('datatypes-view', 'LoadController@dataTypes')->name('data-types.view');  
                 });
             });
         });
