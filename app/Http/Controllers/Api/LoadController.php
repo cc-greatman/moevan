@@ -58,9 +58,13 @@ class LoadController extends Controller
     public function networks(Request $request) {
 
         // Validate the request
-        $request->validate([
+        $validatedData = $request->validate([
             'networks' => 'required|string|in:all',
         ]);
+
+        if ($validatedData === "all") {
+            return response()->json(['status' => false, 'code' => 403, 'message' => 'Invalid query parameters for this resource'], 403);
+        }
 
         // Retrieve all networks
         $networks = Networks::all()->map(function ($network) {
