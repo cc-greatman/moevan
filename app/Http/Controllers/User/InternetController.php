@@ -1064,7 +1064,7 @@ class InternetController extends Controller
         return $justpay;
     }
 
-    public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $dataType, $phone, $plan_id, $agent, $reseller, $manual, $main_switch, $network_id) {
+    public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $dataType, $phone, $plan_id, $agent, $reseller, $manual, $main_switch) {
 
         if ($manual->status === 1) {
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
@@ -1075,7 +1075,7 @@ class InternetController extends Controller
         }
 
         //Agent Special Data
-        if ($user->account_type === 3 && $network_id === 1 && $dataType === 7) {
+        if ($user->account_type === 3 && $planDetails->network_id === 1 && $dataType === 7) {
             if ($agent->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
             }
@@ -1085,7 +1085,7 @@ class InternetController extends Controller
         }
 
         //Reseller Special Data
-        if ($user->account_type === 2 && $network_id === 1 && $dataType === 7) {
+        if ($user->account_type === 2 && $planDetails->network_id === 1 && $dataType === 7) {
             if ($reseller->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
             }
