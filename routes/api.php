@@ -23,7 +23,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::name('v1.')->prefix('v1')->group(function () {
                 //Giving Load Prefix
                 Route::name('load.')->prefix('load')->group(function () {
-
+                    //Display Wallet Balance
+                    Route::post('wallet-balance', 'LoadController@wallet')->name('wallet-balance');
                 });
             });
         });
