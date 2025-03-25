@@ -1065,8 +1065,6 @@ class InternetController extends Controller
 
     public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
 
-        info($main_switch);
-        
         if ($manual->status === 1) {
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
         }
@@ -1075,18 +1073,16 @@ class InternetController extends Controller
             return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
 
-        if ($user->account_type === 3 && $planDetails->dataType->id === 6) {
+        if ($user->account_type === 3) {
             if ($agent->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
             }
-            return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
 
-        if ($user->account_type === 2 && $planDetails->dataType->id === 6) {
+        if ($user->account_type === 2) {
             if ($planDetails->dataType->status == '1') {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
             }
-            return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
         return 'continue';
     }
