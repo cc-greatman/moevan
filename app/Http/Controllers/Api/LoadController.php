@@ -104,17 +104,19 @@ class LoadController extends Controller
         
         // Validate request
         $request->validate([
-            'network_id' => 'required|string|exists:networks,network_id',
+            'network_id' => 'required|string',
         ]);
 
         // Get the network
         $network = Networks::with(['dataPlans' => function ($query) {
             $query->where('type', '!=', 20);
-            $query->select('type', 'network_id')->distinct(); // Get unique data types for the network
+            $query->select('type', 'network_id')
+            ->distinct() // Get unique data types for the network
+            ->orderBy('type');  // Order by data type ID in ascending order 
         }])->where('network_id', $request->network_id)->first();
 
         if (!$network) {
-            return response()->json(['status' => false, 'code' => 404, 'message' => 'Network not found'], 404);
+            return response()->json(['status' => false, 'code' => 404, 'data' => ['message' => 'Network not found'], ], 404);
         }
 
         // Extract unique data types from data plans
