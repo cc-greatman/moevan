@@ -14,7 +14,7 @@ class LoadController extends Controller
         try {
             // Validate the request
             $validatedData = $request->validate([
-                'email' => 'required|email|exists:users,email',
+                'email' => 'required|email',
             ]);
 
             $apiKey = $request->header('Authorization');
