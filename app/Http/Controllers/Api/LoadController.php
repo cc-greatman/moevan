@@ -23,7 +23,7 @@ class LoadController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->json(['status' => false, 'code' => 404, 'message' => 'User not found']);
+            return response()->json(['status' => false, 'code' => 404, 'message' => 'User not found'], 404);
         }
 
         if ($user->api_key !== $apiKey) {
