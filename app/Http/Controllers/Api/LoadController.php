@@ -9,40 +9,44 @@ use Illuminate\Http\Request;
 
 class LoadController extends Controller
 {
-    public function wallet(Request $request) {
+    public function wallet(Request $request)
+    {
+        try {
+            // Validate the request
+            $validatedData = $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
 
-        // Validate the request
-        $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ]);
+            $apiKey = $request->header('Authorization');
+            $apiKey = str_replace('Bearer ', '', $apiKey);
 
-        $apiKey = $request->header('Authorization');
-        $apiKey = str_replace('Bearer ', '', $apiKey);
+            // Find the user by email
+            $user = User::where('email', $validatedData['email'])->first();
 
-        // Find the user by email
-        $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['status' => false, 'code' => 404, 'message' => 'User not found'], 404);
+            }
 
-        if (!$user) {
-            return response()->json(['status' => false, 'code' => 404, 'message' => 'User not found'], 404);
-        }
+            if ($user->api_key !== $apiKey) {
+                return response()->json(['status' => false, 'code' => 403, 'message' => 'User Api Key does not match'], 403);
+            }
 
-        if ($user->api_key !== $apiKey) {
-            return response()->json(['status' => false, 'code' => 403, 'message' => 'User Api Key does not match'], 403);
-        }
+            // Check if the user has a wallet balance (assuming a `balance` column exists)
+            $walletBalance = $user->balance ?? 0.00;
 
-        // Check if the user has a wallet balance (assuming a `wallet_balance` column exists)
-        $walletBalance = $user->balance ?? 0.00;
-
-        // Return the JSON response
-        return response()->json([
-            'status' => true,
-            'code' => 200,
-            'data' => [
-                'product' => [
-                    'wallet' => number_format($walletBalance, 2),
+            // Return the JSON response
+            return response()->json([
+                'status' => true,
+                'code' => 200,
+                'data' => [
+                    'product' => [
+                        'wallet' => number_format($walletBalance, 2),
+                    ],
                 ],
-            ],
-        ]);
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'code' => 500, 'message' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function networks(Request $request) {
