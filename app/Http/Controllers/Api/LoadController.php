@@ -45,7 +45,7 @@ class LoadController extends Controller
         $networks = Networks::all()->map(function ($network) {
             return [
                 'network' => $network->name,
-                'networkId' => $network->network_id,
+                'network_id' => $network->network_id,
             ];
         });
 
