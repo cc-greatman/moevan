@@ -83,7 +83,7 @@ class ViewController extends Controller
 
         $pageTitle = 'Site Settings - Moevan';
 
-        $reseller = DataType::where('id', 22)->get();
+        $reseller = DataControls::where('id', 22)->get();
 
         $agent = DataControls::where('id', 23)->get();
 
