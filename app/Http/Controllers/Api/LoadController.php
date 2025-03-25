@@ -62,26 +62,36 @@ class LoadController extends Controller
             'networks' => 'required|string|in:all',
         ]);
 
-        if ($validatedData !== 'all') {
+        if ($validatedData['netowrks'] !== 'all') {
             return response()->json(['status' => false, 'code' => 403, 'message' => 'Invalid query parameters for this resource'], 403);
         }
 
-        // Retrieve all networks
-        $networks = Networks::all()->map(function ($network) {
-            return [
-                'network' => $network->name,
-                'network_id' => $network->network_id,
-            ];
-        });
+        try {
+            // Retrieve all networks
+            $networks = Networks::all()->map(function ($network) {
+                return [
+                    'network' => $network->name ?? '',
+                    'network_id' => $network->network_id ?? '',
+                ];
+            });
 
-        // Return response
-        return response()->json([
-            'status' => true,
-            'code' => 200,
-            'data' => [
-                'product' => $networks,
-            ],
-        ]);
+            // Return response
+            return response()->json([
+                'status' => true,
+                'code' => 200,
+                'data' => [
+                    'product' => $networks,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => true,
+                'code' => 500,
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], 500);
+        }
     }
 
     public function dataTypes(Request $request) {
