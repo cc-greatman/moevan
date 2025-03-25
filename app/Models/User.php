@@ -31,6 +31,15 @@ class User extends Authenticatable
         'referral_code',
     ];
 
+    /**
+     * Boot the model.
+     *
+     * This method is called when the model is booted, which happens when the model is registered
+     * in the container, or when the model is being used as a dependency in a route, or when the
+     * model is being used in a test.
+     *
+     * @return void
+     */
     protected static function boot()
     {
         parent::boot();

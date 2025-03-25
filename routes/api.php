@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    //Domain Verification
+    Route::domain(env('USER_DOMAIN'))->group(function () {
+        //Api Key Protection
+        Route::middleware('auth.apikey')->group(function () {
+            //Giving v1 prefix
+            Route::name('v1.')->prefix('v1')->group(function () {
+                //Giving Load Prefix
+                Route::name('load.')->prefix('load')->group(function () {
+
+                });
+            });
+        });
+    });
 });
