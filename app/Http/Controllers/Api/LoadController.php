@@ -62,13 +62,19 @@ class LoadController extends Controller
             'networks' => 'required|string',
         ]);
 
-        if ($validatedData['netowrks'] !== 'all') {
-            return response()->json(['status' => false, 'code' => 403, 'message' => 'Invalid query parameters for this resource'], 403);
+        if ($validatedData['netowrks'] !== "all") {
+            return response()->json(['status' => false, 'code' => 403, 'data' => ['message' => 'Invalid query parameters for this resource'], ], 403);
         }
 
         try {
             // Retrieve all networks
-            $networks = Networks::all()->map(function ($network) {
+            $networks = Networks::all();
+
+            if ($networks->isEmpty()) {
+                return response()->json(['status' => false, 'code' => 404, 'data' => ['message' => 'No networks found'], ], 404);
+            }
+
+            $networks = $networks->map(function ($network) {
                 return [
                     'network' => $network->name ?? '',
                     'network_id' => $network->network_id ?? '',
