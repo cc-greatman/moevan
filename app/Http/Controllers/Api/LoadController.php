@@ -59,7 +59,7 @@ class LoadController extends Controller
 
         // Validate the request
         $validatedData = $request->validate([
-            'networks' => 'required|string|in:all',
+            'networks' => 'required|string',
         ]);
 
         if ($validatedData['netowrks'] !== 'all') {
