@@ -45,7 +45,13 @@ class LoadController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'code' => 500, 'message' => 'Internal Server Error', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'status' => true,
+                'code' => 500,
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ], 500);
         }
     }
 
