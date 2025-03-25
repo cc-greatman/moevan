@@ -18,7 +18,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     //Domain Verification
     Route::domain(env('USER_DOMAIN'))->group(function () {
         //Api Key Protection
-        Route::middleware('auth.apikey')->group(function () {
+        Route::middleware('auth.api')->group(function () {
             //Giving v1 prefix
             Route::name('v1.')->prefix('v1')->group(function () {
                 //Giving Load Prefix
