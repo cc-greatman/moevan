@@ -437,8 +437,6 @@ class InternetController extends Controller
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
-                return $finalResponse;
-
                 if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
                     $apiResponse = $finalResponse['data']['message'];
 
