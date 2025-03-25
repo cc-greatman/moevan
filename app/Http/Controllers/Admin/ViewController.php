@@ -83,11 +83,13 @@ class ViewController extends Controller
 
         $pageTitle = 'Site Settings - Moevan';
 
-        $reseller = DataType::where('id', 6)->get();
+        $reseller = DataType::where('id', 22)->get();
 
-        $agent = DataControls::where('id', 14)->get();
+        $agent = DataControls::where('id', 23)->get();
 
-        $mtn = DataControls::where('network', '1')->where('id', '!=', 14)->get();
+        $mtn = DataControls::where('network', '1')
+                            ->whereNotIn('id', [22, 23])
+                            ->get();
 
         $glo = DataControls::where('network', '2')->get();
 
@@ -101,7 +103,7 @@ class ViewController extends Controller
     public function viewGeneral() {
 
         $pageTitle = "Site Settings - Moevan";
-        
+
         $popup = GeneralSwitch::where('name', 'Popup')->get();
 
         $airtime = GeneralSwitch::where('name', 'Airtime')->get();
@@ -181,7 +183,7 @@ class ViewController extends Controller
 
         return view('admin.transactions.wallet', compact('wallet', 'pageTitle'));
     }
-    
+
     public function viewManualTransactions() {
 
         $pageTitle = 'Manual Wallet Transactions - Moevan';
@@ -193,7 +195,7 @@ class ViewController extends Controller
 
         return view('admin.transactions.manual', compact('wallet', 'pageTitle'));
     }
-    
+
     public function showManualTransactions(WalletTransactions $transaction) {
 
         $pageTitle = 'View Manual Transaction Details - Moevan';

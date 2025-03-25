@@ -104,10 +104,11 @@ class InternetController extends Controller
 
         $manual = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
         $main_switch = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
-        $agent = DataControls::where('id', 14)->first();
+        $reseller = DataControls::where('id', 22)->first();
+        $agent = DataControls::where('id', 23)->first();
 
         //Checking if the Data Bundle is active
-        $statusCheck = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch);
+        $statusCheck = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $reseller, $manual, $main_switch, $network_id);
 
         if (strpos($statusCheck, 'success:') === 0) {
             $successMessage = substr($statusCheck, 8); // Extract message after "success:"
@@ -1063,7 +1064,7 @@ class InternetController extends Controller
         return $justpay;
     }
 
-    public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $manual, $main_switch) {
+    public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id, $agent, $reseller, $manual, $main_switch, $network_id) {
 
         if ($manual->status === 1) {
             return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
@@ -1073,15 +1074,23 @@ class InternetController extends Controller
             return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
         }
 
-        if ($user->account_type === 3) {
+        //Agent Special Data
+        if ($user->account_type === 3 && $network_id === 1 && $planDetails->dataType->id === 7) {
             if ($agent->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
             }
+            if ($agent->active === 0) {
+                return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
+            }
         }
 
-        if ($user->account_type === 2) {
-            if ($planDetails->dataType->status == '1') {
+        //Reseller Special Data
+        if ($user->account_type === 2 && $network_id === 1 && $planDetails->dataType->id === 7) {
+            if ($reseller->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
+            }
+            if ($reseller->active === 0) {
+                return 'error: This Bundle is currently not available at the moment. Use other types of bundles.';
             }
         }
         return 'continue';

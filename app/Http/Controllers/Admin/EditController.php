@@ -90,7 +90,7 @@ class EditController extends Controller
 
     public function switchOffResellerData() {
 
-        $dataType = DataType::where('id', 6)->first();
+        $dataType = DataType::where('id', 22)->first();
         $type_name = $dataType->name??null;
 
         $dataType->status = !$dataType->status;
@@ -103,13 +103,39 @@ class EditController extends Controller
 
     public function switchOnResellerData() {
 
-        $dataType = DataType::where('id', 6)->first();
+        $dataType = DataType::where('id', 22)->first();
         $type_name = $dataType->name??null;
 
         $dataType->status = !$dataType->status;
         $dataType->save();
 
         $message = "Reseller ". $type_name ." Turned On Successfully";
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    public function switchOffAgentData() {
+
+        $dataType = DataType::where('id', 23)->first();
+        $type_name = $dataType->name??null;
+
+        $dataType->active = !$dataType->active;
+        $dataType->save();
+
+        $message = "Agent ". $type_name ." Turned Off Successfully";
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    public function switchOnAgentData() {
+
+        $dataType = DataType::where('id', 23)->first();
+        $type_name = $dataType->name??null;
+
+        $dataType->active = !$dataType->active;
+        $dataType->save();
+
+        $message = "Agent ". $type_name ." Turned On Successfully";
 
         return redirect()->back()->with('success', $message);
     }
@@ -191,7 +217,7 @@ class EditController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
-    
+
     public function switchPopupMain() {
 
         $general = GeneralSwitch::where('id', 4)->first();
@@ -201,32 +227,6 @@ class EditController extends Controller
         $general->save();
 
         $message = "Main ". $type_name ." switched Successfully";
-
-        return redirect()->back()->with('success', $message);
-    }
-
-    public function switchOffAgentData() {
-
-        $dataType = DataType::where('id', 6)->first();
-        $type_name = $dataType->name??null;
-
-        $dataType->active = !$dataType->active;
-        $dataType->save();
-
-        $message = "Agent ". $type_name ." Turned Off Successfully";
-
-        return redirect()->back()->with('success', $message);
-    }
-
-    public function switchOnAgentData() {
-
-        $dataType = DataType::where('id', 6)->first();
-        $type_name = $dataType->name??null;
-
-        $dataType->active = !$dataType->active;
-        $dataType->save();
-
-        $message = "Agent ". $type_name ." Turned On Successfully";
 
         return redirect()->back()->with('success', $message);
     }
