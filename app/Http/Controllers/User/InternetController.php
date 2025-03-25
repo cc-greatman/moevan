@@ -1075,6 +1075,7 @@ class InternetController extends Controller
         }
 
         //Agent Special Data
+        info($dataType);
         if ($user->account_type === 3 && $planDetails->network_id === 1 && $dataType === 7) {
             if ($agent->status === 1) {
                 return $this->handleSuccessfulTransaction($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $phone, $plan_id);
