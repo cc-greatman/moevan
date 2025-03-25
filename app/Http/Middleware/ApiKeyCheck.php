@@ -19,7 +19,7 @@ class ApiKeyCheck
         $apiKey = $request->header('Authorization');
 
         if (!$apiKey || !str_starts_with($apiKey, 'Bearer ')) {
-            return response()->json(['error' => 'API key missing or invalid format'], 401);
+            return response()->json(['status' => false, 'code' => 401, 'data' => ['message' => 'API key not found or invalid format'],], 401);
         }
 
         // Extract the API key (remove "Bearer " prefix)
@@ -29,7 +29,7 @@ class ApiKeyCheck
         $user = User::where('api_key', $apiKey)->first();
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized Access: User not found or does not exist'], 401);
+            return response()->json(['status' => false, 'code' => 401, 'data' => ['message' => 'Unauthorized Access: API key not found or does not exist'],], 401);
         }
 
         // Attach user to request for further use
