@@ -109,6 +109,7 @@ class LoadController extends Controller
 
         // Get the network
         $network = Networks::with(['dataPlans' => function ($query) {
+            $query->where('type', '!=', 20);
             $query->select('type', 'network_id')->distinct(); // Get unique data types for the network
         }])->where('network_id', $request->network_id)->first();
 
