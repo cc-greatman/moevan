@@ -844,7 +844,7 @@ class InternetController extends Controller
             $dataPlans = [];
         }
 
-    return response()->json($dataPlans);
+        return response()->json($dataPlans);
 
     }
 
