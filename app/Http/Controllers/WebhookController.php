@@ -268,8 +268,6 @@ class WebhookController extends Controller
         // Parse request to array
         $request_array = json_decode($raw_request, true);
 
-        info($request_array);
-
         // Check for duplicate notifications
         $processedNotification = DB::table('processed_notifications')
             ->where('reference_number', $request_array['data']['reference'])
