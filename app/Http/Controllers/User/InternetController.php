@@ -495,8 +495,7 @@ class InternetController extends Controller
     }
 
     public function getDataTypes() {
-        try {
-            // Retrieve the 'network_id' from the query parameters
+        try{
             $networkId = request()->query('network_id');
             if (is_null($networkId)) {
                 return response()->json(['error' => 'Network ID is required'], 400);
@@ -507,100 +506,74 @@ class InternetController extends Controller
                 return response()->json(['error' => 'User not authenticated'], 401);
             }
 
-            // Initialize the query builder for DataType
-            $query = DataType::with('dataPlans')
-                ->whereHas('dataPlans', function ($query) use ($networkId) {
-                    $query->where('network_id', $networkId);
-                });
+            // Query only selected data types
+            $query = DataType::with(['dataPlans' => function ($query) {
+                $query->select('data_id', 'network_id', 'price', 'size', 'validity', 'type');
+            }])->whereHas('dataPlans', function ($query) use ($networkId) {
+                $query->where('network_id', $networkId);
+            });
 
-            // Define the custom order arrays
-            $customOrder = [
-                'SPECIAL DATA' => 1,
-                'SME' => 2,
-                'SME2' => 3,
-                'CORPORATE GIFTING' => 4,
-                'GIFTING' => 5,
-            ];
-
-            $mtnOrder = [
-                'XTRASPECIAL' => 1,
-                'SPECIAL DATA' => 2,
-                'SPECIAL OFFER' => 3,
-                'GIFTING' => 4,
-            ];
-
-            $rearrangedOrder = [
-                'SPECIAL DATA' => 1,
-                'CORPORATE GIFTING' => 2,
-                'GIFTING' => 3,
-                'SME' => 4,
-                'SME2' => 5,
-            ];
-
-            // Adjust the query based on account_type and network_id
+            // Apply filtering based on network ID
             if ($networkId == '1') {
                 $query->whereIn('id', [4, 6, 7, 10]);
-            } elseif ($user->account_type == '1' && $networkId == '4') {
-                $query->whereIn('id', [4, 7]);
-            } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
-                $query->whereIn('id', [4, 7]);
             } elseif ($networkId == '2') {
                 $query->whereIn('id', [4, 5, 7]);
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4, 5]);
+            } elseif ($networkId == '4') {
+                $query->whereIn('id', [4, 7]);
             }
 
-            // Determine the order to use based on network_id
-            $orderToUse = match ($networkId) {
-                '2', '4' => $rearrangedOrder,
-                '1' => $mtnOrder,
-                default => $customOrder,
-            };
+            // Retrieve data types
+            $dataTypes = $query->get();
 
-            // Get the data types with custom ordering
-            $dataTypes = $query->get()->sortBy(fn($dataType) => $orderToUse[$dataType->name] ?? PHP_INT_MAX)->values();
+            // Prepare the final display structure
+            $finalDisplay = collect();
 
-            // Transform the data type names if conditions are met
-            $dataTypes->transform(function ($dataType) use ($user, $networkId) {
-                if ($user->account_type == '1') {
-                    if ($networkId == '1') {
-                        $dataType->name = match ($dataType->name) {
-                            'SPECIAL OFFER' => 'SMALL BUNDLES',
-                            'GIFTING' => 'BIG BUNDLES',
-                            'SME2' => 'SMALL BUNDLES 2',
-                            default => $dataType->name,
-                        };
-                    } elseif ($networkId == '2' || $networkId == '3') {
-                        $dataType->name = match ($dataType->name) {
-                            'CORPORATE GIFTING' => 'SMALL BUNDLES',
-                            'GIFTING' => 'BIG BUNDLES',
-                            default => $dataType->name,
-                        };
-                    } elseif ($networkId == '4') {
-                        $dataType->name = match ($dataType->name) {
-                            'SPECIAL DATA' => 'SMALL BUNDLES',
-                            'CORPORATE GIFTING' => 'SMALL BUNDLES 2',
-                            'GIFTING' => 'BIG BUNDLES',
-                            default => $dataType->name,
-                        };
-                    }
-                } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
-                    $dataType->name = match ($dataType->name) {
-                        'SPECIAL OFFER' => 'SME',
-                        'SME2' => 'COPORATE GIFTING',
-                        default => $dataType->name,
-                    };
-                } elseif ($networkId === "4" && $dataType->name === "BROADBAND BUNDLES") {
-                    $dataType->name = 'ROUTER BUNDLES';
+            // Ensure XTRASPECIAL and SPECIAL DATA are included
+            $specialTypes = ['XTRASPECIAL', 'SPECIAL DATA'];
+
+            foreach ($specialTypes as $specialType) {
+                $existingType = $dataTypes->firstWhere('name', $specialType);
+                if ($existingType) {
+                    $finalDisplay->push($existingType);
+                } else {
+                    $finalDisplay->push((object) ['name' => $specialType, 'dataPlans' => collect()]);
                 }
+            }
 
-                return $dataType;
+            // Categorize data plans under Daily, Weekly, and Monthly Plans
+            $dailyPlans = collect();
+            $weeklyPlans = collect();
+            $monthlyPlans = collect();
+
+            $dataTypes->each(function ($dataType) use ($dailyPlans, $weeklyPlans, $monthlyPlans) {
+                $dataType->dataPlans->each(function ($dataPlan) use ($dailyPlans, $weeklyPlans, $monthlyPlans) {
+                    if ($dataPlan->validity <= 7) {
+                        $dailyPlans->push($dataPlan);
+                    } elseif ($dataPlan->validity < 30) {
+                        $weeklyPlans->push($dataPlan);
+                    } else {
+                        $monthlyPlans->push($dataPlan);
+                    }
+                });
             });
-            return response()->json($dataTypes);
+
+            // Add Daily, Weekly, and Monthly Plans to the final structure
+            if ($dailyPlans->isNotEmpty()) {
+                $finalDisplay->push((object) ['name' => 'Daily Plans', 'dataPlans' => $dailyPlans]);
+            }
+            if ($weeklyPlans->isNotEmpty()) {
+                $finalDisplay->push((object) ['name' => 'Weekly Plans', 'dataPlans' => $weeklyPlans]);
+            }
+            if ($monthlyPlans->isNotEmpty()) {
+                $finalDisplay->push((object) ['name' => 'Monthly Plans', 'dataPlans' => $monthlyPlans]);
+            }
+
+            return response()->json($finalDisplay->values());
         } catch (\Exception $e) {
             Log::error('Error in getDataTypes: ' . $e->getMessage());
             return response()->json(['error' => 'An unexpected error occurred'], 500);
-
         }
     }
 
