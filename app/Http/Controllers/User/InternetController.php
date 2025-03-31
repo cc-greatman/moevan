@@ -568,47 +568,51 @@ class InternetController extends Controller
     }
 
     public function getDataPlans(Request $request) {
-        $network = $request->input('network_id');
-        $dataType = $request->input('dataType');
-        $user = Auth::user();
+        try {
+            $network = $request->input('network_id');
+            $dataType = $request->input('dataType');
+            $user = Auth::user();
 
-        // Initialize the query builder
-        $query = DataPlans::query()->with(['network', 'dataType']);
-
-        // Check if both network_id and dataType are provided
-        if ($network && $dataType) {
-            // Add conditions to filter by network_id and dataType
-            $query->where('network_id', $network)->where('type', $dataType);
-
-            // Limit results based on network_id and dataType
-            if ($network == 1 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(6)->get();
-            } elseif ($network == 2 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-            } elseif ($network == 3 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(10)->get();
-            } elseif ($network == 4 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-            } else {
-                $dataPlans = $query->orderBy('price', 'asc')->get();
+            if (!$network || !$dataType) {
+                return response()->json([]);
             }
 
-            // Retrieve specific prices for the agent if the user is an agent
+            // Query data plans with relationships
+            $query = DataPlans::with(['network', 'dataType'])
+                              ->where('network_id', $network)
+                              ->where('type', $dataType)
+                              ->orderBy('price', 'asc');
+
+            // Apply limits based on network and data type
+            $limits = [
+                '1' => ['5' => 6], // Network 1, DataType 5 → Limit 6
+                '2' => ['5' => 7], // Network 2, DataType 5 → Limit 7
+                '3' => ['5' => 10], // Network 3, DataType 5 → Limit 10
+                '4' => ['5' => 7], // Network 4, DataType 5 → Limit 7
+            ];
+
+            if (isset($limits[$network][$dataType])) {
+                $query->take($limits[$network][$dataType]);
+            }
+
+            $dataPlans = $query->get();
+
+            // Adjust pricing for agents (account_type = 3)
             if ($user->account_type == 3) {
-                foreach ($dataPlans as $dataPlan) {
+                $dataPlans->each(function ($dataPlan) use ($user) {
                     $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)
                         ->where('data_id', $dataPlan->data_id)
                         ->first();
 
                     $dataPlan->a_price = $agentPrice ? $agentPrice->price : $dataPlan->a_price;
-                }
+                });
             }
-        } else {
-            // If either network_id or dataType is not provided, return an empty result
-            $dataPlans = [];
-        }
 
-        return response()->json($dataPlans);
+            return response()->json($dataPlans);
+        } catch (\Exception $e) {
+            Log::error('Error in getDataPlans: ' . $e->getMessage());
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
+        }
 
     }
 
