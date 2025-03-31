@@ -495,7 +495,7 @@ class InternetController extends Controller
     }
 
     public function getDataTypes() {
-        try{
+        try {
             $networkId = request()->query('network_id');
             if (is_null($networkId)) {
                 return response()->json(['error' => 'Network ID is required'], 400);
@@ -506,43 +506,22 @@ class InternetController extends Controller
                 return response()->json(['error' => 'User not authenticated'], 401);
             }
 
-            // Query only selected data types
-            $query = DataType::with(['dataPlans' => function ($query) {
-                $query->select('data_id', 'network_id', 'price', 'size', 'validity', 'type');
-            }])->whereHas('dataPlans', function ($query) use ($networkId) {
-                $query->where('network_id', $networkId);
-            });
+            // Allowed DataType IDs per network
+            $allowedIds = match ($networkId) {
+                '1' => [4, 6, 7, 10], // XTRASPECIAL (10) & SPECIAL DATA (7) included
+                '2' => [4, 5, 7],
+                '3' => [4, 5],
+                '4' => [4, 7],
+                default => [],
+            };
 
-            // Apply filtering based on network ID
-            if ($networkId == '1') {
-                $query->whereIn('id', [4, 6, 7, 10]);
-            } elseif ($networkId == '2') {
-                $query->whereIn('id', [4, 5, 7]);
-            } elseif ($networkId == '3') {
-                $query->whereIn('id', [4, 5]);
-            } elseif ($networkId == '4') {
-                $query->whereIn('id', [4, 7]);
-            }
+            // Fetch data types limited to allowed IDs
+            $dataTypes = DataType::with(['dataPlans' => function ($query) use ($networkId) {
+                $query->select('data_id', 'network_id', 'price', 'size', 'validity', 'type')
+                      ->where('network_id', $networkId);
+            }])->whereIn('id', $allowedIds)->get();
 
-            // Retrieve data types
-            $dataTypes = $query->get();
-
-            // Prepare the final display structure
-            $finalDisplay = collect();
-
-            // Ensure XTRASPECIAL and SPECIAL DATA are included
-            $specialTypes = ['XTRASPECIAL', 'SPECIAL DATA'];
-
-            foreach ($specialTypes as $specialType) {
-                $existingType = $dataTypes->firstWhere('name', $specialType);
-                if ($existingType) {
-                    $finalDisplay->push($existingType);
-                } else {
-                    $finalDisplay->push((object) ['name' => $specialType, 'dataPlans' => collect()]);
-                }
-            }
-
-            // Categorize data plans under Daily, Weekly, and Monthly Plans
+            // Categorize data plans into Daily, Weekly, and Monthly
             $dailyPlans = collect();
             $weeklyPlans = collect();
             $monthlyPlans = collect();
@@ -559,7 +538,18 @@ class InternetController extends Controller
                 });
             });
 
-            // Add Daily, Weekly, and Monthly Plans to the final structure
+            // Prepare final response
+            $finalDisplay = collect();
+
+            // Include XTRASPECIAL and SPECIAL DATA only if they exist in allowed IDs
+            if (in_array(10, $allowedIds)) {
+                $finalDisplay->push($dataTypes->firstWhere('id', 10) ?? (object) ['id' => 10, 'name' => 'XTRASPECIAL', 'dataPlans' => collect()]);
+            }
+            if (in_array(7, $allowedIds)) {
+                $finalDisplay->push($dataTypes->firstWhere('id', 7) ?? (object) ['id' => 7, 'name' => 'SPECIAL DATA', 'dataPlans' => collect()]);
+            }
+
+            // Add categorized plans
             if ($dailyPlans->isNotEmpty()) {
                 $finalDisplay->push((object) ['name' => 'Daily Plans', 'dataPlans' => $dailyPlans]);
             }
