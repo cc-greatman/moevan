@@ -547,7 +547,7 @@ class InternetController extends Controller
             } elseif ($networkId == '2') {
                 $query->whereIn('id', [4, 5, 7]);
             } elseif ($networkId == '3') {
-                $query->whereIn('id', [4, 5]);
+                $query->whereIn('id', [4]);
             }
 
             // Determine the order to use based on network_id
@@ -562,36 +562,25 @@ class InternetController extends Controller
 
             // Transform the data type names if conditions are met
             $dataTypes->transform(function ($dataType) use ($user, $networkId) {
-                if ($user->account_type == '1') {
+                if (in_array($user->account_type, ['1','2', '3'])) {
                     if ($networkId == '1') {
                         $dataType->name = match ($dataType->name) {
-                            'SPECIAL OFFER' => 'SMALL BUNDLES',
-                            'GIFTING' => 'BIG BUNDLES',
-                            'SME2' => 'SMALL BUNDLES 2',
+                            'SPECIAL OFFER' => 'DAILY/WEEKLY PLANS',
+                            'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
-                    } elseif ($networkId == '2' || $networkId == '3') {
+                    } elseif ($networkId == '2' || $networkId == '4') {
                         $dataType->name = match ($dataType->name) {
-                            'CORPORATE GIFTING' => 'SMALL BUNDLES',
-                            'GIFTING' => 'BIG BUNDLES',
+                            'CORPORATE GIFTING' => 'DAILY/WEEKLY PLANS',
+                            'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
-                    } elseif ($networkId == '4') {
+                    } elseif ($networkId == '3') {
                         $dataType->name = match ($dataType->name) {
-                            'SPECIAL DATA' => 'SMALL BUNDLES',
-                            'CORPORATE GIFTING' => 'SMALL BUNDLES 2',
-                            'GIFTING' => 'BIG BUNDLES',
+                            'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
                     }
-                } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '1') {
-                    $dataType->name = match ($dataType->name) {
-                        'SPECIAL OFFER' => 'SME',
-                        'SME2' => 'COPORATE GIFTING',
-                        default => $dataType->name,
-                    };
-                } elseif ($networkId === "4" && $dataType->name === "BROADBAND BUNDLES") {
-                    $dataType->name = 'ROUTER BUNDLES';
                 }
 
                 return $dataType;
