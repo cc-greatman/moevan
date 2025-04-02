@@ -523,9 +523,9 @@ class InternetController extends Controller
             ];
 
             $mtnOrder = [
-                'XTRASPECIAL' => 1,
-                'SPECIAL DATA' => 2,
-                'SPECIAL OFFER' => 3,
+                'SPECIAL DATA' => 1,
+                'CORPORATE GIFTING' => 2,
+                'SME' => 3,
                 'GIFTING' => 4,
             ];
 
@@ -565,13 +565,15 @@ class InternetController extends Controller
                 if (in_array($user->account_type, ['1','2', '3'])) {
                     if ($networkId == '1') {
                         $dataType->name = match ($dataType->name) {
-                            'SPECIAL OFFER' => 'DAILY/WEEKLY PLANS',
+                            'CORPORATE GIFTING' => 'DAILY PLANS',
+                            'SME' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '2' || $networkId == '4') {
                         $dataType->name = match ($dataType->name) {
-                            'CORPORATE GIFTING' => 'DAILY/WEEKLY PLANS',
+                            'CORPORATE GIFTING' => 'DAILY PLANS',
+                            'SME' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
