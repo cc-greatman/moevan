@@ -541,12 +541,8 @@ class InternetController extends Controller
             // Adjust the query based on account_type and network_id
             if ($networkId == '1') {
                 $query->whereIn('id', [2, 4, 5, 7]);
-            } elseif ($user->account_type == '1' && $networkId == '4') {
-                $query->whereIn('id', [4, 7]);
-            } elseif (in_array($user->account_type, ['2', '3']) && $networkId == '4') {
-                $query->whereIn('id', [4, 7]);
-            } elseif ($networkId == '2') {
-                $query->whereIn('id', [4, 5, 7]);
+            } elseif ($networkId == '2' || $networkId == '4') {
+                $query->whereIn('id', [2, 4, 5, 7]);
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4]);
             }
@@ -609,18 +605,8 @@ class InternetController extends Controller
             // Add conditions to filter by network_id and dataType
             $query->where('network_id', $network)->where('type', $dataType);
 
-            // Limit results based on network_id and dataType
-            if ($network == 1 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(6)->get();
-            } elseif ($network == 2 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-            } elseif ($network == 3 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(10)->get();
-            } elseif ($network == 4 && $dataType == 5) {
-                $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-            } else {
-                $dataPlans = $query->orderBy('price', 'asc')->get();
-            }
+            // Retrieve the data plans based on the conditions
+            $dataPlans = $query->orderBy('price', 'asc')->get();
 
             // Retrieve specific prices for the agent if the user is an agent
             if ($user->account_type == 3) {
