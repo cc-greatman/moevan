@@ -190,6 +190,27 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             }
+            //MTN SPECIAL DATA(Wweekly plans)
+            elseif ($planDetails->dataType->id === 7) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
         }
         //GLO Network Calls
         elseif ($network_id == 2) {
