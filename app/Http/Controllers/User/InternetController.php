@@ -570,7 +570,7 @@ class InternetController extends Controller
             }
 
             // Ensure relationships are loaded properly
-            $dataPlans->each->load('dataType');
+            $dataPlans->load('dataType');
         } else {
             $dataPlans = [];
         }
