@@ -191,8 +191,7 @@
                                 case 2:
                                 case 3:
                                     priceToShow = userType === 2 ? dataPlan.r_price : dataPlan.a_price;
-                                    let dataTypeName = (dataPlan.dataType && dataPlan.dataType.name) ? dataPlan.dataType.name : 'Unknown Type';
-                                    option.text = '(' + dataTypeName + ') ' + dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
+                                    option.text = dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                                     break;
                             }
 
