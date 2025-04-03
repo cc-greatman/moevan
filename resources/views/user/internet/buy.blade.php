@@ -181,20 +181,21 @@
                             var option = document.createElement('option');
 
                             var priceToShow = '';
-                            switch (<?= Auth::user()->account_type ?>) {
+                            var userType = <?= Auth::user()->account_type ?>;
+
+                            switch (userType) {
                                 case 1:
                                     priceToShow = dataPlan.price;
+                                    option.text = dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                                     break;
                                 case 2:
-                                    priceToShow = dataPlan.r_price;
-                                    break;
                                 case 3:
-                                    priceToShow = dataPlan.a_price;
+                                    priceToShow = userType === 2 ? dataPlan.r_price : dataPlan.a_price;
+                                    option.text = '(' + dataPlan.dataType.name + ') ' + dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                                     break;
                             }
 
                             option.value = dataPlan.data_id;
-                            option.text ='('+ dataPlan.dataType.name + ')' + dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                             planSelect.appendChild(option);
                         });
 

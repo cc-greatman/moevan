@@ -551,29 +551,31 @@ class InternetController extends Controller
 
         // Check if both network_id and dataType are provided
         if ($network && $dataType) {
-            // Add conditions to filter by network_id and dataType
+            // Filter by network_id and dataType
             $query->where('network_id', $network)->where('type', $dataType);
 
-            // Retrieve the data plans based on the conditions
+            // Retrieve the data plans
             $dataPlans = $query->orderBy('price', 'asc')->get();
 
-            // Retrieve specific prices for the agent if the user is an agent
+            // Retrieve agent-specific prices if the user is an agent
             if ($user->account_type == 3) {
                 foreach ($dataPlans as $dataPlan) {
                     $agentPrice = AgentDataPlanPrice::where('agent_id', $user->id)
                         ->where('data_id', $dataPlan->data_id)
                         ->first();
 
+                    // Add a_price dynamically
                     $dataPlan->a_price = $agentPrice ? $agentPrice->price : $dataPlan->a_price;
                 }
             }
+
+            // Ensure relationships are loaded properly
+            $dataPlans->each->load('dataType');
         } else {
-            // If either network_id or dataType is not provided, return an empty result
             $dataPlans = [];
         }
 
         return response()->json($dataPlans);
-
     }
 
     public function generateRequestId() {
