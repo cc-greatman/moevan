@@ -34,9 +34,9 @@ class InternetController extends Controller
                 'expected' => session('transaction_token'),
                 'received' => $token,
             ]);
-        }
 
-        return redirect()->route('user.transactions.data.show');
+            return redirect()->route('user.transactions.data.show');
+        }
 
 
         // Invalidate the token after use
