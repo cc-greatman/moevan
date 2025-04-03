@@ -194,7 +194,7 @@
                             }
 
                             option.value = dataPlan.data_id;
-                            option.text = dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
+                            option.text ='('+ dataPlan.dataType.name + ')' + dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                             planSelect.appendChild(option);
                         });
 
