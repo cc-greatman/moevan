@@ -533,8 +533,8 @@ class InternetController extends Controller
             $rearrangedOrder = [
                 'SPECIAL DATA' => 1,
                 'CORPORATE GIFTING' => 2,
-                'GIFTING' => 3,
-                'SME' => 4,
+                'SME' => 3,
+                'GIFTING' => 4,
                 'SME2' => 5,
             ];
 
