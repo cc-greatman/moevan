@@ -105,8 +105,8 @@ class InternetController extends Controller
 
         $manual = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
         $main_switch = DataControls::where('network', $network_id)->where('data_type', $dataType)->first();
-        $reseller = DataControls::where('id', 22)->first();
-        $agent = DataControls::where('id', 23)->first();
+        $reseller = DataControls::where('id', 24)->first();
+        $agent = DataControls::where('id', 25)->first();
 
         //Checking if the Data Bundle is active
         $statusCheck = $this->manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $dataType, $phone, $plan_id, $agent, $reseller, $manual, $main_switch, $network_id);

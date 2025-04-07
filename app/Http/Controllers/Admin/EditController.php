@@ -90,7 +90,7 @@ class EditController extends Controller
 
     public function switchOffResellerData() {
 
-        $dataType = DataType::where('id', 22)->first();
+        $dataType = DataType::where('id', 24)->first();
         $type_name = $dataType->name??null;
 
         $dataType->status = !$dataType->status;
@@ -103,7 +103,7 @@ class EditController extends Controller
 
     public function switchOnResellerData() {
 
-        $dataType = DataType::where('id', 22)->first();
+        $dataType = DataType::where('id', 24)->first();
         $type_name = $dataType->name??null;
 
         $dataType->status = !$dataType->status;
@@ -116,7 +116,7 @@ class EditController extends Controller
 
     public function switchOffAgentData() {
 
-        $dataType = DataType::where('id', 23)->first();
+        $dataType = DataType::where('id', 25)->first();
         $type_name = $dataType->name??null;
 
         $dataType->active = !$dataType->active;
@@ -129,7 +129,7 @@ class EditController extends Controller
 
     public function switchOnAgentData() {
 
-        $dataType = DataType::where('id', 23)->first();
+        $dataType = DataType::where('id', 25)->first();
         $type_name = $dataType->name??null;
 
         $dataType->active = !$dataType->active;

@@ -83,12 +83,12 @@ class ViewController extends Controller
 
         $pageTitle = 'Site Settings - Moevan';
 
-        $reseller = DataControls::where('id', 22)->get();
+        $reseller = DataControls::where('id', 24)->get();
 
-        $agent = DataControls::where('id', 23)->get();
+        $agent = DataControls::where('id', 25)->get();
 
         $mtn = DataControls::where('network', '1')
-                            ->whereNotIn('id', [22, 23])
+                            ->whereNotIn('id', [24, 25])
                             ->get();
 
         $glo = DataControls::where('network', '2')->get();
