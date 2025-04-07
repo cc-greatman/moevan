@@ -214,6 +214,26 @@ class InternetController extends Controller
         }
         //GLO Network Calls
         elseif ($network_id == 2) {
+            //GLO SME(weekly plans)
+            if($planDetails->dataType->id === 2) {
+                $apiType = "DIRECT GIFITNG";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
             //GLO GIFTING
             if ($planDetails->dataType->id === 4) {
                 if (in_array($planDetails->data_id, [264, 265, 262, 267, 261])) {
