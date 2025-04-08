@@ -918,17 +918,7 @@ class InternetController extends Controller
             // Add conditions to filter by network_id and dataType
             $query->where('network_id', $network)->where('type', $dataType);
 
-            if ($network == 1 && $dataType == 5) {
-                    $dataPlans = $query->orderBy('price', 'asc')->take(6)->get();
-                } elseif ($network == 2 && $dataType == 5) {
-                    $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-                } elseif ($network == 3 && $dataType == 5) {
-                    $dataPlans = $query->orderBy('price', 'asc')->take(10)->get();
-                } elseif ($network == 4 && $dataType == 5) {
-                    $dataPlans = $query->orderBy('price', 'asc')->take(7)->get();
-                } else {
-                    $dataPlans = $query->orderBy('price', 'asc')->get();
-                }
+            $dataPlans = $query->orderBy('price', 'asc')->get();
 
         } else {
             // If either network_id or dataType is not provided, return an empty result
