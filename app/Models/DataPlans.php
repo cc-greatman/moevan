@@ -30,6 +30,11 @@ class DataPlans extends Model
         return $this->belongsTo(DataType::class, 'type', 'id');
     }
 
+    public function oDataType()
+    {
+        return $this->belongsTo(DataType::class, 'data_type', 'id');
+    }
+
     public function dataTransactions()
     {
         return $this->hasMany(DataTransactions::class, 'plan_id', 'data_id');
