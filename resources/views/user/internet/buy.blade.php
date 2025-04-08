@@ -191,7 +191,10 @@
                                 case 2:
                                 case 3:
                                     priceToShow = userType === 2 ? dataPlan.r_price : dataPlan.a_price;
-                                    option.text = dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
+
+                                    var dataTypeName = dataPlan.data_type.name;
+
+                                    option.text ="(" + dataTypeName + ") " + dataPlan.size + ' - ₦' + priceToShow + ' @ ' + dataPlan.validity + ' days';
                                     break;
                             }
 
