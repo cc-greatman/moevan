@@ -13,6 +13,13 @@
           @include('user.messages.success_alert')
         </div>
         <!-- PAGE-HEADER END -->
+        @php
+            $planNames = [
+                'CORPORATE GIFTING' => 'DAILY PLANS',
+                'SME/DATA TRANSFER' => 'WEEKLY PLANS',
+                'GIFTING' => 'MONTHLY PLANS',
+            ];
+        @endphp
 
         <div class="row">
             <div class="col-xl-12">
@@ -139,7 +146,7 @@
                                     @foreach ($mtn as $data)
                                     <tr>
                                         <th scope="row">{{ $data->id }}</th>
-                                        <td>{{ optional($data->dataType)->name }}</td>
+                                        <td>{{ $planNames[optional($data->dataType)->name] ?? optional($data->dataType)->name }}</td>
                                         <td>
                                             @if($data->status == '1')
                                             <form method="post" action="{{ route('admin.setting.status.switch.on', $data->id) }}">
@@ -196,7 +203,7 @@
                                     @foreach ($glo as $data)
                                     <tr>
                                         <th scope="row">{{ $data->id }}</th>
-                                        <td>{{ optional($data->dataType)->name }}</td>
+                                        <td>{{ $planNames[optional($data->dataType)->name] ?? optional($data->dataType)->name }}</td>
                                         <td>
                                             @if($data->status == '1')
                                             <form method="post" action="{{ route('admin.setting.status.switch.on', $data->id) }}">
@@ -253,7 +260,7 @@
                                     @foreach ($etisalat as $data)
                                     <tr>
                                         <th scope="row">{{ $data->id }}</th>
-                                        <td>{{ optional($data->dataType)->name }}</td>
+                                        <td>{{ $planNames[optional($data->dataType)->name] ?? optional($data->dataType)->name }}</td>
                                         <td>
                                             @if($data->status == '1')
                                             <form method="post" action="{{ route('admin.setting.status.switch.on', $data->id) }}">
@@ -310,7 +317,7 @@
                                     @foreach ($airtel as $data)
                                     <tr>
                                         <th scope="row">{{ $data->id }}</th>
-                                        <td>{{ optional($data->dataType)->name }}</td>
+                                        <td>{{ $planNames[optional($data->dataType)->name] ?? optional($data->dataType)->name }}</td>
                                         <td>
                                             @if($data->status == '1')
                                             <form method="post" action="{{ route('admin.setting.status.switch.on', $data->id) }}">
