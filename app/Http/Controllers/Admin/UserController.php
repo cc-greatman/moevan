@@ -383,7 +383,7 @@ class UserController extends Controller
                         $dataType = DataType::where('name', 'LIKE', "%$query%")->first();
                         if ($dataType) {
                             $q->whereHas('dataPlan', function ($query) use ($dataType) {
-                                $query->where('type', $dataType->id);
+                                $query->where('data_type', $dataType->id);
                             });
                         } else {
                             $q->whereDoesntHave('dataPlan');
