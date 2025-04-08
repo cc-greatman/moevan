@@ -89,7 +89,7 @@
                                                     <td>{{ optional($dataTrx->dataPlan)->size ?? 'N/A' }} @ {{ optional($dataTrx->dataPlan)->validity ?? 'N/A' }} Days</td>
                                                     <td>{{ optional(optional($dataTrx->dataPlan)->network)->name ?? 'Unknown Network' }}</td>
                                                     <td>{{ $dataTrx->reference }}</td>
-                                                    <td>{{ optional(optional($dataTrx->dataPlan)->dataType)->name ?? 'Unknown Type' }}</td>
+                                                    <td>{{ optional(optional($dataTrx->dataPlan)->mainDataType)->name ?? 'Unknown Type' }}</td>
                                                     <td>₦{{ number_format($dataTrx->pre_bal, 2) }}</td>
                                                     <td>₦{{ number_format($dataTrx->amount, 2) }}</td>
                                                     <td>₦{{ number_format($dataTrx->post_bal, 2) }}</td>
