@@ -575,14 +575,14 @@ class InternetController extends Controller
                     if ($networkId == '1') {
                         $dataType->name = match ($dataType->name) {
                             'CORPORATE GIFTING' => 'DAILY PLANS',
-                            'SME' => 'WEEKLY PLANS',
+                            'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '2' || $networkId == '4') {
                         $dataType->name = match ($dataType->name) {
                             'CORPORATE GIFTING' => 'DAILY PLANS',
-                            'SME' => 'WEEKLY PLANS',
+                            'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
                             default => $dataType->name,
                         };
