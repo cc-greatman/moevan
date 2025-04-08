@@ -10,7 +10,7 @@
                 <h1 class="page-title my-auto">Data Price for Agent {{ $name }} Edit</h1>
                 @include('user.messages.success_alert')
             </div>
-    
+
             <div class="row">
                 <div class="col-xl-8">
                     <div class="card custom-card">
@@ -150,7 +150,7 @@
                 dataPlans.forEach(dataPlan => {
                     var option = document.createElement('option');
                     var networkName = dataPlan.network ? dataPlan.network.name : 'Unknown Network';
-                    var dataTypeName = dataPlan.data_type.name;
+                    var dataTypeName = dataPlan.main_data_type.name;
 
                     option.value = dataPlan.data_id;
                     option.text = dataTypeName + ' - ' + dataPlan.size + ' - ₦' + dataPlan.a_price + ' @ ' + dataPlan.validity + ' days';

@@ -610,7 +610,7 @@ class InternetController extends Controller
         $user = Auth::user();
 
         // Initialize the query builder
-        $query = DataPlans::query()->with(['network', 'dataType']);
+        $query = DataPlans::query()->with(['network', 'dataType', 'mainDataType']);
 
         // Check if both network_id and dataType are provided
         if ($network && $dataType) {
@@ -633,11 +633,10 @@ class InternetController extends Controller
             }
 
             // Ensure relationships are loaded properly
-            $dataPlans->load('dataType');
+            $dataPlans->load('dataType','mainDataType');
         } else {
             $dataPlans = [];
         }
-
         return response()->json($dataPlans);
     }
 
@@ -911,7 +910,7 @@ class InternetController extends Controller
         $dataType = $request->input('dataType');
 
         // Initialize the query builder
-        $query = DataPlans::query()->with(['network', 'dataType']);
+        $query = DataPlans::query()->with(['network', 'dataType', 'mainDataType']);
 
         // Check if both network_id and dataType are provided
         if ($network && $dataType) {
