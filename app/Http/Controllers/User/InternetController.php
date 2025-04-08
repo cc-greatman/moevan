@@ -528,7 +528,7 @@ class InternetController extends Controller
             // Define the custom order arrays
             $customOrder = [
                 'SPECIAL DATA' => 1,
-                'SME' => 2,
+                'SME/DATA TRANSFER' => 3,
                 'SME2' => 3,
                 'CORPORATE GIFTING' => 4,
                 'GIFTING' => 5,
@@ -537,7 +537,7 @@ class InternetController extends Controller
             $mtnOrder = [
                 'SPECIAL DATA' => 1,
                 'CORPORATE GIFTING' => 2,
-                'SME' => 3,
+                'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
                 'XTRASPECIAL' => 5,
             ];
@@ -545,7 +545,7 @@ class InternetController extends Controller
             $rearrangedOrder = [
                 'SPECIAL DATA' => 1,
                 'CORPORATE GIFTING' => 2,
-                'SME' => 3,
+                'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
                 'SME2' => 5,
             ];
@@ -669,7 +669,7 @@ class InternetController extends Controller
         // Define the custom order arrays
         $customOrder = [
             'SPECIAL DATA' => 1,
-            'SME' => 2,
+            'SME/DATA TRANSFER' => 3,
             'SME2' => 3,
             'CORPORATE GIFTING' => 4,
             'GIFTING' => 5,
@@ -678,7 +678,7 @@ class InternetController extends Controller
         $mtnOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'XTRASPECIAL' => 5,
         ];
@@ -686,7 +686,7 @@ class InternetController extends Controller
         $rearrangedOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
         ];
@@ -715,14 +715,14 @@ class InternetController extends Controller
                 if ($networkId == '1') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '2' || $networkId == '4') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
@@ -752,7 +752,7 @@ class InternetController extends Controller
         // Define the custom order arrays
         $customOrder = [
             'SPECIAL DATA' => 1,
-            'SME' => 2,
+            'SME/DATA TRANSFER' => 3,
             'SME2' => 3,
             'CORPORATE GIFTING' => 4,
             'GIFTING' => 5,
@@ -761,7 +761,7 @@ class InternetController extends Controller
         $mtnOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'XTRASPECIAL' => 5,
         ];
@@ -769,7 +769,7 @@ class InternetController extends Controller
         $rearrangedOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
         ];
@@ -798,14 +798,14 @@ class InternetController extends Controller
                 if ($networkId == '1') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '2' || $networkId == '4') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
@@ -834,7 +834,7 @@ class InternetController extends Controller
         // Define the custom order arrays
         $customOrder = [
             'SPECIAL DATA' => 1,
-            'SME' => 2,
+            'SME/DATA TRANSFER' => 3,
             'SME2' => 3,
             'CORPORATE GIFTING' => 4,
             'GIFTING' => 5,
@@ -843,7 +843,7 @@ class InternetController extends Controller
         $mtnOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'XTRASPECIAL' => 5,
         ];
@@ -851,7 +851,7 @@ class InternetController extends Controller
         $rearrangedOrder = [
             'SPECIAL DATA' => 1,
             'CORPORATE GIFTING' => 2,
-            'SME' => 3,
+            'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
         ];
@@ -880,14 +880,14 @@ class InternetController extends Controller
                 if ($networkId == '1') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '2' || $networkId == '4') {
                     $dataType->name = match ($dataType->name) {
                         'CORPORATE GIFTING' => 'DAILY PLANS',
-                        'SME' => 'WEEKLY PLANS',
+                        'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
                         default => $dataType->name,
                     };
