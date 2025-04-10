@@ -425,7 +425,11 @@ class InternetController extends Controller
             }
             //AIRTEL GIFTING(monthly plans)
             elseif ($planDetails->dataType->id === 4) {
-                $apiType = "DIRECT GIFTING";
+                if ($planDetails->data_id == '80003') {
+                    $apiType = "AWOOF GIFTING";
+                } else {
+                    $apiType = "DIRECT GIFTING";
+                }
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
@@ -483,11 +487,8 @@ class InternetController extends Controller
             }
             //AIRTEL SPECIAL DATA
             elseif ($planDetails->dataType->id === 7) {
-                if ($planDetails->data_id == '80003') {
-                    $apiType = "DIRECT GIFTING";
-                } else {
-                    $apiType = "AWOOF GIFTING";
-                }
+
+                $apiType = "AWOOF GIFTING";
                 // Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
