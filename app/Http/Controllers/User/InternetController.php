@@ -268,6 +268,8 @@ class InternetController extends Controller
 
                     $finalResponse = $this->ayinlakApi($planDetails, $phone, $network_id);
 
+                    return $finalResponse;
+
                     if (isset($finalResponse['Status']) && strtoupper($finalResponse['Status']) === 'FAILED') {
 
                         $message = $finalResponse['api_response'];
