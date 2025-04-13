@@ -85,6 +85,10 @@
         </div>
 
         <div class="bg-white md:py-8 py-6">
+            <p class="md:ml-10 ml-5 md:text-4xl text-xl">MTN XtraData: Dial *123*2*2# then choose 2</p>
+        </div>
+
+        <div class="bg-white md:py-8 py-6">
           <p class="md:ml-10 ml-5 md:text-4xl text-xl">Airtel *323#</p>
         </div>
 

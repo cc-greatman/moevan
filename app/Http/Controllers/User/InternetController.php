@@ -582,6 +582,7 @@ class InternetController extends Controller
                             'CORPORATE GIFTING' => 'DAILY PLANS',
                             'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
+                            'XTRASPECIAL' => 'XTRADATA',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '2' || $networkId == '4') {
