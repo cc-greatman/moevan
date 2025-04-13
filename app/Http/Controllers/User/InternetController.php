@@ -268,11 +268,9 @@ class InternetController extends Controller
 
                     $finalResponse = $this->ayinlakApi($planDetails, $phone, $network_id);
 
-                    return $finalResponse;
-
                     if (isset($finalResponse['Status']) && strtoupper($finalResponse['Status']) === 'FAILED') {
 
-                        $message = $finalResponse['api_response'];
+                        $message = $finalResponse['api_response']??"Network is currently Unavailable";
 
                         if (empty($message)) {
                             $message = "Network is currently Unavailable";
@@ -283,7 +281,7 @@ class InternetController extends Controller
                         return redirect()->route('user.trx.error')->with('error', $message);
                     } elseif (isset($finalResponse['error'])) {
 
-                        $message = $finalResponse['api_response'];
+                        $message = $finalResponse['api_response']??"Network is currently Unavailable";
 
                         if (empty($message)) {
                             $message = "Network is currently Unavailable";
