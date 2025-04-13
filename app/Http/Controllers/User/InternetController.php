@@ -125,8 +125,8 @@ class InternetController extends Controller
         //MTN Network Calls
         if ($network_id == 1) {
             //MTN SME(weekly plans)
-            if($planDetails->dataType->id === 2) {
-                $apiType = "DIRECT GIFITNG";
+            if($planDetails->mainDataType->id === 2) {
+                $apiType = "DATA TRANSFER";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
@@ -145,32 +145,7 @@ class InternetController extends Controller
                 }
             }
             //MTN GIFTING(monthly plans)
-            elseif ($planDetails->dataType->id === 4) {
-                if (in_array($planDetails->data_id, [3000, 3001, 3002, 3003])) {
-                    $apiType = "DATA TRANSFER";
-                } else {
-                    $apiType = "DIRECT GIFTING";
-                }
-                //Call Autopilot API
-                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
-
-                // Check response status and content
-                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
-                    $apiResponse = $finalResponse['data']['message'];
-
-                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
-
-                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                } else {
-                    $message = $finalResponse['data']['message'];
-
-                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
-                }
-            }
-            //MTN GIFTING(Wweekly plans)
-            elseif ($planDetails->dataType->id === 5) {
+            elseif ($planDetails->mainDataType->id === 4) {
                 $apiType = "DIRECT GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -190,8 +165,29 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             }
+            //MTN GIFTING(Wweekly plans)
+            elseif ($planDetails->mainDataType->id === 5) {
+                $apiType = "CORPORATE GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
             //MTN SPECIAL DATA(Wweekly plans)
-            elseif ($planDetails->dataType->id === 7) {
+            elseif ($planDetails->mainDataType->id === 7) {
                 $apiType = "DIRECT GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -212,7 +208,7 @@ class InternetController extends Controller
                 }
             }
             //MTN XTRASPECIAL DATA(Wweekly plans)
-            elseif ($planDetails->dataType->id === 10) {
+            elseif ($planDetails->mainDataType->id === 10) {
                 $apiType = "DIRECT GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -235,33 +231,9 @@ class InternetController extends Controller
         }
         //GLO Network Calls
         elseif ($network_id == 2) {
-            //GLO SME(weekly plans)
-            if($planDetails->dataType->id === 2) {
-                $apiType = "DIRECT GIFITNG";
-                //Call Autopilot API
-                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
-
-                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
-                    $apiResponse = $finalResponse['data']['message'];
-
-                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
-
-                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                } else {
-                    $message = $finalResponse['data']['message'];
-
-                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
-
-                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
-                }
-            }
             //GLO GIFTING
-            if ($planDetails->dataType->id === 4) {
-                if (in_array($planDetails->data_id, [264, 265, 262, 267, 261])) {
-                    $apiType = "CORPORATE GIFTING";
-                } else {
-                    $apiType = "DIRECT GIFTING";
-                }
+            if ($planDetails->mainDataType->id === 4) {
+                $apiType = "DIRECT GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
@@ -281,7 +253,7 @@ class InternetController extends Controller
                 }
             }
             //GLO CORPORATE GIFITING
-            elseif ($planDetails->dataType->id === 5) {
+            elseif ($planDetails->mainDataType->id === 5) {
                 $apiType = "CORPORATE GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -294,9 +266,11 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                 } else {
 
-                    $finalResponse = $this->justpayApi($planDetails, $phone);
+                    $finalResponse = $this->ayinlakApi($planDetails, $phone, $network_id);
 
-                    if ($finalResponse['error_code'] == '1986' && $finalResponse['status'] === true) {
+                    return $finalResponse;
+
+                    if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED') {
 
                         $apiResponse = $finalResponse['data']['true_response'];
                         // Handle other cases
@@ -318,7 +292,7 @@ class InternetController extends Controller
                 }
             }
             //GLO SPECIAL DATA
-            elseif ($planDetails->dataType->id === 7) {
+            elseif ($planDetails->mainDataType->id === 7) {
                 $apiType = "AWOOF GIFTING";
                 // Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -342,7 +316,7 @@ class InternetController extends Controller
         //9MOBILE Network Calls
         elseif ($network_id == 3) {
             //9MOBILE GIFTING
-            if ($planDetails->dataType->id === 4) {
+            if ($planDetails->mainDataType->id === 4) {
                 $apiType = "DIRECT GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -363,7 +337,7 @@ class InternetController extends Controller
                 }
             }
             //9MOBILE CORPORATE GIFTING
-            elseif ($planDetails->dataType->id === 5) {
+            elseif ($planDetails->mainDataType->id === 5) {
                 $apiType = "CORPORATE GIFTING";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
@@ -1148,6 +1122,31 @@ class InternetController extends Controller
         $justpay = $response->json();
 
         return $justpay;
+    }
+
+    public function ayinlakApi($planDetails, $phone, $network_id) {
+
+        $apiKey = Env::get('AYINLAK_API_KEY');
+
+        $baseUrl = 'https://ayinlakconnectapi.com';
+
+        $body = [
+            'network' => $network_id,
+            'mobile_number' => $phone,
+            'plan' => $planDetails->bello_id,
+            'Ported_number' => true,
+        ];
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Token ' . $apiKey,
+        ];
+
+        $response = Http::withHeaders($headers)->timeout(38001)->post("$baseUrl/api/data", $body);
+
+        $ayinlak = $response->json();
+
+        return $ayinlak;
     }
 
     public function manualStatusCheck($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $dataType, $phone, $plan_id, $agent, $reseller, $manual, $main_switch) {
