@@ -527,7 +527,7 @@ class InternetController extends Controller
                 'CORPORATE GIFTING' => 2,
                 'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
-                'XTRASPECIAL' => 5,
+                'XTRADATA' => 5,
             ];
 
             $rearrangedOrder = [
@@ -565,7 +565,6 @@ class InternetController extends Controller
                             'CORPORATE GIFTING' => 'DAILY PLANS',
                             'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
-                            'XTRASPECIAL' => 'XTRADATA',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '2' || $networkId == '4') {
@@ -669,7 +668,7 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRASPECIAL' => 5,
+            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
@@ -752,7 +751,7 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRASPECIAL' => 5,
+            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
@@ -834,7 +833,7 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRASPECIAL' => 5,
+            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
