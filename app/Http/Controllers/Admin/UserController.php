@@ -353,7 +353,7 @@ class UserController extends Controller
     public function searchData(Request $request) {
         // Validate the search request
         $request->validate([
-            'search_type' => 'required|string|in:phone,date,amount,trx,network,status,username,provider,datatype,reference',
+            'search_type' => 'required|string|in:phone,date,amount,trx,network,status,plan,username,provider,datatype,reference',
             'query' => 'required|string',
         ]);
 
@@ -389,6 +389,11 @@ class UserController extends Controller
                             $q->whereDoesntHave('dataPlan');
                         }
                         break;
+                    case 'plan':
+                            $q->whereHas('dataPlan', function ($subQuery) use ($query) {
+                                $subQuery->whereRaw("CONCAT(size, ' @ ', validity, ' Days') LIKE ?", ["%$query%"]);
+                            });
+                    break;
                     case 'reference':
                         $q->where('reference', 'LIKE', "%$query%");
                         break;

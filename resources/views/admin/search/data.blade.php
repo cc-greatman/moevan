@@ -40,6 +40,7 @@
                                             <option value="trx">Transaction ID</option>
                                             <option value="username">User</option>
                                             <option value="provider">Provider</option>
+                                            <option value="plan">Plan</option>
                                             <option value="datatype">Datatype</option>
                                             <option value="reference">Reference</option>
                                             <option value="network">Network</option>
@@ -64,10 +65,10 @@
                                                 <th scope="col">Transaction ID</th>
                                                 <th scope="col">User</th>
                                                 <th scope="col">Provider</th>
-                                                <th scope="col">Network</th>
-                                                <th scope="col">Data Type</th>
-                                                <th scope="col">Reference</th>
                                                 <th scope="col">Plan</th>
+                                                <th scope="col">Network</th>
+                                                <th scope="col">Reference</th>
+                                                <th scope="col">Data Type</th>
                                                 <th scope="col">Balance Before</th>
                                                 <th scope="col">Amount</th>
                                                 <th scope="col">Balance After</th>

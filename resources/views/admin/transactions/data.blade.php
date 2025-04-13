@@ -41,6 +41,7 @@
                                             <option value="trx">Transaction ID</option>
                                             <option value="username">User</option>
                                             <option value="provider">Provider</option>
+                                            <option value="plan">Plan</option>
                                             <option value="datatype">Datatype</option>
                                             <option value="reference">Reference</option>
                                             <option value="network">Network</option>
