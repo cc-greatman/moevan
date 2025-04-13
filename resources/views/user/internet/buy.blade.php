@@ -9,7 +9,7 @@
         <img src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png" alt="cookies-img" />
         <p>Are you sure you want to continue to buy <strong><span id="networkName"></span> <span id="planDetails"></span> for <span id="phoneNumber"></span></strong>?</p>
         <!-- Additional message element -->
-        <p id="mtnMessage" style="display: none; color: red;">You must be on  MTN XTRA-SPECIAL TARIFF, change tariff by texting 408 to 312 to migrate</p>
+        <p id="mtnMessage" style="display: none; color: red;">Dial *123*2*2# then choose 2</p>
         <p id="additionalMessage" style="display: none; color: red;">MAKE SURE YOU ARE NOT OWING AIRTEL AIRTIME/DATA</p>
         <button class="accept" id="confirmYes" type="submit">Yes, Proceed!</button>
       </div>
@@ -82,10 +82,6 @@
       >
         <div class="bg-white md:py-8 py-6">
           <p class="md:ml-10 ml-5 md:text-4xl text-xl">MTN: Send 2 to 323</p>
-        </div>
-
-        <div class="bg-white md:py-8 py-6">
-            <p class="md:ml-10 ml-5 md:text-4xl text-xl">MTN XtraData: Dial *123*2*2# then choose 2</p>
         </div>
 
         <div class="bg-white md:py-8 py-6">
