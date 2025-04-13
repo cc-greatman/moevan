@@ -557,7 +557,7 @@ class InternetController extends Controller
 
             // Adjust the query based on account_type and network_id
             if ($networkId == '1') {
-                $query->whereIn('id', [2, 4, 5, 7]);
+                $query->whereIn('id', [2, 4, 5, 7, 10]);
             } elseif ($networkId == '2' || $networkId == '4') {
                 $query->whereIn('id', [2, 4, 5, 7]);
             } elseif ($networkId == '3') {
