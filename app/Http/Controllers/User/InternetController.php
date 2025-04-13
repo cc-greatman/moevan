@@ -268,26 +268,35 @@ class InternetController extends Controller
 
                     $finalResponse = $this->ayinlakApi($planDetails, $phone, $network_id);
 
-                    return $finalResponse;
+                    if (isset($finalResponse['Status']) && strtoupper($finalResponse['Status']) === 'FAILED') {
 
-                    if (isset($responseDat['Status']) && strtoupper($responseDat['Status']) === 'FAILED') {
-
-                        $apiResponse = $finalResponse['data']['true_response'];
-                        // Handle other cases
-                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'JUSTPAY');
-
-                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
-                    } else {
-
-                        $message = $finalResponse['data']['true_response'] ?? $finalResponse['server_message'] ?? $finalResponse['data']['server_message'] ?? $finalResponse['error'] ?? "Transaction Declined by Provider JPNG. Refer to them";
+                        $message = $finalResponse['api_response'];
 
                         if (empty($message)) {
                             $message = "Network is currently Unavailable";
                         }
 
-                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'JUSTPAY');
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AYINLAK');
 
                         return redirect()->route('user.trx.error')->with('error', $message);
+                    } elseif (isset($finalResponse['error'])) {
+
+                        $message = $finalResponse['api_response'];
+
+                        if (empty($message)) {
+                            $message = "Network is currently Unavailable";
+                        }
+
+                        $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AYINLAK');
+
+                        return redirect()->route('user.trx.error')->with('error', $message);
+                    } else {
+
+                        $apiResponse = $finalResponse['api_response'];
+                        // Handle other cases
+                        $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AYINLAK');
+
+                        return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
                     }
                 }
             }
