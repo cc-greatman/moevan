@@ -1150,7 +1150,7 @@ class InternetController extends Controller
             'Authorization' => 'Token ' . $apiKey,
         ];
 
-        $response = Http::withHeaders($headers)->timeout(38001)->post("$baseUrl/api/data", $body);
+        $response = Http::withHeaders($headers)->timeout(38001)->post("$baseUrl/api/data/", $body);
 
         $ayinlak = $response->json();
 
