@@ -55,7 +55,9 @@
                 <p><label for="">Mobile number</label></p>
                 <input type="tel" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="phone" value="{{ old('phone') }}" id="phone" autocomplete="tel" placeholder="07012234556" />
                 @error('phone')
-                    <small class="text-red-600">{{ $message }}</small>
+                    <div>
+                        <small class="text-red-600">{{ $message }}</small>
+                    </div>
                 @enderror
               </div>
 
