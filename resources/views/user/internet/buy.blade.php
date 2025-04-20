@@ -15,6 +15,29 @@
       </div>
     </div>
 
+    @if(session()->has('error'))
+        <div class="fixed inset-x-0 top-10 pb-2 sm:pb-5 z-50">
+            <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+                <div class="rounded-lg bg-red-600 p-2 shadow-lg sm:p-3">
+                    <div class="flex flex-wrap relative items-center justify-between">
+                        <div class="flex p-2 flex-1 items-center font-medium text-white">
+                            <ul>
+                                <li class="text-sm font-semibold">{{ session('error') }}</li>
+                            </ul>
+                        </div>
+                        <button class="absolute -top-2 -right-2 hover:text-gray-100" onclick="return this.parentNode.parentNode.parentNode.parentNode.remove();">
+                            <span class="sr-only">Dismiss</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="h-6 w-6 text-white">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div>
       <div class="text-center text-4xl text-blue-990 font-bold mt-12 mb-8">
         Buy Data

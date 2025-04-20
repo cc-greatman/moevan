@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-              @endif
+    @endif
 
    <div>
       <div class="text-center text-4xl text-blue-990 font-bold mt-12 mb-8">

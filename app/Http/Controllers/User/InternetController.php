@@ -61,9 +61,9 @@ class InternetController extends Controller
         $phone = $this->sanitize_phone_number($rawPhone);
 
         if (!$phone) {
-            return back()->withErrors(['phone' => 'Invalid phone number format. Please enter a valid Nigerian phone number.'])->withInput();
+            return back()->with('error', 'Invalid phone number format. Please enter a valid Nigerian phone number.')->withErrors(['phone' => 'Invalid phone number format. Please enter a valid Nigerian phone number.'])->withInput();
         }
-        
+
         $plan_id = $validatedData['plan'];
         $network_id = $validatedData['network_id'];
         $planDetails = DataPlans::where('data_id', $plan_id)->with('dataType')->first();// Get the plan details
