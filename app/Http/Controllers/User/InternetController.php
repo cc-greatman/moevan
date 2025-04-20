@@ -57,7 +57,13 @@ class InternetController extends Controller
         }
 
         // Get form data
-        $phone = $validatedData['phone'];
+        $rawPhone = $validatedData['phone'];
+        $phone = $this->sanitize_phone_number($rawPhone);
+
+        if (!$phone) {
+            return back()->withErrors(['phone' => 'Invalid phone number format. Please enter a valid Nigerian phone number.'])->withInput();
+        }
+        
         $plan_id = $validatedData['plan'];
         $network_id = $validatedData['network_id'];
         $planDetails = DataPlans::where('data_id', $plan_id)->with('dataType')->first();// Get the plan details
@@ -1193,5 +1199,24 @@ class InternetController extends Controller
         $this->handleManualResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, 'Data purchase transaction initiated!', $phone, $plan_id, 'MOEVAN');
         return 'success: Your Data Purchase was successful. Enjoy premium services with Moevan!';
     }
+
+    function sanitize_phone_number($input) {
+        // Remove everything except numbers
+        $digits = preg_replace('/\D+/', '', $input);
+    
+        // If it starts with '234' and is 13 digits, convert to '0' + the rest
+        if (strlen($digits) === 13 && substr($digits, 0, 3) === '234') {
+            return '0' . substr($digits, 3, 10); // 07012345678
+        }
+    
+        // If it already starts with 0 and is 11 digits
+        if (strlen($digits) === 11 && $digits[0] === '0') {
+            return $digits;
+        }
+    
+        // Fallback - return empty or log error
+        return false;
+    }
+    
 
 }

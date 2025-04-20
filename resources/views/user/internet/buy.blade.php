@@ -53,7 +53,7 @@
 
               <div class="space-y-4 mb-5">
                 <p><label for="">Mobile number</label></p>
-                <input type="tel" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="phone" value="{{ old('phone') }}" id="phone" autocomplete="tel" placeholder="07012234556" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11);" />
+                <input type="tel" class="place-style rounded-sm h-14 w-full lg:w-3/4" name="phone" value="{{ old('phone') }}" id="phone" autocomplete="tel" placeholder="07012234556" />
               </div>
 
               <div class="space-y-4 mb-5">
