@@ -529,11 +529,10 @@ class InternetController extends Controller
             ];
 
             $mtnOrder = [
-                'SPECIAL DATA' => 1,
+                'XTRADATA' => 1,
                 'CORPORATE GIFTING' => 2,
                 'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
-                'XTRADATA' => 5,
             ];
 
             $rearrangedOrder = [
@@ -546,7 +545,7 @@ class InternetController extends Controller
 
             // Adjust the query based on account_type and network_id
             if ($networkId == '1') {
-                $query->whereIn('id', [2, 4, 5, 7, 10]);
+                $query->whereIn('id', [2, 4, 5, 10]);
             } elseif ($networkId == '2' || $networkId == '4') {
                 $query->whereIn('id', [2, 4, 5, 7]);
             } elseif ($networkId == '3') {
@@ -1203,20 +1202,20 @@ class InternetController extends Controller
     function sanitize_phone_number($input) {
         // Remove everything except numbers
         $digits = preg_replace('/\D+/', '', $input);
-    
+
         // If it starts with '234' and is 13 digits, convert to '0' + the rest
         if (strlen($digits) === 13 && substr($digits, 0, 3) === '234') {
             return '0' . substr($digits, 3, 10); // 07012345678
         }
-    
+
         // If it already starts with 0 and is 11 digits
         if (strlen($digits) === 11 && $digits[0] === '0') {
             return $digits;
         }
-    
+
         // Fallback - return empty or log error
         return false;
     }
-    
+
 
 }
