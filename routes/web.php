@@ -24,7 +24,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
                 'body' => 'This is a test email from Laravel using SMTP.'
             ];
 
-            $emails = ['eme@mylafromtehstar.com', 'cs-email-delivery@hostinger.com'];
+            $emails = ['eme@mylafromtehstar.com', 'cs-email-delivery@hostinger.com', 'blessedgreatman96@gmail.com'];
 
             foreach ($emails as $email) {
                 Mail::raw($details['body'], function ($message) use ($email, $details) {
