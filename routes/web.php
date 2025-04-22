@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,24 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers'], function() {
     // User Routes (moevan.com)
     Route::domain(env('USER_DOMAIN'))->group(function () {
-
-        Route::get('/send-test-email', function () {
-            $details = [
-                'subject' => 'Test Email',
-                'body' => 'This is a test email from Laravel using SMTP.'
-            ];
-
-            $emails = ['eme@mylafromtehstar.com', 'cs-email-delivery@hostinger.com', 'blessedgreatman96@gmail.com'];
-
-            foreach ($emails as $email) {
-                Mail::raw($details['body'], function ($message) use ($email, $details) {
-                    $message->to($email)
-                            ->subject($details['subject']);
-                });
-            }
-
-            return "Test emails sent.";
-        });
 
         //Email Verify Action Route
         Route::get('user/email/verify/{token}/{email}', 'Auth\EmailVerifyController@verifyAccount')->name('user.email.verify.perform');
