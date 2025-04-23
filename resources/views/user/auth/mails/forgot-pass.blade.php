@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Reset Password</title>
+    <title>Moevan Reset Password</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,600" rel="stylesheet" type="text/css">
     <!-- Web Font / @font-face : BEGIN -->
@@ -95,7 +95,6 @@
                             </tr>
                             <tr>
                                 <td style="padding: 0 30px 20px">
-                                    <p style="margin-bottom: 10px;">Hi,</p>
                                     <p style="margin-bottom: 10px;"> <br> You are receiving this email because you  recently requested a password reset on your account. If you didn't perform this action, you can safely delete this email or contact our help line to quickly secure your account.</p>
                                     <p style="margin-bottom: 10px;">Click the link verify you started this action.</p>
                                     <p style="margin-bottom: 25px;">This link will expire in 15 minutes and can only be used once.</p>

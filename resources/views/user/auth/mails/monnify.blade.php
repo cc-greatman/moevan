@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Deposit Successful</title>
+    <title>Moevan Deposit Successful</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,600" rel="stylesheet" type="text/css">
     <!-- Web Font / @font-face : BEGIN -->
@@ -95,9 +95,9 @@
                             </tr>
                             <tr>
                                 <td style="padding: 0 30px 20px">
-                                    <p style="margin-bottom: 10px;">Hi,</p>
+                                    <p style="margin-bottom: 10px;">Yay,</p>
                                     <p style="margin-bottom: 10px;"> <br> You have successfully deposited <strong>₦{{ number_format($depositAmount,2) }}</strong> into your account<br><br> If you didn't perform this action, you can safely delete this email or contact our help line to quickly secure your account.</p>
-                                    
+
                                 </td>
                             </tr>
                             <tr>

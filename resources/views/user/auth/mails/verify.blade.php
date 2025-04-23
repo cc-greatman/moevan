@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x-apple-disable-message-reformatting">
-    <title>Email Verification</title>
+    <title>Moevan Email Verification</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,600" rel="stylesheet" type="text/css">
     <!-- Web Font / @font-face : BEGIN -->
@@ -95,7 +95,6 @@
                             </tr>
                             <tr>
                                 <td style="padding: 0 30px 20px">
-                                    <p style="margin-bottom: 10px;">Hi,</p>
                                     <p style="margin-bottom: 10px;">Welcome! <br><br> You are receiving this email because you have registered on our site.</p>
                                     <p style="margin-bottom: 10px;">Click the link below to activate your <a href="https://moevan.com">Moevan</a> account and begin an exciting journey with us.</p>
                                     <p style="margin-bottom: 25px;">This link will expire in 15 minutes and can only be used once.</p>
