@@ -88,7 +88,7 @@
         </form>
       </div>
     </div>
-    
+
     <div class="md:mt-72 mt:44">
       <div class="text-center text-2xl text-blue-990 font-bold mt-12 mb-8">
         Codes for Airtime Balance
