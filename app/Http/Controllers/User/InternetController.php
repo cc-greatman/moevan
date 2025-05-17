@@ -529,10 +529,11 @@ class InternetController extends Controller
             ];
 
             $mtnOrder = [
-                'XTRADATA' => 1,
-                'CORPORATE GIFTING' => 2,
-                'SME/DATA TRANSFER' => 3,
-                'GIFTING' => 4,
+                'SPECIAL DATA' => 1,
+                'XTRADATA' => 2,
+                'CORPORATE GIFTING' => 3,
+                'SME/DATA TRANSFER' => 4,
+                'GIFTING' => 5,
             ];
 
             $rearrangedOrder = [
