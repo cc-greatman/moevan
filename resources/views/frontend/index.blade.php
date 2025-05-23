@@ -8,7 +8,7 @@
       >
         <div class="lg:text-8xl md:text-6xl text-5xl font-bold leading-snug md:ml-20 ml-4 md:mt-24 mt-8">
           <p class="text-white leading-snug ">
-            The Only for <br />
+            One <br />
             Platform <br />
             <span class="text-[#001D82]">For All Your <br /> </span> Needs.
           </p>
