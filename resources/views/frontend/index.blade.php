@@ -8,7 +8,7 @@
       >
         <div class="lg:text-8xl md:text-6xl text-5xl font-bold leading-snug md:ml-20 ml-4 md:mt-24 mt-8">
           <p class="text-white leading-snug ">
-            One <br />
+            The Only for <br />
             Platform <br />
             <span class="text-[#001D82]">For All Your <br /> </span> Needs.
           </p>
@@ -68,9 +68,9 @@
               Data Plan <br />
               Subscription
             </p></a>
-            
+
           </div>
-        
+
           <div class="bg-white text-center md:px-14 md:py-3 px-10 py-2 rounded-lg">
             <p class="pb-7">
               <img src="{{ asset("../frontend/img/our-service-img/Call.png") }}" alt="" class="border-4 border-[#001D82] rounded-full mx-auto w-20 p-2" />
@@ -79,9 +79,9 @@
               Airtime <br />
               Top-up
             </p></a>
-            
+
           </div>
-        
+
           <div class="bg-white text-center md:px-11 md:py-3 px-10 py-2 rounded-lg">
             <p class="pb-7">
               <img src="{{ asset("../frontend/img/our-service-img/Tv.png") }}" alt="" class="border-4 border-[#001D82] rounded-full mx-auto w-20 p-2" />
@@ -90,9 +90,9 @@
               Cable TV <br />
               Subscription
             </p></a>
-            
+
           </div>
-        
+
           <div class="bg-white text-center md:px-11 md:py-3 px-10 py-2 rounded-lg">
             <p class="pb-7">
               <img src="{{ asset("../frontend/img/our-service-img/Result.png") }}" alt="" class="border-4 border-[#001D82] rounded-full mx-auto w-20 p-2" />
@@ -102,7 +102,7 @@
               Results
             </p>
           </div>
-        
+
           <div class="bg-white text-center md:px-11 md:py-3 px-10 py-2 rounded-lg">
             <p class="pb-7">
               <img src="{{ asset("../frontend/img/our-service-img/Frame 1.png") }}" alt="" class="border-4 border-[#001D82] rounded-full mx-auto w-20 p-2" />
@@ -111,9 +111,9 @@
               Bills <br />
               Payment
             </p></a>
-            
+
           </div>
-        
+
           <div class="bg-white text-center md:px-11 md:py-3 px-10 py-2 rounded-lg">
             <p class="pb-7">
               <img src="{{ asset("../frontend/img/our-service-img/Tv (1).png") }}" alt="" class="border-4 border-[#001D82] rounded-full mx-auto w-20 p-2" />
@@ -124,7 +124,7 @@
             </p>
           </div>
         </div>
-        
+
       </div>
 
       <div class=" bg-cover bg-center bg-no-repeat" style="background-image: url(../frontend/img/handsome-man-spending-time-outdoors-using-modern-smartphone\ 1.png);
@@ -146,11 +146,11 @@
       </div>
 
 
-      
+
         <div class="bg-[#000E3E] text-white relative">
 
           <div class="text-center text-5xl font-bold mb-10 pt-10">Testimonials</div>
-          
+
           <div class="flex items-center justify-center lg:mx-28 md:mx-16 mx-0 pb-20 relative">
               <button class="absolute sm:-mt-10 -mt-14 left-0 top-1/2 transform -translate-y-1/2 bg-transparent border-none" onclick="prevTestimonial()">
                   <img src="../frontend/img/Chevron Left.png" alt="" class="lg:h-24 md:h-16 h-8">
@@ -161,7 +161,7 @@
               </button>
           </div>
         </div>
-      
+
       <script>
           var testimonials = [
               "A very reliable and affordable platform for data/airtime and bills payment. Never had a downtime for once. - Justin",
@@ -171,14 +171,14 @@
               "Customer service is top notch. I love the swift response at every point in time - Confidence.",
               // Add more testimonials as needed
           ];
-      
+
           var currentTestimonialIndex = 0;
           var testimonialElement = document.getElementById('testimonial');
-      
+
           function showTestimonial(index) {
               testimonialElement.innerText = testimonials[index];
           }
-      
+
           function prevTestimonial() {
               if (currentTestimonialIndex > 0) {
                   currentTestimonialIndex--;
@@ -187,7 +187,7 @@
               }
               showTestimonial(currentTestimonialIndex);
           }
-      
+
           function nextTestimonial() {
               if (currentTestimonialIndex < testimonials.length - 1) {
                   currentTestimonialIndex++;
@@ -196,7 +196,7 @@
               }
               showTestimonial(currentTestimonialIndex);
           }
-      
+
           // Show the initial testimonial
           showTestimonial(currentTestimonialIndex);
       </script>
@@ -205,7 +205,7 @@
         <div id="pricing">
           <div class="text-center text-blue-900 text-3xl md:text-4xl font-extrabold my-12">Affordable Data Plans And Prices</div>
 
-   
+
 
 
           <div class="grid sm:grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 flex-wrap justify-evenly rounded-lg mb-9">
@@ -221,8 +221,8 @@
           <div class="flex flex-col mx-2 mb-4">
 
             <img src="{{ asset("../frontend/img/Airtel.png") }}" alt="" class="bg-[#CF0909] object-contain px-24 lg:px-24 md:px-2 py-4 mb-4 rounded-xl h-300">
-            
-          
+
+
             <div class="bg-[#CF0909] text-xl font-medium pb-1 rounded-xl">
               {!! $airtel->rolling_message !!}
               <div class="bg-white text-blue-950 text-center text-2xl font-extrabold rounded-3xl py-3 ml-9 mr-9 mb-12"><a href="{{ route('user.data.show') }}">Order Now</a></div>
@@ -249,7 +249,7 @@
 
         </div>
 
-     
+
         <div class="flex flex-wrap lg:flex-nowrap bg-[#000E3E] bg-contain md:pt-48 pt-16 md:pl-24 md:pr-14 pl-10 pb-24">
 
             <div class="flex flex-col text-white md:mr-28">
@@ -259,7 +259,7 @@
                     <p class="inline-block text-center text-blue-800 font-medium md:text-xl text-lg  rounded-2xl bg-white md:py-4 md:px-6 py-2 px-4 mb-8 ">API DOCUMENTATION</p>
                 </div>
             </div>
-           
+
             <div class="bg-white mr-3">
                 <img src="{{ asset("../frontend/img/api.jpg") }}" class="api-img px-5 py-5" >
              </div>
