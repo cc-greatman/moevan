@@ -562,7 +562,7 @@ class InternetController extends Controller
                 'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
                 'SME2' => 5,
-                'XTRADATA' => 6,
+                'SOCIAL BUNDLES' => 6,
             ];
 
             // Adjust the query based on account_type and network_id
@@ -599,7 +599,6 @@ class InternetController extends Controller
                             'CORPORATE GIFTING' => 'DAILY PLANS',
                             'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
-                            'XTRADATA' => 'SOCIAL BUNDLES',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '3') {
@@ -704,7 +703,7 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
-            'XTRADATA' => 6,
+            'SOCIAL BUNDLES' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
@@ -740,7 +739,6 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
-                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
@@ -788,7 +786,7 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
-            'XTRADATA' => 6,
+            'SOCIAL BUNDLES' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
@@ -824,7 +822,6 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
-                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
@@ -871,7 +868,7 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
-            'XTRADATA' => 6,
+            'SOCIAL BUNDLES' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
@@ -907,7 +904,6 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
-                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
