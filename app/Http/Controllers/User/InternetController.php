@@ -542,13 +542,14 @@ class InternetController extends Controller
                 'SME/DATA TRANSFER' => 3,
                 'GIFTING' => 4,
                 'SME2' => 5,
+                'XTRADATA' => 6,
             ];
 
             // Adjust the query based on account_type and network_id
             if ($networkId == '1') {
                 $query->whereIn('id', [2, 4, 5, 7]);
             } elseif ($networkId == '2' || $networkId == '4') {
-                $query->whereIn('id', [2, 4, 5, 7]);
+                $query->whereIn('id', [2, 4, 5, 7, 10]);
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4]);
             }
@@ -578,6 +579,7 @@ class InternetController extends Controller
                             'CORPORATE GIFTING' => 'DAILY PLANS',
                             'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                             'GIFTING' => 'MONTHLY PLANS',
+                            'XTRADATA' => 'SOCIAL BUNDLES',
                             default => $dataType->name,
                         };
                     } elseif ($networkId == '3') {
