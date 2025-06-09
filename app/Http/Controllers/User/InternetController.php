@@ -496,6 +496,26 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             }
+            elseif ($planDetails->dataType->id === 10) {
+                $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
         }
 
     }
@@ -676,7 +696,6 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
@@ -685,13 +704,14 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
+            'XTRADATA' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
-        } elseif ($networkId == '2' || $networkId == '4') {
             $query->whereIn('id', [2, 4, 5, 7]);
+        } elseif ($networkId == '2' || $networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         }
@@ -720,6 +740,7 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
+                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
@@ -759,7 +780,6 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
@@ -768,13 +788,14 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
+            'XTRADATA' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
-        } elseif ($networkId == '2' || $networkId == '4') {
             $query->whereIn('id', [2, 4, 5, 7]);
+        } elseif ($networkId == '2' || $networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         }
@@ -803,6 +824,7 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
+                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
@@ -841,7 +863,6 @@ class InternetController extends Controller
             'CORPORATE GIFTING' => 2,
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
-            'XTRADATA' => 5,
         ];
 
         $rearrangedOrder = [
@@ -850,13 +871,14 @@ class InternetController extends Controller
             'SME/DATA TRANSFER' => 3,
             'GIFTING' => 4,
             'SME2' => 5,
+            'XTRADATA' => 6,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
-        } elseif ($networkId == '2' || $networkId == '4') {
             $query->whereIn('id', [2, 4, 5, 7]);
+        } elseif ($networkId == '2' || $networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         }
@@ -885,6 +907,7 @@ class InternetController extends Controller
                         'CORPORATE GIFTING' => 'DAILY PLANS',
                         'SME/DATA TRANSFER' => 'WEEKLY PLANS',
                         'GIFTING' => 'MONTHLY PLANS',
+                        'XTRADATA' => 'SOCIAL BUNDLES',
                         default => $dataType->name,
                     };
                 } elseif ($networkId == '3') {
