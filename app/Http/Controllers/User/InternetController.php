@@ -632,6 +632,11 @@ class InternetController extends Controller
             // Filter by network_id and dataType
             $query->where('network_id', $network)->where('type', $dataType);
 
+            // Conditional exclusion
+            if ($network == 1 && $user->account_type == 1) {
+                $query->where('id', '!=', 229);
+            }
+
             // Retrieve the data plans
             $dataPlans = $query->orderBy('price', 'asc')->get();
 
