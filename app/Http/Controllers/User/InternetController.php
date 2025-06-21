@@ -634,7 +634,7 @@ class InternetController extends Controller
 
             // Conditional exclusion
             if ($network == 1 && $user->account_type == 1) {
-                $query->where('data_id', '!=', 226);
+                $query->where('data_id', '!=', (string)226);
             }
 
             // Retrieve the data plans
