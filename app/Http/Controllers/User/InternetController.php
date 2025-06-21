@@ -634,6 +634,7 @@ class InternetController extends Controller
 
             // Conditional exclusion
             if ($network == 1 && $user->account_type == 1) {
+                logger("Excluding 226 for user {$user->id} on network 1");
                 $query->where('data_id', '!=', '226');
             }
 
