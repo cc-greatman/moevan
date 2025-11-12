@@ -563,15 +563,18 @@ class InternetController extends Controller
                 'GIFTING' => 4,
                 'SME2' => 5,
                 'SOCIAL BUNDLES' => 6,
+                'TALKMORE' => 7,
             ];
 
             // Adjust the query based on account_type and network_id
             if ($networkId == '1') {
                 $query->whereIn('id', [2, 4, 5, 7]);
-            } elseif ($networkId == '2' || $networkId == '4') {
+            } elseif ($networkId == '2') {
                 $query->whereIn('id', [2, 4, 5, 7, 10]);
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4]);
+            } elseif ($networkId == '4') {
+                $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
             }
 
             // Determine the order to use based on network_id
@@ -710,15 +713,18 @@ class InternetController extends Controller
             'GIFTING' => 4,
             'SME2' => 5,
             'SOCIAL BUNDLES' => 6,
+            'TALKMORE' => 7,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
-        } elseif ($networkId == '2' || $networkId == '4') {
+        } elseif ($networkId == '2') {
             $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
+        } elseif ($networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
         }
 
         // Determine the order to use based on network_id
@@ -793,15 +799,18 @@ class InternetController extends Controller
             'GIFTING' => 4,
             'SME2' => 5,
             'SOCIAL BUNDLES' => 6,
+            'TALKMORE' => 7,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
-        } elseif ($networkId == '2' || $networkId == '4') {
+        } elseif ($networkId == '2') {
             $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
+        } elseif ($networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
         }
 
         // Determine the order to use based on network_id
@@ -875,15 +884,18 @@ class InternetController extends Controller
             'GIFTING' => 4,
             'SME2' => 5,
             'SOCIAL BUNDLES' => 6,
+            'TALKMORE' => 7,
         ];
 
         // Adjust the query based on account_type and network_id
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
-        } elseif ($networkId == '2' || $networkId == '4') {
+        } elseif ($networkId == '2') {
             $query->whereIn('id', [2, 4, 5, 7, 10]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
+        } elseif ($networkId == '4') {
+            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
         }
 
         // Determine the order to use based on network_id
