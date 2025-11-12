@@ -327,6 +327,27 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             }
+            //GLO TALKMORE
+            elseif ($planDetails->mainDataType->id === 13) {
+                $apiType = "TALKMORE";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
         }
         //9MOBILE Network Calls
         elseif ($network_id == 3) {
@@ -496,8 +517,30 @@ class InternetController extends Controller
                     return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
                 }
             }
+            //AIRTEL SOCIAL BUNDLES
             elseif ($planDetails->dataType->id === 10) {
                 $apiType = "DIRECT GIFTING";
+                //Call Autopilot API
+                $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
+
+                // Check response status and content
+                if (isset($finalResponse['code']) && in_array($finalResponse['code'], ['200', '201', '500'])) {
+                    $apiResponse = $finalResponse['data']['message'];
+
+                    $this->handleSuccessfulResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $apiResponse, $phone, $plan_id, 'AUTO-PILOT');
+
+                    return redirect()->route('user.trx.success')->with(['response' => $apiResponse, 'success' => 'Transaction Successful! Data Subscription Successful!']);
+                } else {
+                    $message = $finalResponse['data']['message'];
+
+                    $this->handleFailedResponse($user, $amount, $commission, $trx, $networkName, $reference, $planDetails, $message, $phone, $plan_id, 'AUTOPILOT');
+
+                    return redirect()->route('user.trx.error')->with('error', 'Transaction Failed! ' . $message);
+                }
+            }
+            //AIRTEL TALKMORE
+            elseif ($planDetails->dataType->id === 13) {
+                $apiType = "TALKMORE";
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
@@ -570,7 +613,7 @@ class InternetController extends Controller
             if ($networkId == '1') {
                 $query->whereIn('id', [2, 4, 5, 7]);
             } elseif ($networkId == '2') {
-                $query->whereIn('id', [2, 4, 5, 7, 10]);
+                $query->whereIn('id', [2, 4, 5, 7, 10,13]);
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4]);
             } elseif ($networkId == '4') {
@@ -720,11 +763,11 @@ class InternetController extends Controller
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
         } elseif ($networkId == '2') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
+            $query->whereIn('id', [2, 4, 5, 7, 10,13]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         } elseif ($networkId == '4') {
-            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
+            $query->whereIn('id', [2, 4, 5, 7, 10, 13]);
         }
 
         // Determine the order to use based on network_id
@@ -806,7 +849,7 @@ class InternetController extends Controller
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
         } elseif ($networkId == '2') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
+            $query->whereIn('id', [2, 4, 5, 7, 10,13]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         } elseif ($networkId == '4') {
@@ -891,7 +934,7 @@ class InternetController extends Controller
         if ($networkId == '1') {
             $query->whereIn('id', [2, 4, 5, 7]);
         } elseif ($networkId == '2') {
-            $query->whereIn('id', [2, 4, 5, 7, 10]);
+            $query->whereIn('id', [2, 4, 5, 7, 10,13]);
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         } elseif ($networkId == '4') {
