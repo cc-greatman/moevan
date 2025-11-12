@@ -574,7 +574,7 @@ class InternetController extends Controller
             } elseif ($networkId == '3') {
                 $query->whereIn('id', [4]);
             } elseif ($networkId == '4') {
-                $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
+                $query->whereIn('id', [2, 4, 5, 7, 10, 13]);
             }
 
             // Determine the order to use based on network_id
@@ -810,7 +810,7 @@ class InternetController extends Controller
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         } elseif ($networkId == '4') {
-            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
+            $query->whereIn('id', [2, 4, 5, 7, 10, 13]);
         }
 
         // Determine the order to use based on network_id
@@ -895,7 +895,7 @@ class InternetController extends Controller
         } elseif ($networkId == '3') {
             $query->whereIn('id', [4]);
         } elseif ($networkId == '4') {
-            $query->whereIn('id', [2, 4, 5, 7, 10, 11]);
+            $query->whereIn('id', [2, 4, 5, 7, 10, 13]);
         }
 
         // Determine the order to use based on network_id
