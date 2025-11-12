@@ -440,11 +440,6 @@ class InternetController extends Controller
                 } else {
                     $apiType = "DIRECT GIFTING";
                 }
-                if ($planDetails->data_id == '80003') {
-                    $apiType = "AWOOF GIFTING";
-                } else {
-                    $apiType = "DIRECT GIFTING";
-                }
                 //Call Autopilot API
                 $finalResponse = $this->autopilotApi($networkId, $planDetails, $phone, $reference, $apiType);
 
